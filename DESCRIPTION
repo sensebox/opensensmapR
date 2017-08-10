@@ -1,0 +1,14 @@
+Package: opensensemap
+Type: Package
+Title: Work with Sensor Data from opensensemap.org in R
+Version: 0.1.0
+Imports: lubridate, httr, sf
+Author: Norwin Roosen
+Maintainer: Norwin Roosen <noerw@gmx.de>
+Description: This packages ingests data (measurements, sensorstations) from the
+    API of opensensemap.org and transforms them into easy to use data.tables.
+    It uses the sf package for spatial handling of datapoints and aims to be
+    compatible with the tidyverse.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
