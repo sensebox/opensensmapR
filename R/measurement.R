@@ -6,6 +6,14 @@
 #' bounding box filter. To get all measurements, the \code{default} function applies
 #' a bounding box spanning the whole world.
 #'
+#' @param x Depending on the method, either
+#'   \enumerate{
+#'     \item a \code{chr} specifying the phenomenon, see \code{phenomenon}
+#'     \item a \code{\link[sf]{st_bbox}} to select sensors spatially,
+#'     \item a \code{sensebox data.frame} to select boxes from which
+#'       measurements will be retrieved,
+#'   }
+#' @param ... see parameters below
 #' @param phenomenon The phenomenon to retrieve measurements for
 #' @param exposure Filter sensors by their exposure ('indoor', 'outdoor', 'mobile')
 #' @param from A \code{POSIXt} like object to select a time interval
@@ -13,102 +21,79 @@
 #' @param columns Select specific column in the output (see oSeM documentation)
 #' @param endpoint The URL of the openSenseMap API
 #'
-#' @return An \code{osem_measurements} \code{data.frame} containing the
+#' @return An \code{osem_measurements data.frame} containing the
 #'   requested measurements
 #'
 #' @export
-#' @family osem_measurements
-#' @seealso \href{https://docs.opensensemap.org/#api-Measurements-getDataMulti}{openSenseMap API documentation}
+#' @seealso \href{https://docs.opensensemap.org/#api-Measurements-getDataMulti}{openSenseMap API documentation (web)}
+#' @seealso \code{\link{osem_boxes}}
 osem_measurements = function (x, ...) UseMethod('osem_measurements')
 
 # ==============================================================================
 #
-#' Get the Measurements of a Phenomenon from all sensors
-#'
-#' @param ... Passed on to \code{\link{osem_measurements.bbox}}
-#' @inherit osem_measurements seealso return
-#' @inheritParams osem_measurements
-#'
+#' @describeIn osem_measurements Get measurements from \strong{all} senseBoxes.
 #' @export
-#' @family osem_measurements
-#' @seealso \code{\link{osem_measurements.bbox}}
-#' @seealso \href{https://docs.opensensemap.org/#api-Measurements-getDataMulti}{openSenseMap API documentation}
-#'
 #' @examples
+#' # get measurements from all boxes
+#' \dontrun{
 #' osem_measurements('PM2.5')
-osem_measurements.default = function (phenomenon, ...) {
+#' }
+#'
+osem_measurements.default = function (x, ...) {
   bbox = structure(c(-180, -90, 180, 90), class = 'bbox')
-  osem_measurements(bbox, phenomenon, ...)
+  osem_measurements(bbox, x, ...)
 }
 
 # ==============================================================================
 #
-#' Get the Measurements of a Phenomenon by a spatial filter
-#'
-#' @param bbox A \code{\link[sf]{st_bbox}} to select sensors spatially
-#' @inheritParams phenomenon,exposure,from,to,columns,endpoint osem_measurements
-#'
-#' @return An \code{osem_measurements} \code{data.frame} containing the
-#'   requested measurements
-#'
+#' @describeIn osem_measurements Get measurements by a spatial filter.
 #' @export
-#' @family osem_measurements
-#' @seealso \href{https://docs.opensensemap.org/#api-Measurements-getDataMulti}{openSenseMap API documentation}
-#' @seealso \code{\link[sf]{st_bbox}}
-#'
 #' @examples
-#' bbox = structure(c(7.5, 51, 8, 52), class = 'bbox')
-#' osem_measurements(bbox, 'Temperature')
+#' # get measurements from sensors within a bounding box
+#' bbox = structure(c(7, 51, 8, 52), class = 'bbox')
+#' osem_measurements(bbox, 'Temperatur')
 #'
+#' points = sf::st_multipoint(x = matrix(c(7,8,51,52),2,2))
+#' bbox2 = sf::st_bbox(points)
+#' osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 #'
-#' bbox2 = sf::st_point(c(7, 51)) %>% sf::st_bbox()
-#' osem_measurements(bbox2, 'Temperature', exposure = 'outdoor')
-osem_measurements.bbox = function (bbox, phenomenon, exposure = NA,
-                                   from = NA, to = NA,
-                                   columns = NA,
+osem_measurements.bbox = function (x, phenomenon, exposure = NA,
+                                   from = NA, to = NA, columns = NA,
+                                   ...,
                                    endpoint = 'https://api.opensensemap.org') {
+  bbox = x
   query = parse_get_measurements_params(as.list(environment()))
   do.call(get_measurements_, query)
 }
 
 # ==============================================================================
 #
-#' Get the Measurements of a Phenomenon for a set of senseBoxes
-#'
-#' @param boxes A \code{sensebox} \code{data.frame} to select boxes from which
-#'   measurements will be retrieved
-#' @inheritParams phenomenon,exposure,from,to,columns,endpoint osem_measurements
-#'
-#' @return An \code{osem_measurements} \code{data.frame} containing the
-#'   requested measurements
-#'
+#' @describeIn osem_measurements Get measurements from a set of senseBoxes.
 #' @export
-#' @family osem_measurements
-#' @seealso [osem_boxes()]
-#' @seealso [osem_box()]
-#'
 #' @examples
-#' osem_boxes(grouptag = 'ifgi') %>% get_measurements(phenomenon = 'Temperatur')
+#' # get measurements from a set of boxes
+#' b = osem_boxes(grouptag = 'ifgi')
+#' osem_measurements(b, phenomenon = 'Temperatur')
 #'
+#' # ...or a single box
 #' b = osem_box('593bcd656ccf3b0011791f5a')
-#' get_measurements(b, phenomenon = 'Temperatur')
-osem_measurements.sensebox = function (boxes, phenomenon, exposure = NA,
-                                       from = NA, to = NA,
-                                       columns = NA,
+#' osem_measurements(b, phenomenon = 'Temperatur')
+#'
+osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
+                                       from = NA, to = NA, columns = NA,
+                                       ...,
                                        endpoint = 'https://api.opensensemap.org') {
+  boxes = x
   query = parse_get_measurements_params(as.list(environment()))
   do.call(get_measurements_, query)
 }
 
 # ==============================================================================
 #
-#' Validates and parses the Parameters for \code{osem_measurements()}
+#' Validates and parses the Parameters for use in \code{osem_measurements()}
 #'
 #' @param params A named \code{list} of parameters
-#'
 #' @return A named \code{list} of parsed parameters.
-#'
-#' @family osem_internal
 #' @noRd
 parse_get_measurements_params = function (params) {
   if (is.null(params$phenomenon) | is.na(params$phenomenon))

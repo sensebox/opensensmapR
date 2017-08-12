@@ -1,5 +1,3 @@
-`%>%` = magrittr::`%>%`
-
 plot.sensebox = function (x, ...) {
   # TODO: background map (maps::world), graticule?
   geom = x %>%
@@ -16,6 +14,7 @@ print.sensebox = function(x, ...) {
   important_columns = c('name', 'exposure', 'lastMeasurement', 'phenomena')
   data = as.data.frame(x) # to get rid of the sf::`<-[` override..
   print(data[important_columns], ...)
+
   invisible(x)
 }
 
@@ -27,7 +26,7 @@ summary.sensebox = function(x, ...) {
   table(x$model) %>% print()
   cat('\n')
 
-  diffNow = (utc_time(Sys.time()) - x$lastMeasurement) %>% as.numeric(unit='hours')
+  diffNow = (utc_date(Sys.time()) - x$lastMeasurement) %>% as.numeric(unit='hours')
   neverActive = x[is.na(x$lastMeasurement), ] %>% nrow()
   list(
     'last_measurement_within' = c(
@@ -52,13 +51,4 @@ summary.sensebox = function(x, ...) {
     print()
 
   invisible(x)
-}
-
-osem_phenomena = function (x) UseMethod('osem_phenomena')
-osem_phenomena.default = function (x) stop('not implemented')
-osem_phenomena.sensebox = function (x) {
-  Reduce(`c`, x$phenomena) %>% # get all the row contents in a single vector
-    table() %>%                # get count for each phenomenon
-    t() %>%                    # transform the table to a df
-    as.data.frame.matrix()
 }
