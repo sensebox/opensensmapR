@@ -2,7 +2,8 @@ Package: opensensemap
 Type: Package
 Title: Work with Sensor Data from opensensemap.org in R
 Version: 0.1.0
-Imports: lubridate, httr, sf
+Imports: dplyr, httr
+Suggests: readr, sf
 Author: Norwin Roosen
 Maintainer: Norwin Roosen <noerw@gmx.de>
 Description: This packages ingests data (measurements, sensorstations) from the
@@ -12,3 +13,4 @@ Description: This packages ingests data (measurements, sensorstations) from the
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.0.1

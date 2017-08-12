@@ -28,20 +28,16 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
 
   if (!is.na(to) && !is.na(from)) {
     # error, if from is after to
-    if (lubridate::as_datetime(from) - lubridate::as_datetime(to) > 0)
-      stop('Parameter "from" must be earlier than "to"')
     # convert dates to commaseparated UTC ISOdates
-    query$date = c(date_as_isostring(from), date_as_isostring(to)) %>%
-      paste(collapse = ',')
+    query$date = parse_dateparams(from, to) %>% paste(collapse = ',')
 
-    print(query$date)
   } else if (!is.na(date)) {
-    query$date = format.Date(lubridate::as_datetime(date), '%FT%TZ')
+    query$date = utc_date(date) %>% date_as_isostring()
   }
 
   do.call(get_boxes_, query)
 }
 
 osem_box = function (boxId, endpoint = 'https://api.opensensemap.org') {
-  get_box_(boxId, endpoint)
+  get_box_(boxId, endpoint = endpoint)
 }

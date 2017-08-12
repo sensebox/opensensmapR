@@ -11,19 +11,12 @@ get_boxes_ = function (..., endpoint) {
   }
 
   # parse each list element as sensebox & combine them to a single data.frame
-  #
-  # bind_rows() kills the attributes and classes of sf_sfc column, and warns
-  # about that. see https://github.com/r-spatial/sf/issues/49
-  # we readd the attributes manually afterwards, so we can ignore the warnings.
-  # rbind() wouldn't have this problem, but would be far slower and con't
-  # handle missing columns, so this seems like a good tradeoff..
   boxesList = lapply(response, parse_senseboxdata)
-  suppressWarnings({ data = dplyr::bind_rows(boxesList) })
-  data$geometry = sf::st_sfc(data$geometry, crs = 4326)
-  #sf::st_geometry(data) = sf::st_sfc(data$geometry, crs = 4326)
-  #sf::st_sf(data)
-
-  data
+  df = dplyr::bind_rows(boxesList)
+  df$exposure = df$exposure %>% as.factor()
+  df$model    = df$model %>% as.factor()
+  df$grouptag = df$grouptag %>% as.factor()
+  df
 }
 
 get_box_ = function (..., endpoint) {
@@ -34,9 +27,13 @@ get_box_ = function (..., endpoint) {
 }
 
 get_measurements_ = function (..., endpoint) {
-  httr::GET(endpoint, path = c('boxes', 'data'), query = list(...)) %>%
-    httr::content() %>%
+  # FIXME: get rid of readr warnings
+  result = httr::GET(endpoint, path = c('boxes', 'data'), query = list(...)) %>%
+    httr::content(encoding = 'UTF-8') %>%
     osem_remote_error()
+
+  class(result) = c('osem_measurements', class(result))
+  result
 }
 
 get_stats_ = function (endpoint) {

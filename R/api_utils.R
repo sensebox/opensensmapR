@@ -1,11 +1,31 @@
 osem_remote_error = function (response) {
-  if (!is.null(response$code)) stop(response$message)
+  suppressWarnings({
+    hasCode = !is.null(response$code)
+  })
 
+  if (hasCode) stop(response$message)
   invisible(response)
 }
 
-date_as_isostring = function (date) {
-  # as_datetime is required so UTC times are always returned
-  # TODO: check if we can get along without lubridate dependency?
-  lubridate::as_datetime(date) %>% format.Date(format = '%FT%TZ')
+parse_dateparams = function (from, to) {
+  from = utc_date(from)
+  to = utc_date(to)
+  if (from - to > 0)
+    stop('"from" must be earlier than "to"')
+
+  c(date_as_isostring(from), date_as_isostring(to))
+}
+
+# NOTE: cannot handle mixed vectors of POSIXlt and POSIXct
+utc_date = function (date) {
+  time = as.POSIXct(date)
+  attr(time, 'tzone') = 'UTC'
+  time
+}
+
+# NOTE: cannot handle mixed vectors of POSIXlt and POSIXct
+date_as_isostring = function (date) format(date, format = '%FT%TZ')
+
+osem_as_sf = function (x, ...) {
+  sf::st_as_sf(x, ..., coords = c('lon', 'lat'), crs = 4326)
 }

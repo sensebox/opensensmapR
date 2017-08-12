@@ -1,50 +1,52 @@
 `%>%` = magrittr::`%>%`
 
-plot.sensebox = function (x) {
-  # TODO: background map?
-  geom = sf::st_geometry(x)
-  plot(geom, graticule = st_crs(geom), axes = TRUE)
+plot.sensebox = function (x, ...) {
+  # TODO: background map (maps::world), graticule?
+  geom = x %>%
+    osem_as_sf() %>%
+    sf::st_geometry()
+
+  # FIXME:trying to add graticule crashes RStudio?!
+  plot(geom, ..., axes = T) #graticule = sf::st_crs(sf)
+
   invisible(x)
 }
 
-print.sensebox = function(x) {
+print.sensebox = function(x, ...) {
   important_columns = c('name', 'exposure', 'lastMeasurement', 'phenomena')
   data = as.data.frame(x) # to get rid of the sf::`<-[` override..
-  message(class(data))
-  print(data[important_columns])
+  print(data[important_columns], ...)
   invisible(x)
 }
 
-summary.sensebox = function(x) {
-  df = as.data.frame(x) # the sf methods are messing with us again..
-
-  cat('boxes total:', nrow(df), fill = T)
+summary.sensebox = function(x, ...) {
+  cat('boxes total:', nrow(x), fill = T)
   cat('\nboxes by exposure:')
-  table(df$exposure) %>% print()
+  table(x$exposure) %>% print()
   cat('\nboxes by model:')
-  table(df$model) %>% print()
+  table(x$model) %>% print()
   cat('\n')
 
-  diffNow = (lubridate::now() - df$lastMeasurement) %>% as.numeric(unit='hours')
-  neverActive = df[is.na(df$lastMeasurement), ] %>% nrow()
+  diffNow = (utc_time(Sys.time()) - x$lastMeasurement) %>% as.numeric(unit='hours')
+  neverActive = x[is.na(x$lastMeasurement), ] %>% nrow()
   list(
     'last_measurement_within' = c(
-      '1h' = nrow(df[diffNow <= 1, ]) - neverActive,
-      '1d' = nrow(df[diffNow <= 24, ]) - neverActive,
-      '30d' = nrow(df[diffNow <= 720, ]) - neverActive,
-      '365d' = nrow(df[diffNow <= 8760, ]) - neverActive,
+      '1h' = nrow(x[diffNow <= 1, ]) - neverActive,
+      '1d' = nrow(x[diffNow <= 24, ]) - neverActive,
+      '30d' = nrow(x[diffNow <= 720, ]) - neverActive,
+      '365d' = nrow(x[diffNow <= 8760, ]) - neverActive,
       'never' = neverActive
     )
   ) %>%
     print()
 
-  oldest = df[df$createdAt == min(df$createdAt), ]
-  newest = df[df$createdAt == max(df$createdAt), ]
+  oldest = x[x$createdAt == min(x$createdAt), ]
+  newest = x[x$createdAt == max(x$createdAt), ]
   cat('oldest box:', format(oldest$createdAt, '%F %T'), paste0('(', oldest$name, ')'), fill = T)
   cat('newest box:', format(newest$createdAt, '%F %T'), paste0('(', newest$name, ')'), fill = T)
 
   cat('\nsensors per box:', fill = T)
-  lapply(df$phenomena, length) %>%
+  lapply(x$phenomena, length) %>%
     as.numeric() %>%
     summary() %>%
     print()
@@ -56,7 +58,7 @@ osem_phenomena = function (x) UseMethod('osem_phenomena')
 osem_phenomena.default = function (x) stop('not implemented')
 osem_phenomena.sensebox = function (x) {
   Reduce(`c`, x$phenomena) %>% # get all the row contents in a single vector
-    table() %>%                # get the counts
-    t() %>%                    # transform the table to an easier to work with df
+    table() %>%                # get count for each phenomenon
+    t() %>%                    # transform the table to a df
     as.data.frame.matrix()
 }

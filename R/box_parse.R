@@ -4,7 +4,7 @@ parse_senseboxdata = function (boxdata) {
   sensors = boxdata$sensors
   location = boxdata$loc
   boxdata[c('loc', 'sensors', 'image', 'boxType')] <- NULL
-  thebox = as.data.frame(boxdata)
+  thebox = as.data.frame(boxdata, stringsAsFactors = F)
 
   # parse timestamps (updatedAt might be not defined)
   thebox$createdAt = as.POSIXct(strptime(thebox$createdAt, format='%FT%T', tz = 'GMT'))
@@ -22,14 +22,10 @@ parse_senseboxdata = function (boxdata) {
   })[[1]])
 
   # extract coordinates & transform to simple feature object
-  thebox$lng = location[[1]]$geometry$coordinates[[1]]
+  thebox$lon = location[[1]]$geometry$coordinates[[1]]
   thebox$lat = location[[1]]$geometry$coordinates[[2]]
   if (length(location[[1]]$geometry$coordinates) == 3)
     thebox$height = location[[1]]$geometry$coordinates[[3]]
-
-  # sf does not like to combine 2D and 3D coords, so we just use 2D
-  # IDEA: convert to sf only after rbind?
-  thebox = sf::st_as_sf(thebox, coords = c('lng', 'lat'), crs = 4326)
 
   # attach a custom class for methods
   class(thebox) = c('sensebox', class(thebox))
