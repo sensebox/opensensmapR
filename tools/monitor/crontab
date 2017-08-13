@@ -1,0 +1,1 @@
+*/10 * * * * cd /script/data && /usr/bin/Rscript --save --restore ../osem-monitor.R > rscript.log
