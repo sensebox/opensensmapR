@@ -1,9 +1,18 @@
-Package: opensensemap
+Package: opensensmapr
 Type: Package
 Title: Work with Sensor Data from opensensemap.org in R
 Version: 0.1.0
-Imports: dplyr, httr, magrittr
-Suggests: readr, sf
+URL: http://github.com/noerw/opensensmapR
+BugReports: http://github.com/noerw/opensensmapR/issues
+Imports:
+    dplyr,
+    httr,
+    magrittr
+Suggests:
+    readr,
+    sf,
+    knitr,
+    rmarkdown
 Author: Norwin Roosen
 Maintainer: Norwin Roosen <noerw@gmx.de>
 Description: This packages ingests data (measurements, sensorstations) from the
@@ -13,3 +22,4 @@ License: GPL-2
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

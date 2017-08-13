@@ -1,10 +1,10 @@
-#' opensensemap: Work with sensor data from opensensemap.org
+#' opensensmapr: Work with sensor data from opensensemap.org
 #'
-#' The opensensemap package provides three categories functions:
+#' The opensensmapr package provides three categories functions:
 #' \enumerate{
 #'   \item retrieval of senseBoxes
 #'   \item retrieval of measurements
-#'   \item general stats about the opensensemap database
+#'   \item general stats about the openSenseMap database
 #' }
 #'
 #' @section Retrieving senseBox metadata:
@@ -20,7 +20,7 @@
 #' TODO
 #'
 #' @docType package
-#' @name opensensemap
+#' @name opensensmapr
 '_PACKAGE'
 
 #' @importFrom graphics plot
