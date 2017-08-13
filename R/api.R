@@ -33,7 +33,6 @@ get_box_ = function (..., endpoint) {
 }
 
 get_measurements_ = function (..., endpoint) {
-  # FIXME: get rid of readr warnings
   result = httr::GET(endpoint, path = c('boxes', 'data'), query = list(...)) %>%
     httr::content(encoding = 'UTF-8') %>%
     osem_remote_error()

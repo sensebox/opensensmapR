@@ -1,3 +1,14 @@
+#' Convert a \code{sensebox} or \code{osem_measurements} dataframe to an
+#' \code{\link[sf]{st_sf}} object.
+#'
+#' @param x The object to convert
+#' @param ... maybe more objects to convert
+#' @return The object with an st_geometry column attached.
+#' @export
+osem_as_sf = function (x, ...) {
+  sf::st_as_sf(x, ..., coords = c('lon', 'lat'), crs = 4326)
+}
+
 osem_remote_error = function (response) {
   suppressWarnings({
     hasCode = !is.null(response$code)
@@ -25,7 +36,3 @@ utc_date = function (date) {
 
 # NOTE: cannot handle mixed vectors of POSIXlt and POSIXct
 date_as_isostring = function (date) format(date, format = '%FT%TZ')
-
-osem_as_sf = function (x, ...) {
-  sf::st_as_sf(x, ..., coords = c('lon', 'lat'), crs = 4326)
-}
