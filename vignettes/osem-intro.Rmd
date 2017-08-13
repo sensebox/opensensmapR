@@ -1,0 +1,172 @@
+---
+title: "Analyzing environmental sensor data from openSenseMap.org in R"
+author: "Norwin Roosen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analyzing environmental sensor data from openSenseMap.org in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Analyzing environmental sensor data from openSenseMap.org in R
+
+This package provides data ingestion functions for almost any data stored on the
+open data platform <https://opensensemap.org>.
+Its main goals are to provide means for:
+
+- big data analysis of the measurements stored on the platform
+- sensor metadata analysis (sensor counts, spatial distribution, temporal trends)
+
+> *Please note:* The openSenseMap API is sometimes a bit unstable when streaming
+long responses, which results in `curl` complaining about `Unexpected EOF`. This
+bug is beeing worked on upstream. Meanwhile you have to retry the request when
+this occurs.
+
+### Exploring the dataset
+Before we look at actual observations, lets get a grasp of the openSenseMap
+datasets' structure.
+
+```{r}
+library(magrittr)
+library(opensensmapr)
+
+all_sensors = osem_boxes()
+summary(all_sensors)
+```
+
+This gives a good overview already: As of writing this, there are more than 600
+sensor stations, of which ~50% are running. Most of them are placed outdoors and
+have around 5 sensors each.
+The oldest station is from May 2014, while the latest station was registered a
+couple of minutes ago.
+
+Another feature of interest is the spatial distribution of the boxes. `plot()`
+can help us out here:
+
+```{r}
+plot(all_sensors)
+```
+
+Seems like we have to reduce our area of interest to Germany.
+
+But what do these sensor stations actually measure? Lets find out.
+`osem_phenomena()` gives us a named list of of the counts of each observed
+phenomenon for the given set of sensor stations:
+
+```{r}
+phenoms = osem_phenomena(all_sensors)
+str(phenoms)
+```
+
+Thats quite some noise there, with many phenomena being measured by a single
+sensor only, or many duplicated phenomena due to slightly different spellings.
+We should clean that up, but for now let's just filter out the noise and find
+those phenomena with the high sensor numbers:
+
+```{r}
+phenoms[phenoms > 20]
+```
+
+Alright, temperature it is! PM2.5 seems to be more interesting to analyze though.
+
+We should check how many sensor stations provide useful data: We want only those
+boxes with a PM2.5 sensor, that are placed outdoors and are currently submitting
+measurements:
+
+```{r}
+pm25_sensors = osem_boxes(
+  exposure = 'outdoor',
+  date = Sys.time(), # ±4 hours
+  phenomenon = 'PM2.5'
+)
+
+summary(pm25_sensors)
+plot(pm25_sensors)
+```
+
+Thats still more than 200 measuring stations, we can work with that.
+
+### Analyzing sensor data
+Having analyzed the available data sources, let's finally get some measurements.
+We could call `osem_measurements(pm25_sensors)` now, however we are focussing on
+a restricted area of interest, the city of Berlin
+Luckily we can get the measurements filtered by a bounding box as well:
+
+```{r}
+library(sf)
+library(lubridate)
+
+# construct a bounding box: 12 kilometers around Berlin
+berlin = st_point(c(13.4034, 52.5120)) %>%
+  st_sfc(crs = 4326) %>%
+  st_transform(3857) %>% # allow setting a buffer in meters
+  st_buffer(units::set_units(12, km)) %>%
+  st_transform(4326) %>% # the opensensemap expects WGS 84
+  st_bbox()
+
+pm25 = osem_measurements(
+  berlin,
+  phenomenon = 'PM2.5',
+  from = now() - days(31), # defaults to 2 days, maximum 31 days
+  to = now()
+)
+
+str(pm25)
+plot(pm25)
+```
+
+Now we can get started with actual spatiotemporal data analysis. First plot the
+measuring locations:
+
+```{r}
+pm25_sf = osem_as_sf(pm25)
+plot(st_geometry(pm25_sf))
+```
+
+`TODO`
+
+### Monitoring growth of the dataset
+We can get the total size of the data set using `osem_counts()`. Lets create a
+time series of that.
+To do so, we create a function that attaches a timestamp to the data, and adds
+the new results to an existing `data.frame`:
+
+```{r}
+build_osem_counts_timeseries = function (existing_data) {
+  osem_counts() %>%
+    list(time = Sys.time()) %>%     # attach a timestamp
+    as.data.frame() %>%             # make it a dataframe.
+    dplyr::bind_rows(existing_data) # combine with existing data
+}
+```
+
+Now we can call it once every few minutes, to build the time series...
+
+```{r}
+osem_counts_ts = data.frame()
+osem_counts_ts = build_osem_counts_timeseries(osem_counts_ts)
+osem_counts_ts
+```
+
+Once we have some data, we can plot the growth of data set over time:
+
+```{r}
+plot(measurements~time, osem_counts_ts)
+```
+
+Further analysis: `TODO`
+
+### Outlook
+
+Next iterations of this package could include the following features
+
+- improved utility functions (`plot`, `summary`) for measurements and boxes
+- better integration of `sf` for spatial analysis
+- better scaling data retrieval functions
+    - auto paging for time frames > 31 days
+    - API based on <https://archive.opensensemap.org>
