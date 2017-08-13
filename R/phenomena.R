@@ -3,8 +3,8 @@
 #' Get the counts of sensors for each observed phenomenon.
 #'
 #' @param boxes A \code{sensebox data.frame} of boxes
-#' @return An \code{data.frame} containing the count of sensors observing a
-#'   phenomenon per column.
+#' @return A named \code{list} containing the count of sensors observing a
+#'   phenomenon per phenomenon
 #' @export
 osem_phenomena = function (boxes) UseMethod('osem_phenomena')
 
@@ -25,11 +25,10 @@ osem_phenomena = function (boxes) UseMethod('osem_phenomena')
 #'
 #' # get phenomena with at least 10 sensors on opensensemap
 #' phenoms = osem_phenomena(osem_boxes())
-#' colnames(dplyr::select_if(phenoms, function(v) v > 9))
+#' names(phenoms[phenoms > 9])
 #'
 osem_phenomena.sensebox = function (boxes) {
   Reduce(`c`, boxes$phenomena) %>% # get all the row contents in a single vector
     table() %>%                    # get count for each phenomenon
-    t() %>%                        # transform the table to a df
-    as.data.frame.matrix()
+    as.list()
 }
