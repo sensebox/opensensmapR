@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Analyzing environmental sensor data from openSenseMap.org in R
 
 This package provides data ingestion functions for almost any data stored on the
-open data platform <https://opensensemap.org>.
+open data platform for environemental sensordata <https://opensensemap.org>.
 Its main goals are to provide means for:
 
 - big data analysis of the measurements stored on the platform
@@ -24,7 +24,7 @@ Its main goals are to provide means for:
 
 > *Please note:* The openSenseMap API is sometimes a bit unstable when streaming
 long responses, which results in `curl` complaining about `Unexpected EOF`. This
-bug is beeing worked on upstream. Meanwhile you have to retry the request when
+bug is being worked on upstream. Meanwhile you have to retry the request when
 this occurs.
 
 ### Exploring the dataset
@@ -40,8 +40,8 @@ summary(all_sensors)
 ```
 
 This gives a good overview already: As of writing this, there are more than 600
-sensor stations, of which ~50% are running. Most of them are placed outdoors and
-have around 5 sensors each.
+sensor stations, of which ~50% are currently running. Most of them are placed
+outdoors and have around 5 sensors each.
 The oldest station is from May 2014, while the latest station was registered a
 couple of minutes ago.
 
@@ -52,7 +52,7 @@ can help us out here:
 plot(all_sensors)
 ```
 
-Seems like we have to reduce our area of interest to Germany.
+It seems we have to reduce our area of interest to Germany.
 
 But what do these sensor stations actually measure? Lets find out.
 `osem_phenomena()` gives us a named list of of the counts of each observed
@@ -66,14 +66,14 @@ str(phenoms)
 Thats quite some noise there, with many phenomena being measured by a single
 sensor only, or many duplicated phenomena due to slightly different spellings.
 We should clean that up, but for now let's just filter out the noise and find
-those phenomena with the high sensor numbers:
+those phenomena with high sensor numbers:
 
 ```{r}
 phenoms[phenoms > 20]
 ```
 
-Alright, temperature it is! PM2.5 seems to be more interesting to analyze though.
-
+Alright, temperature it is! Fine particulate matter (PM2.5) seems to be more
+interesting to analyze though. 
 We should check how many sensor stations provide useful data: We want only those
 boxes with a PM2.5 sensor, that are placed outdoors and are currently submitting
 measurements:
@@ -94,11 +94,12 @@ Thats still more than 200 measuring stations, we can work with that.
 ### Analyzing sensor data
 Having analyzed the available data sources, let's finally get some measurements.
 We could call `osem_measurements(pm25_sensors)` now, however we are focussing on
-a restricted area of interest, the city of Berlin
-Luckily we can get the measurements filtered by a bounding box as well:
+a restricted area of interest, the city of Berlin.
+Luckily we can get the measurements filtered by a bounding box:
 
 ```{r}
 library(sf)
+library(units)
 library(lubridate)
 
 # construct a bounding box: 12 kilometers around Berlin
@@ -131,7 +132,7 @@ plot(st_geometry(pm25_sf))
 `TODO`
 
 ### Monitoring growth of the dataset
-We can get the total size of the data set using `osem_counts()`. Lets create a
+We can get the total size of the dataset using `osem_counts()`. Lets create a
 time series of that.
 To do so, we create a function that attaches a timestamp to the data, and adds
 the new results to an existing `data.frame`:
@@ -141,7 +142,7 @@ build_osem_counts_timeseries = function (existing_data) {
   osem_counts() %>%
     list(time = Sys.time()) %>%     # attach a timestamp
     as.data.frame() %>%             # make it a dataframe.
-    dplyr::bind_rows(existing_data) # combine with existing data
+    rbind(existing_data) # combine with existing data
 }
 ```
 
@@ -153,7 +154,7 @@ osem_counts_ts = build_osem_counts_timeseries(osem_counts_ts)
 osem_counts_ts
 ```
 
-Once we have some data, we can plot the growth of data set over time:
+Once we have some data, we can plot the growth of dataset over time:
 
 ```{r}
 plot(measurements~time, osem_counts_ts)
@@ -163,7 +164,7 @@ Further analysis: `TODO`
 
 ### Outlook
 
-Next iterations of this package could include the following features
+Next iterations of this package could include the following features:
 
 - improved utility functions (`plot`, `summary`) for measurements and boxes
 - better integration of `sf` for spatial analysis

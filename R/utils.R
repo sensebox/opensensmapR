@@ -1,3 +1,5 @@
+# ==============================================================================
+#
 #' Convert a \code{sensebox} or \code{osem_measurements} dataframe to an
 #' \code{\link[sf]{st_sf}} object.
 #'
@@ -18,6 +20,7 @@ osem_remote_error = function (response) {
   invisible(response)
 }
 
+# parses from/to params for get_measurements_ and get_boxes_
 parse_dateparams = function (from, to) {
   from = utc_date(from)
   to = utc_date(to)
@@ -35,4 +38,4 @@ utc_date = function (date) {
 }
 
 # NOTE: cannot handle mixed vectors of POSIXlt and POSIXct
-date_as_isostring = function (date) format(date, format = '%FT%TZ')
+date_as_isostring = function (date) format.Date(date, format = '%FT%TZ')

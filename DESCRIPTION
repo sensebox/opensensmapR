@@ -15,7 +15,7 @@ Suggests:
     rmarkdown
 Author: Norwin Roosen
 Maintainer: Norwin Roosen <noerw@gmx.de>
-Description: This packages ingests data (measurements, sensorstations) from the
+Description: This package ingests data (measurements, sensorstations) from the
     API of opensensemap.org for analysis in R.
     The package aims to be compatible with sf and the tidyverse.
 License: GPL-2

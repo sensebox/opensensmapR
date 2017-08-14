@@ -4,8 +4,6 @@
 #  for CSV responses (get_measurements) the readr package is a hidden dependency
 # ==============================================================================
 
-# does not actually get called by the user. ... contains all the query parameters.
-# the proxy is just for parameter autocompletion, filtering out the endpoint
 get_boxes_ = function (..., endpoint) {
   response = httr::GET(endpoint, path = c('boxes'), query = list(...)) %>%
     httr::content() %>%

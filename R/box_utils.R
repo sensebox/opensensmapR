@@ -14,7 +14,7 @@ plot.sensebox = function (x, ...) {
 #' @export
 print.sensebox = function(x, ...) {
   important_columns = c('name', 'exposure', 'lastMeasurement', 'phenomena')
-  data = as.data.frame(x) # to get rid of the sf::`<-[` override..
+  data = as.data.frame(x)
   print(data[important_columns], ...)
 
   invisible(x)
@@ -39,8 +39,7 @@ summary.sensebox = function(object, ...) {
       '365d' = nrow(object[diffNow <= 8760, ]) - neverActive,
       'never' = neverActive
     )
-  ) %>%
-    print()
+  ) %>% print()
 
   oldest = object[object$createdAt == min(object$createdAt), ]
   newest = object[object$createdAt == max(object$createdAt), ]

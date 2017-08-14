@@ -53,7 +53,7 @@ osem_measurements.default = function (x, ...) {
 #' bbox = structure(c(7, 51, 8, 52), class = 'bbox')
 #' osem_measurements(bbox, 'Temperatur')
 #'
-#' points = sf::st_multipoint(x = matrix(c(7,8,51,52),2,2))
+#' points = sf::st_multipoint(matrix(c(7, 8, 51, 52), 2, 2))
 #' bbox2 = sf::st_bbox(points)
 #' osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 #'
@@ -98,7 +98,10 @@ osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
 parse_get_measurements_params = function (params) {
   if (is.null(params$phenomenon) | is.na(params$phenomenon))
     stop('Parameter "phenomenon" is required')
-  if (!is.na(params$from) && is.na(params$to)) stop('specify "from" only together with "to"')
+
+  if (!is.na(params$from) && is.na(params$to))
+    stop('specify "from" only together with "to"')
+
   if (
     (!is.null(params$bbox) && !is.null(params$boxes)) ||
     (is.null(params$bbox) && is.null(params$boxes))
@@ -113,6 +116,7 @@ parse_get_measurements_params = function (params) {
     query$`from-date` = utc_date(params$from) %>% date_as_isostring()
   if (!is.na(params$to))
     query$`to-date` = utc_date(params$to) %>% date_as_isostring()
+
   if (!is.na(params$exposure)) query$exposure = params$exposure
   if (!is.na(params$columns))  query$columns = paste(params$columns, collapse = ',')
 

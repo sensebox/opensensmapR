@@ -25,7 +25,15 @@
 #' @seealso \code{\link{osem_phenomena}}
 #' @export
 #' @examples
-#' # TODO
+#' # get *all* boxes available on the API
+#' b = osem_boxes()
+#'
+#' # get all boxes with grouptag 'ifgi' that are placed outdoors
+#' b = osem_boxes(grouptag = 'ifgi', exposure = 'outdoor')
+#'
+#' # get all boxes that have measured PM2.5 in the last 4 hours
+#' b = osem_boxes(date = Sys.time(), phenomenon = 'PM2.5')
+#'
 osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
                       date = NA, from = NA, to = NA, phenomenon = NA,
                       endpoint = 'https://api.opensensemap.org') {
@@ -52,14 +60,10 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
   if (!is.na(grouptag)) query$grouptag = grouptag
   if (!is.na(phenomenon)) query$phenomenon = phenomenon
 
-  if (!is.na(to) && !is.na(from)) {
-    # error, if from is after to
-    # convert dates to commaseparated UTC ISOdates
+  if (!is.na(to) && !is.na(from))
     query$date = parse_dateparams(from, to) %>% paste(collapse = ',')
-
-  } else if (!is.na(date)) {
+  else if (!is.na(date))
     query$date = utc_date(date) %>% date_as_isostring()
-  }
 
   do.call(get_boxes_, query)
 }
@@ -76,7 +80,9 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
 #' @seealso \code{\link{osem_phenomena}}
 #' @export
 #' @examples
-#' # TODO
+#' # get a specific box by ID
+#' b = osem_box('593bcd656ccf3b0011791f5a')
+#'
 osem_box = function (boxId, endpoint = 'https://api.opensensemap.org') {
   get_box_(boxId, endpoint = endpoint)
 }
