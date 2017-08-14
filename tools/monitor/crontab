@@ -1,1 +1,8 @@
-*/10 * * * * cd /script/data && /usr/bin/Rscript --save --restore ../osem-monitor.R > rscript.log
+#!/bin/sh
+
+# once every 15 mins
+*/15 * * * * cd /script/data && /usr/bin/Rscript --save --restore ../get-counts.R > get-counts.log 2>&1 
+
+# mondays, 12:02
+#(may not run simultanously, to avoid override of .RData save)
+2 12 * * 1 cd /script/data && /usr/bin/Rscript --save --restore ../get-boxes.R > get-boxes.log
