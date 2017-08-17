@@ -1,12 +1,31 @@
 #' @export
 plot.sensebox = function (x, ...) {
-  # TODO: background map (maps::world), graticule?
+  if (
+    !requireNamespace("sf", quietly = TRUE) ||
+    !requireNamespace("maps", quietly = TRUE) ||
+    !requireNamespace("maptools", quietly = TRUE) ||
+    !requireNamespace("rgeos", quietly = TRUE)
+  ) {
+    stop('this functions requires the packages sf, maps, maptools, rgeos')
+  }
+
   geom = x %>%
     osem_as_sf() %>%
     sf::st_geometry()
 
-  # FIXME:trying to add graticule crashes RStudio?!
-  plot(geom, ..., axes = T) #graticule = sf::st_crs(sf)
+  bbox = sf::st_bbox(geom)
+
+  library(maps)
+  world = maps::map('world', plot = FALSE, fill = TRUE) %>%
+    sf::st_as_sf() %>%
+    sf::st_geometry()
+
+  oldpar = par()
+  par(mar = c(2,2,1,1))
+  plot(world, col = 'gray', xlim = bbox[c(1,3)], ylim = bbox[c(2,4)], axes = T)
+  plot(geom, add = T, col = x$exposure)
+  legend('left', legend = levels(x$exposure), col = 1:length(x$exposure), pch = 1)
+  par(mar = oldpar$mar)
 
   invisible(x)
 }

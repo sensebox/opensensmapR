@@ -2,7 +2,11 @@
 title: "Analyzing environmental sensor data from openSenseMap.org in R"
 author: "Norwin Roosen"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    fig_margin: 0
+    fig_width: 6
+    fig_height: 4
 vignette: >
   %\VignetteIndexEntry{Analyzing environmental sensor data from openSenseMap.org in R}
   %\VignetteEngine{knitr::rmarkdown}
@@ -46,9 +50,13 @@ The oldest station is from May 2014, while the latest station was registered a
 couple of minutes ago.
 
 Another feature of interest is the spatial distribution of the boxes. `plot()`
-can help us out here:
+can help us out here. This function requires a bunch of optional dependcies though.
 
-```{r}
+```{r message=F, warning=F}
+if (!require('maps'))     install.packages('maps')
+if (!require('maptools')) install.packages('maptools')
+if (!require('rgeos'))    install.packages('rgeos')
+
 plot(all_sensors)
 ```
 
@@ -113,11 +121,10 @@ berlin = st_point(c(13.4034, 52.5120)) %>%
 pm25 = osem_measurements(
   berlin,
   phenomenon = 'PM2.5',
-  from = now() - days(31), # defaults to 2 days, maximum 31 days
+  from = now() - days(7), # defaults to 2 days, maximum 31 days
   to = now()
 )
 
-str(pm25)
 plot(pm25)
 ```
 
@@ -126,48 +133,7 @@ measuring locations:
 
 ```{r}
 pm25_sf = osem_as_sf(pm25)
-plot(st_geometry(pm25_sf))
+plot(st_geometry(pm25_sf), axes = T)
 ```
 
 `TODO`
-
-### Monitoring growth of the dataset
-We can get the total size of the dataset using `osem_counts()`. Lets create a
-time series of that.
-To do so, we create a function that attaches a timestamp to the data, and adds
-the new results to an existing `data.frame`:
-
-```{r}
-build_osem_counts_timeseries = function (existing_data) {
-  osem_counts() %>%
-    list(time = Sys.time()) %>%     # attach a timestamp
-    as.data.frame() %>%             # make it a dataframe.
-    rbind(existing_data) # combine with existing data
-}
-```
-
-Now we can call it once every few minutes, to build the time series...
-
-```{r}
-osem_counts_ts = data.frame()
-osem_counts_ts = build_osem_counts_timeseries(osem_counts_ts)
-osem_counts_ts
-```
-
-Once we have some data, we can plot the growth of dataset over time:
-
-```{r}
-plot(measurements~time, osem_counts_ts)
-```
-
-Further analysis: `TODO`
-
-### Outlook
-
-Next iterations of this package could include the following features:
-
-- improved utility functions (`plot`, `summary`) for measurements and boxes
-- better integration of `sf` for spatial analysis
-- better scaling data retrieval functions
-    - auto paging for time frames > 31 days
-    - API based on <https://archive.opensensemap.org>
