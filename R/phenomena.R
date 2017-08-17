@@ -28,7 +28,9 @@ osem_phenomena = function (boxes) UseMethod('osem_phenomena')
 #' names(phenoms[phenoms > 9])
 #'
 osem_phenomena.sensebox = function (boxes) {
-  Reduce(`c`, boxes$phenomena) %>% # get all the row contents in a single vector
+  p = Reduce(`c`, boxes$phenomena) %>% # get all the row contents in a single vector
     table() %>%                    # get count for each phenomenon
     as.list()
+
+  p[order(unlist(p), decreasing = T)]
 }
