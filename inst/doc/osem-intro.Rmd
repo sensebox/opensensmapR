@@ -35,11 +35,13 @@ this occurs.
 Before we look at actual observations, lets get a grasp of the openSenseMap
 datasets' structure.
 
-```{r}
+```{r results = F}
 library(magrittr)
 library(opensensmapr)
 
 all_sensors = osem_boxes()
+```
+```{r}
 summary(all_sensors)
 ```
 
@@ -86,13 +88,14 @@ We should check how many sensor stations provide useful data: We want only those
 boxes with a PM2.5 sensor, that are placed outdoors and are currently submitting
 measurements:
 
-```{r}
+```{r results = F}
 pm25_sensors = osem_boxes(
   exposure = 'outdoor',
   date = Sys.time(), # ±4 hours
   phenomenon = 'PM2.5'
 )
-
+```
+```{r}
 summary(pm25_sensors)
 plot(pm25_sensors)
 ```
@@ -117,7 +120,8 @@ berlin = st_point(c(13.4034, 52.5120)) %>%
   st_buffer(units::set_units(12, km)) %>%
   st_transform(4326) %>% # the opensensemap expects WGS 84
   st_bbox()
-
+```
+```{r results = F}
 pm25 = osem_measurements(
   berlin,
   phenomenon = 'PM2.5',
@@ -136,4 +140,4 @@ pm25_sf = osem_as_sf(pm25)
 plot(st_geometry(pm25_sf), axes = T)
 ```
 
-`TODO`
+further analysis: `TODO`
