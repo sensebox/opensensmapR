@@ -11,22 +11,11 @@ osem_as_sf = function (x, ...) {
   sf::st_as_sf(x, ..., coords = c('lon', 'lat'), crs = 4326)
 }
 
-osem_remote_error = function (response) {
-  suppressWarnings({
-    hasCode = !is.null(response$code)
-  })
-
-  if (hasCode) stop(response$message)
-  invisible(response)
-}
-
 # parses from/to params for get_measurements_ and get_boxes_
 parse_dateparams = function (from, to) {
   from = utc_date(from)
   to = utc_date(to)
-  if (from - to > 0)
-    stop('"from" must be earlier than "to"')
-
+  if (from - to > 0) stop('"from" must be earlier than "to"')
   c(date_as_isostring(from), date_as_isostring(to))
 }
 

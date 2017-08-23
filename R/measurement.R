@@ -126,3 +126,25 @@ parse_get_measurements_params = function (params) {
 
   query
 }
+
+paged_measurements_req = function (query) {
+  if (is.na(query$from) && is.na(query$to))
+    return(do.call(get_measurements_, query))
+
+  # auto paging: make a request for one 31day interval each.
+  from = query$from
+  to = query$to
+
+  dates = data.frame()
+  while (from < to) {
+    in31days = from + as.difftime(31, units = 'days')
+    # TODO: how to do append to a vector / list instead?
+    dates = rbind(dates, data.frame(from = from, to = min(in31days, to)))
+    from = in31days + as.difftime(1, units = 'secs')
+  }
+
+  print(dates)
+
+  # TODO: iterate over all those dates and call get_measurements_
+
+}

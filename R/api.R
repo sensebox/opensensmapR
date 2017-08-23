@@ -5,9 +5,7 @@
 # ==============================================================================
 
 get_boxes_ = function (..., endpoint) {
-  response = httr::GET(endpoint, path = c('boxes'), query = list(...)) %>%
-    httr::content() %>%
-    osem_remote_error()
+  response = osem_request_(endpoint, path = c('boxes'), ...)
 
   if (length(response) == 0) {
     warning('no boxes found for this query')
@@ -23,27 +21,44 @@ get_boxes_ = function (..., endpoint) {
   df
 }
 
-get_box_ = function (..., endpoint) {
-  httr::GET(endpoint, path = c('boxes', ...)) %>%
-    httr::content() %>%
-    osem_remote_error() %>%
+get_box_ = function (boxId, endpoint) {
+  osem_request_(endpoint, path = c('boxes', boxId)) %>%
     parse_senseboxdata()
 }
 
 get_measurements_ = function (..., endpoint) {
-  result = httr::GET(endpoint, path = c('boxes', 'data'), query = list(...)) %>%
-    httr::content(encoding = 'UTF-8') %>%
-    osem_remote_error()
+  result = osem_request_(endpoint, c('boxes', 'data'), ..., type = 'text')
+
+  # parse the CSV response manually & mute readr
+  suppressWarnings({
+    result = readr::read_csv(result, col_types = readr::cols(
+      .default  = readr::col_factor(NULL),
+      createdAt = readr::col_datetime(),
+      value  = readr::col_double(),
+      lat    = readr::col_double(),
+      lon    = readr::col_double(),
+      height = readr::col_double()
+    ))
+  })
 
   class(result) = c('osem_measurements', class(result))
   result
 }
 
 get_stats_ = function (endpoint) {
-  result = httr::GET(endpoint, path = c('stats')) %>%
-    httr::content() %>%
-    osem_remote_error()
-
+  result = osem_request_(endpoint, path = c('stats'))
   names(result) = c('boxes', 'measurements', 'measurements_per_minute')
   result
+}
+
+osem_request_ = function (host, path, ..., type = 'parsed') {
+  res = httr::GET(host, httr::progress(), path = path, query = list(...))
+  #print(res$url)
+
+  if (httr::http_error(res)) {
+    content = httr::content(res, 'parsed', encoding = 'UTF-8')
+    stop(if ('message' %in% names(content)) content$message else httr::status_code(res))
+  }
+
+  content = httr::content(res, type, encoding = 'UTF-8')
 }
