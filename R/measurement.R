@@ -91,6 +91,7 @@ osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
 # ==============================================================================
 #
 #' Validates and parses the Parameters for use in \code{osem_measurements()}
+#' and sets a default selection of columns, if unspecified
 #'
 #' @param params A named \code{list} of parameters
 #' @return A named \code{list} of parsed parameters.
@@ -118,7 +119,10 @@ parse_get_measurements_params = function (params) {
     query$`to-date` = utc_date(params$to) %>% date_as_isostring()
 
   if (!is.na(params$exposure)) query$exposure = params$exposure
-  if (!is.na(params$columns))  query$columns = paste(params$columns, collapse = ',')
+  if (!is.na(params$columns))
+    query$columns = paste(params$columns, collapse = ',')
+  else
+    query$columns = 'value,createdAt,lon,lat,sensorId,unit'
 
   query
 }
