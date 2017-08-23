@@ -113,10 +113,11 @@ parse_get_measurements_params = function (params) {
   if (!is.null(params$boxes))  query$boxIds = paste(params$boxes$X_id, collapse = ',')
   if (!is.null(params$bbox))   query$bbox = paste(params$bbox, collapse = ',')
 
-  if (!is.na(params$from))
-    query$`from-date` = utc_date(params$from) %>% date_as_isostring()
-  if (!is.na(params$to))
-    query$`to-date` = utc_date(params$to) %>% date_as_isostring()
+  if (!is.na(params$from) && !is.na(params$to)) {
+    dates = parse_dateparams(params$from, params$to)
+    query$`from-date` = dates[1]
+    query$`to-date` = dates[2]
+  }
 
   if (!is.na(params$exposure)) query$exposure = params$exposure
   if (!is.na(params$columns))
