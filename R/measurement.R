@@ -62,8 +62,10 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    ...,
                                    endpoint = 'https://api.opensensemap.org') {
   bbox = x
-  query = parse_get_measurements_params(as.list(environment()))
-  do.call(get_measurements_, query)
+  environment() %>%
+    as.list() %>%
+    parse_get_measurements_params() %>%
+    paged_measurements_req()
 }
 
 # ==============================================================================
@@ -84,8 +86,10 @@ osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        ...,
                                        endpoint = 'https://api.opensensemap.org') {
   boxes = x
-  query = parse_get_measurements_params(as.list(environment()))
-  do.call(get_measurements_, query)
+  environment() %>%
+    as.list() %>%
+    parse_get_measurements_params() %>%
+    paged_measurements_req()
 }
 
 # ==============================================================================
@@ -114,9 +118,9 @@ parse_get_measurements_params = function (params) {
   if (!is.null(params$bbox))   query$bbox = paste(params$bbox, collapse = ',')
 
   if (!is.na(params$from) && !is.na(params$to)) {
-    dates = parse_dateparams(params$from, params$to)
-    query$`from-date` = dates[1]
-    query$`to-date` = dates[2]
+    parse_dateparams(params$from, params$to) # only for validation sideeffect
+    query$`from-date` = utc_date(params$from)
+    query$`to-date` = utc_date(params$to)
   }
 
   if (!is.na(params$exposure)) query$exposure = params$exposure
@@ -129,23 +133,29 @@ parse_get_measurements_params = function (params) {
 }
 
 paged_measurements_req = function (query) {
-  if (is.na(query$from) && is.na(query$to))
+  # no paged requests when no dates are provided
+  if (is.na(query$`from-date`) && is.na(query$`to-date`))
     return(do.call(get_measurements_, query))
 
-  # auto paging: make a request for one 31day interval each.
+  # auto paging: make a request for one 31day interval each (max supprted length)
+  # generate a list 31day intervals
   from = query$from
   to = query$to
-
-  dates = data.frame()
+  dates = list()
   while (from < to) {
     in31days = from + as.difftime(31, units = 'days')
-    # TODO: how to do append to a vector / list instead?
-    dates = rbind(dates, data.frame(from = from, to = min(in31days, to)))
+    dates = append(dates, list(list(from = from, to = min(in31days, to))))
     from = in31days + as.difftime(1, units = 'secs')
   }
 
-  print(dates)
-
-  # TODO: iterate over all those dates and call get_measurements_
-
+  # use the dates as pages for multiple requests
+  lapply(dates, function(page) {
+    query$`from-date` = date_as_isostring(page$from)
+    query$`to-date` = date_as_isostring(page$to)
+    res = do.call(get_measurements_, query)
+    cat(paste(query$`from-date`, query$`to-date`, sep = ' - '))
+    cat('\n')
+    res
+  }) %>%
+    dplyr::bind_rows()
 }
