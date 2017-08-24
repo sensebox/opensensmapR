@@ -41,7 +41,7 @@ print.sensebox = function(x, ...) {
 
 #' @export
 summary.sensebox = function(object, ...) {
-  cat('box total:', nrow(object), fill = T)
+  cat('boxes total:', nrow(object), fill = T)
   cat('\nboxes by exposure:')
   table(object$exposure) %>% print()
   cat('\nboxes by model:')
