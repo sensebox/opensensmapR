@@ -15,7 +15,7 @@ neverActive = b[is.na(b$lastMeasurement), ] %>% nrow()
 b_agg = data.frame(time = Sys.time(), boxcount = nrow(b))
 b_agg$model = b$model %>% table() %>% as.list() %>% list()
 b_agg$exposure = b$exposure %>% table() %>% as.list() %>% list()
-b_agg$geometry = b %>% osem_as_sf() %>% st_geometry() %>% list()
+b_agg$geometry = b %>% st_as_sf() %>% st_geometry() %>% list()
 b_agg$phenomena = b %>% osem_phenomena() %>% list()
 
 b_agg$active = list(

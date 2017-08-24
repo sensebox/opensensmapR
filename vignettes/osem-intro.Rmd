@@ -141,8 +141,7 @@ pm25 = mutate(pm25, invalid = sensorId %in% bad_sensors)
 Then plot the measuring locations, flagging the outliers:
 
 ```{r}
-pm25_sf = osem_as_sf(pm25)
-st_geometry(pm25_sf) %>% plot(col = factor(pm25$invalid), axes = T)
+st_as_sf(pm25) %>% st_geometry() %>% plot(col = factor(pm25$invalid), axes = T)
 ```
 
 Removing these sensors yields a nicer time series plot:

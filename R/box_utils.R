@@ -10,7 +10,7 @@ plot.sensebox = function (x, ...) {
   }
 
   geom = x %>%
-    osem_as_sf() %>%
+    sf::st_as_sf() %>%
     sf::st_geometry()
 
   bbox = sf::st_bbox(geom)
@@ -74,6 +74,8 @@ summary.sensebox = function(object, ...) {
   invisible(object)
 }
 
+# ==============================================================================
+#
 #' Converts a foreign object to an sensebox data.frame.
 #' @param x A data.frame to attach the class to
 #' @export
@@ -92,6 +94,8 @@ mutate_.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 #' @export
 mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 
+# ==============================================================================
+#
 #' maintains class / attributes after subsetting
 #' @noRd
 #' @export
@@ -100,3 +104,16 @@ mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
   mostattributes(s) = attributes(x)
   s
 }
+
+# ==============================================================================
+#
+#' Convert a \code{sensebox} dataframe to an \code{\link[sf]{st_sf}} object.
+#'
+#' @param x The object to convert
+#' @param ... maybe more objects to convert
+#' @return The object with an st_geometry column attached.
+#' @export
+st_as_sf.sensebox = function (x, ...) {
+  sf:::st_as_sf.data.frame(x, ..., coords = c('lon', 'lat'), crs = 4326)
+}
+
