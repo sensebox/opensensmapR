@@ -107,6 +107,7 @@ Luckily we can get the measurements filtered by a bounding box:
 library(sf)
 library(units)
 library(lubridate)
+library(dplyr)
 
 # construct a bounding box: 12 kilometers around Berlin
 berlin = st_point(c(13.4034, 52.5120)) %>%
@@ -120,19 +121,34 @@ berlin = st_point(c(13.4034, 52.5120)) %>%
 pm25 = osem_measurements(
   berlin,
   phenomenon = 'PM2.5',
-  from = now() - days(7), # defaults to 2 days
+  from = now() - days(20), # defaults to 2 days
   to = now()
 )
 
 plot(pm25)
 ```
 
-Now we can get started with actual spatiotemporal data analysis. First plot the
-measuring locations:
+Now we can get started with actual spatiotemporal data analysis.
+First, lets mask the seemingly uncalibrated sensors:
+
+```{r}
+outliers = filter(pm25, value > 100)$sensorId
+bad_sensors = outliers[, drop = T] %>% levels()
+
+pm25 = mutate(pm25, invalid = sensorId %in% bad_sensors)
+```
+
+Then plot the measuring locations, flagging the outliers:
 
 ```{r}
 pm25_sf = osem_as_sf(pm25)
-plot(st_geometry(pm25_sf), axes = T)
+st_geometry(pm25_sf) %>% plot(col = factor(pm25$invalid), axes = T)
 ```
 
-further analysis: `TODO`
+Removing these sensors yields a nicer time series plot:
+
+```{r}
+pm25 %>% filter(invalid == FALSE) %>% plot()
+```
+
+Further analysis: comparison with LANUV data `TODO`
