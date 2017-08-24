@@ -41,8 +41,7 @@ get_measurements_ = function (..., endpoint) {
     ))
   })
 
-  class(result) = c('osem_measurements', class(result))
-  result
+  osem_as_measurements(result)
 }
 
 get_stats_ = function (endpoint) {

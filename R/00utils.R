@@ -28,3 +28,13 @@ utc_date = function (date) {
 
 # NOTE: cannot handle mixed vectors of POSIXlt and POSIXct
 date_as_isostring = function (date) format.Date(date, format = '%FT%TZ')
+
+#' Simple factory function meant to implement dplyr functions for other classes,
+#' which call an callback to attach the original class again after the fact.
+#'
+#' @param callback The function to call after the dplyr function
+#' @noRd
+dplyr_class_wrapper = function(callback) {
+  function(.data, ..., .dots) callback(NextMethod())
+}
+

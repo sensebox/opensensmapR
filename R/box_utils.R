@@ -73,3 +73,30 @@ summary.sensebox = function(object, ...) {
 
   invisible(object)
 }
+
+#' Converts a foreign object to an sensebox data.frame.
+#' @param x A data.frame to attach the class to
+#' @export
+osem_as_sensebox = function(x) {
+  ret = as.data.frame(x)
+  class(ret) = c('sensebox', class(x))
+  ret
+}
+
+#' @export
+filter_.sensebox = dplyr_class_wrapper(osem_as_sensebox)
+#' @export
+filter.sensebox = dplyr_class_wrapper(osem_as_sensebox)
+#' @export
+mutate_.sensebox = dplyr_class_wrapper(osem_as_sensebox)
+#' @export
+mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
+
+#' maintains class / attributes after subsetting
+#' @noRd
+#' @export
+`[.sensebox` = function(x, i, ...) {
+  s = NextMethod('[')
+  mostattributes(s) = attributes(x)
+  s
+}

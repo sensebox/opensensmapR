@@ -126,6 +126,5 @@ parse_senseboxdata = function (boxdata) {
     thebox$height = location[[1]]$geometry$coordinates[[3]]
 
   # attach a custom class for methods
-  class(thebox) = c('sensebox', class(thebox))
-  thebox
+  osem_as_sensebox(thebox)
 }
