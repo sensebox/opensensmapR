@@ -95,7 +95,8 @@ osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
 # ==============================================================================
 #
 #' Validates and parses the Parameters for use in \code{osem_measurements()}
-#' and sets a default selection of columns, if unspecified
+#' and sets a default selection of columns, if unspecified.
+#' Dates are not stringified!
 #'
 #' @param params A named \code{list} of parameters
 #' @return A named \code{list} of parsed parameters.
@@ -133,8 +134,8 @@ parse_get_measurements_params = function (params) {
 }
 
 paged_measurements_req = function (query) {
-  # no paged requests when no dates are provided
-  if (is.na(query$`from-date`) && is.na(query$`to-date`))
+  # no paged requests when dates are not provided
+  if (!all(c('from-date', 'to-date') %in% names(query)))
     return(do.call(get_measurements_, query))
 
   # auto paging: make a request for one 31day interval each (max supprted length)
