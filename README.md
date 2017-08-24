@@ -3,7 +3,7 @@ This R package ingests data (environmental measurements, sensor stations) from
 the API of opensensemap.org for analysis in R.
 The package aims to be compatible with sf and the tidyverse.
 
-> **Whats up with that package name?** idk, the R people seem to [enjoy][1]
+> *Whats up with that package name?* idk, the R people seem to [enjoy][1]
 [dropping][2] [vovels][3] so.. Unfortunately I couldn't fit the naming
 convention to drop an `y` in there.
 
@@ -21,7 +21,7 @@ devtools::install_github('noerw/opensensmapr')
 ```
 
 ## Usage
-A usage example is shown in the vignette [`osem-intro`](vignettes/osem-intro.Rmd).
+A usage example is shown in the vignette [`osem-intro`](https://noerw.github.com/opensensmapR/inst/doc/osem-intro.html).
 In general these are the main functions for data retrieval:
 
 ```r
@@ -43,9 +43,9 @@ m = osem_measurements(bbox, phenomenon, filter1, ...)
 osem_counts()
 ```
 
-Additionally there are some helpers: `summary.sensebox(), plot.sensebox(), osem_as_sf()...`.
+Additionally there are some helpers: `summary.sensebox(), plot.sensebox(), st_as_sf.sensebox(), [.sensebox(), filter.sensebox(), mutate.sensebox(), ...`.
 
-For parameter options, open each functions' documentation by calling `?<function-name>`.
+For parameter usage, open each functions' documentation by calling `?<function-name>`.
 
 ## License
 GPL-2.0 - Norwin Roosen

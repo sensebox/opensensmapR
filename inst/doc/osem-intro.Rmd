@@ -26,11 +26,6 @@ Its main goals are to provide means for:
 - big data analysis of the measurements stored on the platform
 - sensor metadata analysis (sensor counts, spatial distribution, temporal trends)
 
-> *Please note:* The openSenseMap API is sometimes a bit unstable when streaming
-long responses, which results in `curl` complaining about `Unexpected EOF`. This
-bug is being worked on upstream. Meanwhile you have to retry the request when
-this occurs.
-
 ### Exploring the dataset
 Before we look at actual observations, lets get a grasp of the openSenseMap
 datasets' structure.
@@ -45,14 +40,14 @@ all_sensors = osem_boxes()
 summary(all_sensors)
 ```
 
-This gives a good overview already: As of writing this, there are more than 600
+This gives a good overview already: As of writing this, there are more than 700
 sensor stations, of which ~50% are currently running. Most of them are placed
 outdoors and have around 5 sensors each.
 The oldest station is from May 2014, while the latest station was registered a
 couple of minutes ago.
 
-Another feature of interest is the spatial distribution of the boxes. `plot()`
-can help us out here. This function requires a bunch of optional dependcies though.
+Another feature of interest is the spatial distribution of the boxes: `plot()`
+can help us out here. This function requires a bunch of optional dependencies though.
 
 ```{r message=F, warning=F}
 if (!require('maps'))     install.packages('maps')
@@ -112,12 +107,13 @@ Luckily we can get the measurements filtered by a bounding box:
 library(sf)
 library(units)
 library(lubridate)
+library(dplyr)
 
 # construct a bounding box: 12 kilometers around Berlin
 berlin = st_point(c(13.4034, 52.5120)) %>%
   st_sfc(crs = 4326) %>%
   st_transform(3857) %>% # allow setting a buffer in meters
-  st_buffer(units::set_units(12, km)) %>%
+  st_buffer(set_units(12, km)) %>%
   st_transform(4326) %>% # the opensensemap expects WGS 84
   st_bbox()
 ```
@@ -125,19 +121,33 @@ berlin = st_point(c(13.4034, 52.5120)) %>%
 pm25 = osem_measurements(
   berlin,
   phenomenon = 'PM2.5',
-  from = now() - days(7), # defaults to 2 days
+  from = now() - days(20), # defaults to 2 days
   to = now()
 )
 
 plot(pm25)
 ```
 
-Now we can get started with actual spatiotemporal data analysis. First plot the
-measuring locations:
+Now we can get started with actual spatiotemporal data analysis.
+First, lets mask the seemingly uncalibrated sensors:
 
 ```{r}
-pm25_sf = osem_as_sf(pm25)
-plot(st_geometry(pm25_sf), axes = T)
+outliers = filter(pm25, value > 100)$sensorId
+bad_sensors = outliers[, drop = T] %>% levels()
+
+pm25 = mutate(pm25, invalid = sensorId %in% bad_sensors)
 ```
 
-further analysis: `TODO`
+Then plot the measuring locations, flagging the outliers:
+
+```{r}
+st_as_sf(pm25) %>% st_geometry() %>% plot(col = factor(pm25$invalid), axes = T)
+```
+
+Removing these sensors yields a nicer time series plot:
+
+```{r}
+pm25 %>% filter(invalid == FALSE) %>% plot()
+```
+
+Further analysis: comparison with LANUV data `TODO`

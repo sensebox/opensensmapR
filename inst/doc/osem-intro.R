@@ -39,12 +39,13 @@ plot(pm25_sensors)
 library(sf)
 library(units)
 library(lubridate)
+library(dplyr)
 
 # construct a bounding box: 12 kilometers around Berlin
 berlin = st_point(c(13.4034, 52.5120)) %>%
   st_sfc(crs = 4326) %>%
   st_transform(3857) %>% # allow setting a buffer in meters
-  st_buffer(units::set_units(12, km)) %>%
+  st_buffer(set_units(12, km)) %>%
   st_transform(4326) %>% # the opensensemap expects WGS 84
   st_bbox()
 
@@ -52,13 +53,21 @@ berlin = st_point(c(13.4034, 52.5120)) %>%
 pm25 = osem_measurements(
   berlin,
   phenomenon = 'PM2.5',
-  from = now() - days(7), # defaults to 2 days
+  from = now() - days(20), # defaults to 2 days
   to = now()
 )
 
 plot(pm25)
 
 ## ------------------------------------------------------------------------
-pm25_sf = osem_as_sf(pm25)
-plot(st_geometry(pm25_sf), axes = T)
+outliers = filter(pm25, value > 100)$sensorId
+bad_sensors = outliers[, drop = T] %>% levels()
+
+pm25 = mutate(pm25, invalid = sensorId %in% bad_sensors)
+
+## ------------------------------------------------------------------------
+st_as_sf(pm25) %>% st_geometry() %>% plot(col = factor(pm25$invalid), axes = T)
+
+## ------------------------------------------------------------------------
+pm25 %>% filter(invalid == FALSE) %>% plot()
 
