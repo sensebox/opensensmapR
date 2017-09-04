@@ -1,5 +1,12 @@
 # opensensmapr changelog
 
+### 2017-09-04: v0.3.0
+- add utility functions: `filter`, `mutate`, `[`, `st_as_sf` for classes `sensebox` and `osem_measurements`
+- add `osem_as_sensebox` and `osem_as_measurement` constructors
+
+#### breaking changes
+- `osem_as_sf` has moved to `st_as_sf.sensebox` and `st_as_sf.osem_measurements`
+
 ### 2017-08-24: v0.2.1
 - add labels to `osem_measurements` plots
 - add last active counts to `tools/monitor`
