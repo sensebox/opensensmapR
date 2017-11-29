@@ -115,7 +115,7 @@ parse_get_measurements_params = function (params) {
 
   query = list(endpoint = params$endpoint, phenomenon = params$phenomenon)
 
-  if (!is.null(params$boxes))  query$boxIds = paste(params$boxes$X_id, collapse = ',')
+  if (!is.null(params$boxes))  query$boxId = paste(params$boxes$X_id, collapse = ',')
   if (!is.null(params$bbox))   query$bbox = paste(params$bbox, collapse = ',')
 
   if (!is.na(params$from) && !is.na(params$to)) {

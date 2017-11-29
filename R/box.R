@@ -100,8 +100,8 @@ parse_senseboxdata = function (boxdata) {
   # extract nested lists for later use & clean them from the list
   # to allow a simple data.frame structure
   sensors = boxdata$sensors
-  location = boxdata$loc
-  boxdata[c('loc', 'sensors', 'image', 'boxType')] <- NULL
+  location = boxdata$currentLocation
+  boxdata[c('loc', 'locations', 'currentLocation', 'sensors', 'image', 'boxType')] <- NULL
   thebox = as.data.frame(boxdata, stringsAsFactors = F)
 
   # parse timestamps (updatedAt might be not defined)
@@ -120,10 +120,10 @@ parse_senseboxdata = function (boxdata) {
   })[[1]])
 
   # extract coordinates & transform to simple feature object
-  thebox$lon = location[[1]]$geometry$coordinates[[1]]
-  thebox$lat = location[[1]]$geometry$coordinates[[2]]
-  if (length(location[[1]]$geometry$coordinates) == 3)
-    thebox$height = location[[1]]$geometry$coordinates[[3]]
+  thebox$lon = location$coordinates[[1]]
+  thebox$lat = location$coordinates[[2]]
+  if (length(location$coordinates) == 3)
+    thebox$height = location$coordinates[[3]]
 
   # attach a custom class for methods
   osem_as_sensebox(thebox)
