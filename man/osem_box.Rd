@@ -26,4 +26,6 @@ b = osem_box('593bcd656ccf3b0011791f5a')
 \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
 
 \code{\link{osem_phenomena}}
+
+\code{\link{osem_boxes}}
 }

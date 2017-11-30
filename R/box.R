@@ -23,6 +23,7 @@
 #'
 #' @seealso \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
 #' @seealso \code{\link{osem_phenomena}}
+#' @seealso \code{\link{osem_box}}
 #' @export
 #' @examples
 #' # get *all* boxes available on the API
@@ -78,6 +79,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
 #'
 #' @seealso \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
 #' @seealso \code{\link{osem_phenomena}}
+#' @seealso \code{\link{osem_boxes}}
 #' @export
 #' @examples
 #' # get a specific box by ID

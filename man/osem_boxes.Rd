@@ -53,4 +53,6 @@ b = osem_boxes(date = Sys.time(), phenomenon = 'PM2.5')
 \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
 
 \code{\link{osem_phenomena}}
+
+\code{\link{osem_box}}
 }
