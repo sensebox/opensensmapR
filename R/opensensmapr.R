@@ -7,7 +7,7 @@
 #'   \item general statistics about the openSenseMap database.
 #' }
 #' Additionally, helper functions are provided to ease the integration with the
-#' \code{\link{sf}} package for spatial analysis as well as \code{\link{deplyr}}
+#' \code{\link{sf}} package for spatial analysis as well as \code{\link{dplyr}}
 #' for general data handling.
 #'
 #' @section Retrieving senseBox metadata:
@@ -18,10 +18,9 @@
 #' senseBoxes can be retrieved either by ID, or as a collection with optional
 #' filters on their metadata
 #' \itemize{
-#'   \item \code{\link{osem_box}}: Get metadata about a single box
-#'     by its ID.
-#'   \item \code{\link{osem_boxes}}: Get metadata about a all
-#'     boxes. Optionally filtered by their attributes.
+#'   \item \code{\link{osem_box}}: Get metadata about a single box by its ID.
+#'   \item \code{\link{osem_boxes}}: Get metadata about all boxes, optionally
+#'     filtered by their attributes.
 #' }
 #'
 #' The data is returned as a \code{\link{data.frame}} with the class
@@ -50,8 +49,7 @@
 #'   \item a exposure type of the given box
 #' }
 #'
-#' Data is returned as \code{data.frame} with the class \code{osem_measurements}.
-#' The provided columns may
+#' Data is returned as \code{tibble} with the class \code{osem_measurements}.
 #'
 #' @section Retrieving statistics:
 #' Count statistics about the database are provided with \code{\link{osem_counts}}.
@@ -65,7 +63,7 @@
 #'     Transform the senseBoxes or measurements into an \code{\link{sf}}
 #'     compatible format for spatial analysis.
 #'   \item \code{filter.sensebox()} & \code{mutate.sensebox()}: for use with
-#'     \code{\link{deplyr}}.
+#'     \code{\link{dplyr}}.
 #' }
 #'
 #' @seealso Report bugs at \url{https://github.com/noerw/opensensmapR/issues}
