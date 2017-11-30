@@ -43,7 +43,6 @@ This project adheres to semantic versioning, for changes in recent versions
 please consult [CHANGES.md](CHANGES.md).
 
 ## FAQ
-- *Why does `osem_measurements(phenomenon)` not work?* See [#6](https://github.com/noerw/opensensmapR/issues/6).
 - *Whats up with that package name?* idk, the R people seem to [enjoy][1]
 [dropping][2] [vovels][3] so.. Unfortunately I couldn't fit the naming
 convention to drop an `y` in there.
