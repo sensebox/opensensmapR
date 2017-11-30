@@ -140,8 +140,8 @@ paged_measurements_req = function (query) {
 
   # auto paging: make a request for one 31day interval each (max supprted length)
   # generate a list 31day intervals
-  from = query$from
-  to = query$to
+  from = query$`from-date`
+  to = query$`to-date`
   dates = list()
   while (from < to) {
     in31days = from + as.difftime(31, units = 'days')
@@ -150,7 +150,7 @@ paged_measurements_req = function (query) {
   }
 
   # use the dates as pages for multiple requests
-  lapply(dates, function(page) {
+  df = lapply(dates, function(page) {
     query$`from-date` = date_as_isostring(page$from)
     query$`to-date` = date_as_isostring(page$to)
     res = do.call(get_measurements_, query)
@@ -159,4 +159,8 @@ paged_measurements_req = function (query) {
     res
   }) %>%
     dplyr::bind_rows()
+
+  # coerce all character columns (sensorId, unit, ...) to factors AFTER binding
+  df[sapply(df, is.character)] <- lapply(df[sapply(df, is.character)], as.factor)
+  df
 }

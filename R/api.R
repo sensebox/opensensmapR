@@ -32,7 +32,8 @@ get_measurements_ = function (..., endpoint) {
   # parse the CSV response manually & mute readr
   suppressWarnings({
     result = readr::read_csv(result, col_types = readr::cols(
-      .default  = readr::col_factor(NULL),
+      # factor as default would raise issues with concatenation of multiple requests
+      .default  = readr::col_character(),
       createdAt = readr::col_datetime(),
       value  = readr::col_double(),
       lat    = readr::col_double(),
