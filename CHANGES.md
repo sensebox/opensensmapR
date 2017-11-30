@@ -1,4 +1,9 @@
 # opensensmapr changelog
+This project does its best to adhere to semantic versioning.
+
+### 2017-11-29: v0.3.1
+- compatibility with latest API format (#4)
+- add package documentation under `?opensensmapr` (#5)
 
 ### 2017-09-04: v0.3.0
 - add utility functions: `filter`, `mutate`, `[`, `st_as_sf` for classes `sensebox` and `osem_measurements`

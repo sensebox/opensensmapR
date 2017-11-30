@@ -1,7 +1,7 @@
 Package: opensensmapr
 Type: Package
 Title: Work with Sensor Data from opensensemap.org in R
-Version: 0.3.0
+Version: 0.3.1
 URL: http://github.com/noerw/opensensmapR
 BugReports: http://github.com/noerw/opensensmapR/issues
 Imports:
@@ -14,7 +14,7 @@ Suggests:
     knitr,
     rmarkdown
 Author: Norwin Roosen
-Maintainer: Norwin Roosen <noerw@gmx.de>
+Maintainer: Norwin Roosen <maintenance@nroo.de>
 Description: This package ingests data (measurements, sensorstations) from the
     API of opensensemap.org for analysis in R.
     The package aims to be compatible with sf and the tidyverse.
