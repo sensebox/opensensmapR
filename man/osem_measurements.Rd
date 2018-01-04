@@ -12,11 +12,12 @@ osem_measurements(x, ...)
 \method{osem_measurements}{default}(x, ...)
 
 \method{osem_measurements}{bbox}(x, phenomenon, exposure = NA, from = NA,
-  to = NA, columns = NA, ..., endpoint = "https://api.opensensemap.org")
+  to = NA, columns = NA, ..., endpoint = "https://api.opensensemap.org",
+  progress = T)
 
 \method{osem_measurements}{sensebox}(x, phenomenon, exposure = NA,
   from = NA, to = NA, columns = NA, ...,
-  endpoint = "https://api.opensensemap.org")
+  endpoint = "https://api.opensensemap.org", progress = T)
 }
 \arguments{
 \item{x}{Depending on the method, either
@@ -40,6 +41,8 @@ osem_measurements(x, ...)
 \item{columns}{Select specific column in the output (see oSeM documentation)}
 
 \item{endpoint}{The URL of the openSenseMap API}
+
+\item{progress}{Whether to print download progress information}
 }
 \value{
 An \code{osem_measurements data.frame} containing the

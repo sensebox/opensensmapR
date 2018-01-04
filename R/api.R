@@ -22,7 +22,7 @@ get_boxes_ = function (..., endpoint) {
 }
 
 get_box_ = function (boxId, endpoint) {
-  osem_request_(endpoint, path = c('boxes', boxId)) %>%
+  osem_request_(endpoint, path = c('boxes', boxId), progress = F) %>%
     parse_senseboxdata()
 }
 
@@ -46,14 +46,14 @@ get_measurements_ = function (..., endpoint) {
 }
 
 get_stats_ = function (endpoint) {
-  result = osem_request_(endpoint, path = c('stats'))
+  result = osem_request_(endpoint, path = c('stats'), progress = F)
   names(result) = c('boxes', 'measurements', 'measurements_per_minute')
   result
 }
 
-osem_request_ = function (host, path, ..., type = 'parsed') {
-  res = httr::GET(host, httr::progress(), path = path, query = list(...))
-  #print(res$url)
+osem_request_ = function (host, path, ..., type = 'parsed', progress) {
+  progress = if (progress && !isNonInteractive()) httr::progress() else NULL
+  res = httr::GET(host, progress, path = path, query = list(...))
 
   if (httr::http_error(res)) {
     content = httr::content(res, 'parsed', encoding = 'UTF-8')

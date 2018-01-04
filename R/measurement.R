@@ -20,6 +20,7 @@
 #' @param to A \code{POSIXt} like object to select a time interval
 #' @param columns Select specific column in the output (see oSeM documentation)
 #' @param endpoint The URL of the openSenseMap API
+#' @param progress Whether to print download progress information
 #'
 #' @return An \code{osem_measurements data.frame} containing the
 #'   requested measurements
@@ -60,7 +61,8 @@ osem_measurements.default = function (x, ...) {
 osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    from = NA, to = NA, columns = NA,
                                    ...,
-                                   endpoint = 'https://api.opensensemap.org') {
+                                   endpoint = 'https://api.opensensemap.org',
+                                   progress = T) {
   bbox = x
   environment() %>%
     as.list() %>%
@@ -84,7 +86,8 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
 osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        from = NA, to = NA, columns = NA,
                                        ...,
-                                       endpoint = 'https://api.opensensemap.org') {
+                                       endpoint = 'https://api.opensensemap.org',
+                                       progress = T) {
   boxes = x
   environment() %>%
     as.list() %>%
@@ -113,7 +116,11 @@ parse_get_measurements_params = function (params) {
     (is.null(params$bbox) && is.null(params$boxes))
   ) stop('Specify either "bbox" or "boxes"')
 
-  query = list(endpoint = params$endpoint, phenomenon = params$phenomenon)
+  query = list(
+    endpoint = params$endpoint,
+    phenomenon = params$phenomenon,
+    progress = params$progress
+  )
 
   if (!is.null(params$boxes))  query$boxId = paste(params$boxes$X_id, collapse = ',')
   if (!is.null(params$bbox))   query$bbox = paste(params$bbox, collapse = ',')
@@ -154,8 +161,10 @@ paged_measurements_req = function (query) {
     query$`from-date` = date_as_isostring(page$from)
     query$`to-date` = date_as_isostring(page$to)
     res = do.call(get_measurements_, query)
-    cat(paste(query$`from-date`, query$`to-date`, sep = ' - '))
-    cat('\n')
+
+    if (query$progress && !isNonInteractive())
+      cat(paste(query$`from-date`, query$`to-date`, sep = ' - '), '\n')
+
     res
   }) %>%
     dplyr::bind_rows()

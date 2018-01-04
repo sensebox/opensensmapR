@@ -19,6 +19,7 @@
 #' @param phenomenon Only return boxes that measured the given phenomenon in the
 #'   time interval as specified through \code{date} or \code{from / to}
 #' @param endpoint The URL of the openSenseMap API instance
+#' @param progress Whether to print download progress information
 #' @return A \code{sensebox data.frame} containing a box in each row
 #'
 #' @seealso \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
@@ -37,7 +38,8 @@
 #'
 osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
                       date = NA, from = NA, to = NA, phenomenon = NA,
-                      endpoint = 'https://api.opensensemap.org') {
+                      endpoint = 'https://api.opensensemap.org',
+                      progress = T) {
 
   # error, if phenomenon, but no time given
   if (!is.na(phenomenon) && is.na(date) && is.na(to) && is.na(from))
@@ -55,7 +57,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
    stop('Parameter "from"/"to" must be used together')
   }
 
-  query = list(endpoint = endpoint)
+  query = list(endpoint = endpoint, progress = progress)
   if (!is.na(exposure)) query$exposure = exposure
   if (!is.na(model)) query$model = model
   if (!is.na(grouptag)) query$grouptag = grouptag

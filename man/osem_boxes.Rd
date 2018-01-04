@@ -6,7 +6,7 @@
 \usage{
 osem_boxes(exposure = NA, model = NA, grouptag = NA, date = NA,
   from = NA, to = NA, phenomenon = NA,
-  endpoint = "https://api.opensensemap.org")
+  endpoint = "https://api.opensensemap.org", progress = T)
 }
 \arguments{
 \item{exposure}{Only return boxes with the given exposure ('indoor', 'outdoor', 'mobile')}
@@ -25,6 +25,8 @@ osem_boxes(exposure = NA, model = NA, grouptag = NA, date = NA,
 time interval as specified through \code{date} or \code{from / to}}
 
 \item{endpoint}{The URL of the openSenseMap API instance}
+
+\item{progress}{Whether to print download progress information}
 }
 \value{
 A \code{sensebox data.frame} containing a box in each row

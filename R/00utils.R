@@ -25,3 +25,11 @@ dplyr_class_wrapper = function(callback) {
   function(.data, ..., .dots) callback(NextMethod())
 }
 
+#' Checks for an interactive session using interactive() and a knitr process in
+#' the callstack. See https://stackoverflow.com/a/33108841
+#'
+#' @noRd
+isNonInteractive = function () {
+  ff <- sapply(sys.calls(), function(f) as.character(f[1]))
+  any(ff %in% c("knit2html", "render")) || !interactive()
+}
