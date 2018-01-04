@@ -7,6 +7,11 @@ plot.osem_measurements = function (x, ...) {
   invisible(x)
 }
 
+#' @export
+print.osem_measurements = function (x, ...) {
+  print.data.frame(x, ...)
+}
+
 #' Converts a foreign object to an osem_measurements data.frame.
 #' @param x A data.frame to attach the class to
 #' @export
