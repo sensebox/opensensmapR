@@ -1,5 +1,5 @@
 #' @export
-plot.sensebox = function (x, ...) {
+plot.sensebox = function (x, ..., mar = c(2,2,1,1)) {
   if (
     !requireNamespace("sf", quietly = TRUE) ||
     !requireNamespace("maps", quietly = TRUE) ||
@@ -21,7 +21,7 @@ plot.sensebox = function (x, ...) {
     sf::st_geometry()
 
   oldpar = par()
-  par(mar = c(2,2,1,1))
+  par(mar = mar)
   plot(world, col = 'gray', xlim = bbox[c(1,3)], ylim = bbox[c(2,4)], axes = T)
   plot(geom, add = T, col = x$exposure)
   legend('left', legend = levels(x$exposure), col = 1:length(x$exposure), pch = 1)
