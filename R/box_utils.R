@@ -84,12 +84,19 @@ osem_as_sensebox = function(x) {
   ret
 }
 
-#' @export
-filter_.sensebox = dplyr_class_wrapper(osem_as_sensebox)
+#' Return rows with matching conditions, while maintaining class & attributes
+#' @param .data A sensebox data.frame to filter
+#' @param .dots see corresponding function in package \code{\link{dplyr}}
+#' @param ... other arguments
+#' @seealso \code{\link[dplyr]{filter}}
 #' @export
 filter.sensebox = dplyr_class_wrapper(osem_as_sensebox)
-#' @export
-mutate_.sensebox = dplyr_class_wrapper(osem_as_sensebox)
+
+#' Add new variables to the data, while maintaining class & attributes
+#' @param .data A sensebox data.frame to mutate
+#' @param .dots see corresponding function in package \code{\link{dplyr}}
+#' @param ... other arguments
+#' @seealso \code{\link[dplyr]{mutate}}
 #' @export
 mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 

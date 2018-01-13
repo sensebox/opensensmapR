@@ -22,12 +22,19 @@ osem_as_measurements = function(x) {
   ret
 }
 
-#' @export
-filter_.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
+#' Return rows with matching conditions, while maintaining class & attributes
+#' @param .data A osem_measurements data.frame to filter
+#' @param .dots see corresponding function in package \code{\link{dplyr}}
+#' @param ... other arguments
+#' @seealso \code{\link[dplyr]{filter}}
 #' @export
 filter.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
-#' @export
-mutate_.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
+
+#' Add new variables to the data, while maintaining class & attributes
+#' @param .data A osem_measurements data.frame to mutate
+#' @param .dots see corresponding function in package \code{\link{dplyr}}
+#' @param ... other arguments
+#' @seealso \code{\link[dplyr]{mutate}}
 #' @export
 mutate.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
 
