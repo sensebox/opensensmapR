@@ -15,13 +15,19 @@ Suggests:
     rgeos,
     sf,
     knitr,
-    rmarkdown
+    rmarkdown,
+    lubridate,
+    units
 Author: Norwin Roosen
-Maintainer: Norwin Roosen <maintenance@nroo.de>
-Description: This package ingests data (measurements, sensorstations) from the
-    API of opensensemap.org for analysis in R.
-    The package aims to be compatible with sf and the tidyverse.
-License: GPL-2
+Maintainer: Norwin Roosen <bugs@nroo.de>
+Description: Download data (environmental measurements, sensorstations) from the
+    API of open data sensor web platform 'opensensemap.org' for analysis in R.
+    This platform provides realtime data of more than 1000 low-cost sensor
+    stations for PM10, PM2.5, temperature, humidity, UV-A intensity and more
+    phenomena.
+    The package aims to be compatible with sf and the tidyverse, and provides
+    several helper functions for data exploration and transformation.
+License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1

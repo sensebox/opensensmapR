@@ -36,9 +36,7 @@ osem_measurements = function (x, ...) UseMethod('osem_measurements')
 #' @export
 #' @examples
 #' # get measurements from all boxes
-#' \dontrun{
-#' osem_measurements('PM2.5')
-#' }
+#' osem_measurements('Windrichtung')
 #'
 osem_measurements.default = function (x, ...) {
   bbox = structure(c(-180, -90, 180, 90), class = 'bbox')
@@ -54,7 +52,7 @@ osem_measurements.default = function (x, ...) {
 #' bbox = structure(c(7, 51, 8, 52), class = 'bbox')
 #' osem_measurements(bbox, 'Temperatur')
 #'
-#' points = sf::st_multipoint(matrix(c(7, 8, 51, 52), 2, 2))
+#' points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
 #' bbox2 = sf::st_bbox(points)
 #' osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 #'
@@ -80,7 +78,7 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
 #' osem_measurements(b, phenomenon = 'Temperatur')
 #'
 #' # ...or a single box
-#' b = osem_box('593bcd656ccf3b0011791f5a')
+#' b = osem_box('57000b8745fd40c8196ad04c')
 #' osem_measurements(b, phenomenon = 'Temperatur')
 #'
 osem_measurements.sensebox = function (x, phenomenon, exposure = NA,

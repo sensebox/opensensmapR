@@ -85,7 +85,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
 #' @export
 #' @examples
 #' # get a specific box by ID
-#' b = osem_box('593bcd656ccf3b0011791f5a')
+#' b = osem_box('57000b8745fd40c8196ad04c')
 #'
 osem_box = function (boxId, endpoint = 'https://api.opensensemap.org') {
   get_box_(boxId, endpoint = endpoint)

@@ -75,7 +75,7 @@ summary.sensebox = function(object, ...) {
 
 # ==============================================================================
 #
-#' Converts a foreign object to an sensebox data.frame.
+#' Converts a foreign object to a sensebox data.frame.
 #' @param x A data.frame to attach the class to
 #' @export
 osem_as_sensebox = function(x) {
@@ -120,6 +120,6 @@ mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 #' @return The object with an st_geometry column attached.
 #' @export
 st_as_sf.sensebox = function (x, ...) {
-  sf:::st_as_sf.data.frame(x, ..., coords = c('lon', 'lat'), crs = 4326)
+  NextMethod(x, ..., coords = c('lon', 'lat'), crs = 4326)
 }
 

@@ -19,7 +19,7 @@ Get a single senseBox by its ID
 }
 \examples{
 # get a specific box by ID
-b = osem_box('593bcd656ccf3b0011791f5a')
+b = osem_box('57000b8745fd40c8196ad04c')
 
 }
 \seealso{

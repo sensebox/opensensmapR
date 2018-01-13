@@ -14,8 +14,8 @@ The opensensmapr package provides functions for
   \item general statistics about the openSenseMap database.
 }
 Additionally, helper functions are provided to ease the integration with the
-\code{\link{sf}} package for spatial analysis as well as \code{\link{dplyr}}
-for general data handling.
+\code{\link[sf]{sf}} package for spatial analysis as well as
+\code{\link[dplyr]{dplyr}} for general data handling.
 }
 \section{Retrieving senseBox metadata}{
 
@@ -54,7 +54,7 @@ given phenomenon only. A subset of measurements may be selected by
   \item a list of senseBoxes, previously retrieved through
     \code{\link{osem_box}} or \code{\link{osem_boxes}}.
   \item a geographic bounding box, which can be generated with the
-    \code{\link{sf}} package.
+    \code{\link[sf]{sf}} package.
   \item a time frame
   \item a exposure type of the given box
 }
@@ -73,8 +73,11 @@ The package aims to be compatible with the tidyverse.
 Helpers are implemented to ease the further usage of the retrieved data:
 
 \itemize{
+  \item \code{\link{osem_as_sensebox}} & \code{\link{osem_as_measurements}}:
+    Transform a foreign object to a sensebox data.frame or osem_measurements
+    by attaching the required classes and attributes.
   \item \code{\link{st_as_sf.sensebox}} & \code{\link{st_as_sf.osem_measurements}}:
-    Transform the senseBoxes or measurements into an \code{\link{sf}}
+    Transform the senseBoxes or measurements into an \code{\link[sf]{sf}}
     compatible format for spatial analysis.
   \item \code{filter.sensebox()} & \code{mutate.sensebox()}: for use with
     \code{\link{dplyr}}.

@@ -3,5 +3,7 @@
 .Rhistory
 .RData
 .Ruserdata
+..Rcheck
 *.log
 
+opensensmapr_*.tar.gz

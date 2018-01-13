@@ -2,7 +2,7 @@
 % Please edit documentation in R/box_utils.R
 \name{osem_as_sensebox}
 \alias{osem_as_sensebox}
-\title{Converts a foreign object to an sensebox data.frame.}
+\title{Converts a foreign object to a sensebox data.frame.}
 \usage{
 osem_as_sensebox(x)
 }
@@ -10,5 +10,5 @@ osem_as_sensebox(x)
 \item{x}{A data.frame to attach the class to}
 }
 \description{
-Converts a foreign object to an sensebox data.frame.
+Converts a foreign object to a sensebox data.frame.
 }

@@ -56,6 +56,5 @@ mutate.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
 #' @return The object with an st_geometry column attached.
 #' @export
 st_as_sf.osem_measurements = function (x, ...) {
-  sf:::st_as_sf.data.frame(x, ..., coords = c('lon', 'lat'), crs = 4326)
+  NextMethod(x, ..., coords = c('lon', 'lat'), crs = 4326)
 }
-

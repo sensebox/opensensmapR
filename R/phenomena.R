@@ -23,9 +23,9 @@ osem_phenomena = function (boxes) UseMethod('osem_phenomena')
 #'   osem_boxes(grouptag = 'ifgi', exposure = 'outdoor', date = Sys.time())
 #' )
 #'
-#' # get phenomena with at least 10 sensors on opensensemap
+#' # get phenomena with at least 30 sensors on opensensemap
 #' phenoms = osem_phenomena(osem_boxes())
-#' names(phenoms[phenoms > 9])
+#' names(phenoms[phenoms > 29])
 #'
 osem_phenomena.sensebox = function (boxes) {
   p = Reduce(`c`, boxes$phenomena) %>% # get all the row contents in a single vector
