@@ -59,6 +59,9 @@
 #' Helpers are implemented to ease the further usage of the retrieved data:
 #'
 #' \itemize{
+#'   \item \code{\link{osem_as_sensebox}} & \code{\link{osem_as_measurements}}:
+#'     Transform a foreign object to a sensebox data.frame or osem_measurements
+#'     by attaching the required classes and attributes.
 #'   \item \code{\link{st_as_sf.sensebox}} & \code{\link{st_as_sf.osem_measurements}}:
 #'     Transform the senseBoxes or measurements into an \code{\link{sf}}
 #'     compatible format for spatial analysis.

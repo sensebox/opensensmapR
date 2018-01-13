@@ -36,7 +36,7 @@ m = osem_measurements(bbox, phenomenon, filter1, ...)
 osem_counts()
 ```
 
-Additionally there are some helpers: `summary.sensebox(), plot.sensebox(), st_as_sf.sensebox(), [.sensebox(), filter.sensebox(), mutate.sensebox(), ...`.
+Additionally there are some helpers: `summary.sensebox(), plot.sensebox(), st_as_sf.sensebox(), osem_as_sensebox(), [.sensebox(), filter.sensebox(), mutate.sensebox(), ...`.
 
 ## Changelog
 This project adheres to semantic versioning, for changes in recent versions
