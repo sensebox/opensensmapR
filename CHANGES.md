@@ -1,6 +1,14 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
+### 2018-01-13: v0.3.2
+- hide download progress in non interactive sessions (#11)
+- fix `print.osem_measurements()`
+- fix `summary.sensebox()` `last_measurement_within`
+- expose `mar` for plot functions (#12)
+- remove deprecated NSE functions from dplyr
+- package & documentation improvements
+
 ### 2017-11-29: v0.3.1
 - compatibility with latest API format (#4)
 - add package documentation under `?opensensmapr` (#5)
