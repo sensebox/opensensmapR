@@ -6,7 +6,7 @@ plot.sensebox = function (x, ..., mar = c(2,2,1,1)) {
     !requireNamespace("maptools", quietly = TRUE) ||
     !requireNamespace("rgeos", quietly = TRUE)
   ) {
-    stop('this functions requires the packages sf, maps, maptools, rgeos')
+    stop('this functions requires additional packages. install them with\n    install.packages(c("sf", "maps", "maptools", "rgeos"))')
   }
 
   geom = x %>%
@@ -15,7 +15,6 @@ plot.sensebox = function (x, ..., mar = c(2,2,1,1)) {
 
   bbox = sf::st_bbox(geom)
 
-  library(maps)
   world = maps::map('world', plot = FALSE, fill = TRUE) %>%
     sf::st_as_sf() %>%
     sf::st_geometry()

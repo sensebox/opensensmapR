@@ -9,7 +9,10 @@ Imports:
     httr,
     magrittr
 Suggests:
+    maps,
+    maptools,
     readr,
+    rgeos,
     sf,
     knitr,
     rmarkdown
