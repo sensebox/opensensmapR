@@ -48,14 +48,13 @@ summary.sensebox = function(object, ...) {
   cat('\n')
 
   diffNow = (utc_date(Sys.time()) - object$lastMeasurement) %>% as.numeric(unit='hours')
-  neverActive = object[is.na(object$lastMeasurement), ] %>% nrow()
   list(
     'last_measurement_within' = c(
-      '1h' = nrow(object[diffNow <= 1, ]) - neverActive,
-      '1d' = nrow(object[diffNow <= 24, ]) - neverActive,
-      '30d' = nrow(object[diffNow <= 720, ]) - neverActive,
-      '365d' = nrow(object[diffNow <= 8760, ]) - neverActive,
-      'never' = neverActive
+      '1h'    = nrow(dplyr::filter(object, diffNow <= 1)),
+      '1d'    = nrow(dplyr::filter(object, diffNow <= 24)),
+      '30d'   = nrow(dplyr::filter(object, diffNow <= 720)),
+      '365d'  = nrow(dplyr::filter(object, diffNow <= 8760)),
+      'never' = nrow(dplyr::filter(object, is.na(lastMeasurement)))
     )
   ) %>% print()
 
