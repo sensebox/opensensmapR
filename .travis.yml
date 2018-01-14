@@ -3,3 +3,22 @@
 language: R
 sudo: false
 cache: packages
+
+r:
+  - release
+  - devel
+
+r_github_packages:
+  - r-lib/covr
+  
+before_install:
+  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
+  - sudo apt-get --yes --force-yes update -qq
+  # units/udunits2 dependency:
+  - sudo apt-get install --yes libudunits2-dev
+  # sf dependencies:
+  - sudo apt-get install --yes libproj-dev libgeos-dev libgdal-dev
+ 
+after_success:
+  - Rscript -e 'covr::codecov()'
+  #- Rscript -e 'lintr::lint_package()'
