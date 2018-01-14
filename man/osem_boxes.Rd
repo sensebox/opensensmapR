@@ -5,8 +5,8 @@
 \title{Get a set of senseBoxes from the openSenseMap}
 \usage{
 osem_boxes(exposure = NA, model = NA, grouptag = NA, date = NA,
-  from = NA, to = NA, phenomenon = NA,
-  endpoint = "https://api.opensensemap.org", progress = T)
+  from = NA, to = NA, phenomenon = NA, endpoint = osem_endpoint(),
+  progress = T)
 }
 \arguments{
 \item{exposure}{Only return boxes with the given exposure ('indoor', 'outdoor', 'mobile')}

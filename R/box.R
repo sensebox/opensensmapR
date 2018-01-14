@@ -38,7 +38,7 @@
 #'
 osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
                       date = NA, from = NA, to = NA, phenomenon = NA,
-                      endpoint = 'https://api.opensensemap.org',
+                      endpoint = osem_endpoint(),
                       progress = T) {
 
   # error, if phenomenon, but no time given
@@ -87,7 +87,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
 #' # get a specific box by ID
 #' b = osem_box('57000b8745fd40c8196ad04c')
 #'
-osem_box = function (boxId, endpoint = 'https://api.opensensemap.org') {
+osem_box = function (boxId, endpoint = osem_endpoint()) {
   get_box_(boxId, endpoint = endpoint)
 }
 

@@ -59,7 +59,7 @@ osem_measurements.default = function (x, ...) {
 osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    from = NA, to = NA, columns = NA,
                                    ...,
-                                   endpoint = 'https://api.opensensemap.org',
+                                   endpoint = osem_endpoint(),
                                    progress = T) {
   bbox = x
   environment() %>%
@@ -84,7 +84,7 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
 osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        from = NA, to = NA, columns = NA,
                                        ...,
-                                       endpoint = 'https://api.opensensemap.org',
+                                       endpoint = osem_endpoint(),
                                        progress = T) {
   boxes = x
   environment() %>%

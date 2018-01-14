@@ -52,10 +52,10 @@ test_that("endpoint can be (mis)configured", {
   expect_error(osem_boxes(endpoint = "http://not.the.opensensemap.org"), "resolve host")
 })
 
-test_that("a response with no matches returns empty sensebox data.frame", {
+test_that("a response with no matches returns empty sensebox data.frame and a warning", {
   check_api()
   
-  boxes <- osem_boxes(grouptag = "does_not_exist")
+  suppressWarnings(boxes <- osem_boxes(grouptag = "does_not_exist"))
   expect_true(is.data.frame(boxes))
   expect_true(any("sensebox" %in% class(boxes)))
 })

@@ -12,12 +12,11 @@ osem_measurements(x, ...)
 \method{osem_measurements}{default}(x, ...)
 
 \method{osem_measurements}{bbox}(x, phenomenon, exposure = NA, from = NA,
-  to = NA, columns = NA, ..., endpoint = "https://api.opensensemap.org",
-  progress = T)
+  to = NA, columns = NA, ..., endpoint = osem_endpoint(), progress = T)
 
 \method{osem_measurements}{sensebox}(x, phenomenon, exposure = NA,
-  from = NA, to = NA, columns = NA, ...,
-  endpoint = "https://api.opensensemap.org", progress = T)
+  from = NA, to = NA, columns = NA, ..., endpoint = osem_endpoint(),
+  progress = T)
 }
 \arguments{
 \item{x}{Depending on the method, either
