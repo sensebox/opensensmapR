@@ -2,3 +2,7 @@
 ^\.Rproj\.user$
 ^CHANGES\.md$
 ^tools*$
+^\.travis\.yml$
+^appveyor\.yml$
+^CONDUCT\.md$
+^codecov\.yml$
