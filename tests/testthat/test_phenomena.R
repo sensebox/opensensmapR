@@ -1,6 +1,8 @@
 context("phenomena")
 
 check_api <- function() {
+  skip_on_cran()
+
   code <- NA
   try(code <- httr::status_code(httr::GET(osem_endpoint())))
   if (is.na(code)) skip("API not available")
@@ -13,18 +15,18 @@ try({
 
 test_that("phenomena from boxes is a list of counts", {
   check_api()
-  
+
   phenomena <- osem_phenomena(boxes)
-  
+
   expect_true(is.numeric(unlist(phenomena)))
   expect_true(is.list(phenomena))
 })
 
 test_that("phenomena from boxes has all phenomena", {
   check_api()
-  
+
   phenomena <- osem_phenomena(boxes)
-  
+
   expect_true(all(all_phen %in% names(phenomena)))
   expect_true(all(names(phenomena) %in% all_phen))
 })

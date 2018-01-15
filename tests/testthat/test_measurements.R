@@ -1,6 +1,8 @@
 context("measurements")
 
 check_api <- function() {
+  skip_on_cran()
+
   code <- NA
   try(code <- httr::status_code(httr::GET(osem_endpoint())))
   if (is.na(code)) skip("API not available")
@@ -10,10 +12,9 @@ try({
   boxes <- osem_boxes()
  })
 
-
 test_that("measurements can be retrieved for a phenomenon", {
   check_api()
-  
+
   measurements <- osem_measurements(x = "Windgeschwindigkeit")
   expect_true(is.data.frame(measurements))
   expect_true("osem_measurements" %in% class(measurements))
@@ -41,7 +42,7 @@ test_that("data.frame can be converted to measurements data.frame", {
 
 test_that("columns can be specified for phenomena", {
   check_api()
-  
+
   cols <- c("value", "boxId", "boxName")
   measurements <- osem_measurements(x = "Windgeschwindigkeit", columns = cols)
   expect_equal(names(measurements), cols)
@@ -49,7 +50,7 @@ test_that("columns can be specified for phenomena", {
 
 test_that("measurements can be retrieved for a phenomenon and exposure", {
   check_api()
-  
+
   measurements <- osem_measurements(x = "Temperatur", exposure = "unknown",
                                     columns = c("value", "boxId", "boxName"))
   expect_equal(nrow(measurements), 0)
@@ -57,14 +58,14 @@ test_that("measurements can be retrieved for a phenomenon and exposure", {
 
 test_that("measurements of specific boxes can be retrieved for one phenomenon and returns a measurements data.frame", {
   check_api()
-  
+
   # fix for subsetting
   class(boxes) <- c("data.frame")
   three_boxes <- boxes[1:3,]
   class(boxes) <- c("sensebox", "data.frame")
   three_boxes <- osem_as_sensebox(three_boxes)
   phens <- names(osem_phenomena(three_boxes))
-  
+
   measurements <- osem_measurements(x = three_boxes, phenomenon = phens[[1]])
   expect_true(is.data.frame(measurements))
   expect_true("osem_measurements" %in% class(measurements))
