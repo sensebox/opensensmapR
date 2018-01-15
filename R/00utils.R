@@ -29,7 +29,7 @@ dplyr_class_wrapper = function(callback) {
 #' the callstack. See https://stackoverflow.com/a/33108841
 #'
 #' @noRd
-isNonInteractive = function () {
+is_non_interactive = function () {
   ff <- sapply(sys.calls(), function(f) as.character(f[1]))
   any(ff %in% c("knit2html", "render")) || !interactive()
 }

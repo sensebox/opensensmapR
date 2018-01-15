@@ -106,9 +106,10 @@ parse_get_measurements_params = function (params) {
   if (is.null(params$phenomenon) | is.na(params$phenomenon))
     stop('Parameter "phenomenon" is required')
 
-  if ((!is.na(params$from) && is.na(params$to)) ||
-      (!is.na(params$to) && is.na(params$from))
-      ) stop('specify "from" only together with "to"')
+  if (
+    (!is.na(params$from) && is.na(params$to)) ||
+    (!is.na(params$to) && is.na(params$from))
+  ) stop('specify "from" only together with "to"')
 
   if (
     (!is.null(params$bbox) && !is.null(params$boxes)) ||
@@ -161,7 +162,7 @@ paged_measurements_req = function (query) {
     query$`to-date` = date_as_isostring(page$to)
     res = do.call(get_measurements_, query)
 
-    if (query$progress && !isNonInteractive())
+    if (query$progress && !is_non_interactive())
       cat(paste(query$`from-date`, query$`to-date`, sep = ' - '), '\n')
 
     res

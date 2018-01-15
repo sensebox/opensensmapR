@@ -60,7 +60,7 @@ get_stats_ = function (endpoint) {
 }
 
 osem_request_ = function (host, path, ..., type = 'parsed', progress) {
-  progress = if (progress && !isNonInteractive()) httr::progress() else NULL
+  progress = if (progress && !is_non_interactive()) httr::progress() else NULL
   res = httr::GET(host, progress, path = path, query = list(...))
 
   if (httr::http_error(res)) {
