@@ -15,7 +15,7 @@ get_boxes_ = function (..., endpoint) {
   response = osem_request_(endpoint, path = c('boxes'), ...)
 
   if (length(response) == 0) {
-    warning('no boxes found for this query')
+    warning('no senseBoxes found for this query')
     return(osem_as_sensebox(as.data.frame(response)))
   }
 

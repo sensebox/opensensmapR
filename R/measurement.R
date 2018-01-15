@@ -18,7 +18,7 @@
 #' @param exposure Filter sensors by their exposure ('indoor', 'outdoor', 'mobile')
 #' @param from A \code{POSIXt} like object to select a time interval
 #' @param to A \code{POSIXt} like object to select a time interval
-#' @param columns Select specific column in the output (see oSeM documentation)
+#' @param columns Select specific column in the output (see openSenseMap API documentation)
 #' @param endpoint The URL of the openSenseMap API
 #' @param progress Whether to print download progress information
 #'
@@ -130,7 +130,7 @@ parse_get_measurements_params = function (params) {
   }
 
   if (!is.na(params$exposure)) query$exposure = params$exposure
-  if (!is.na(params$columns))
+  if (!any(is.na(params$columns)))
     query$columns = paste(params$columns, collapse = ',')
   else
     query$columns = 'value,createdAt,lon,lat,sensorId,unit'

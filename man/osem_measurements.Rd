@@ -37,7 +37,7 @@ osem_measurements(x, ...)
 
 \item{to}{A \code{POSIXt} like object to select a time interval}
 
-\item{columns}{Select specific column in the output (see oSeM documentation)}
+\item{columns}{Select specific column in the output (see openSenseMap API documentation)}
 
 \item{endpoint}{The URL of the openSenseMap API}
 

@@ -63,7 +63,7 @@ test_that("a response with no matches returns empty sensebox data.frame and a wa
 test_that("a response with no matches gives a warning", {
   check_api()
   
-  expect_warning(osem_boxes(grouptag = "does_not_exist"), "no boxes found")
+  expect_warning(osem_boxes(grouptag = "does_not_exist"), "no senseBoxes found")
 })
 
 test_that("data.frame can be converted to sensebox data.frame", {
