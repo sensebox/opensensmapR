@@ -43,7 +43,7 @@ mutate.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
 #' @export
 `[.osem_measurements` = function(x, i, ...) {
   s = NextMethod('[')
-  mostattributes(s) = attributes(x)
+  mostattributes(s) = attributes(s)
   s
 }
 

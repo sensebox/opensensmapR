@@ -33,7 +33,8 @@ plot.sensebox = function (x, ..., mar = c(2,2,1,1)) {
 print.sensebox = function(x, ...) {
   important_columns = c('name', 'exposure', 'lastMeasurement', 'phenomena')
   data = as.data.frame(x)
-  print(data[important_columns], ...)
+  available_columns = important_columns %in% names(data)
+  print(data[available_columns], ...)
 
   invisible(x)
 }
@@ -106,7 +107,7 @@ mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 #' @export
 `[.sensebox` = function(x, i, ...) {
   s = NextMethod('[')
-  mostattributes(s) = attributes(x)
+  mostattributes(s) = attributes(s)
   s
 }
 

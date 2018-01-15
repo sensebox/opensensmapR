@@ -4,7 +4,7 @@
 \alias{osem_counts}
 \title{Get count statistics of the openSenseMap Instance}
 \usage{
-osem_counts(endpoint = "https://api.opensensemap.org")
+osem_counts(endpoint = osem_endpoint())
 }
 \arguments{
 \item{endpoint}{The URL of the openSenseMap API}

@@ -18,7 +18,7 @@
 #' @param exposure Filter sensors by their exposure ('indoor', 'outdoor', 'mobile')
 #' @param from A \code{POSIXt} like object to select a time interval
 #' @param to A \code{POSIXt} like object to select a time interval
-#' @param columns Select specific column in the output (see oSeM documentation)
+#' @param columns Select specific column in the output (see openSenseMap API documentation)
 #' @param endpoint The URL of the openSenseMap API
 #' @param progress Whether to print download progress information
 #'
@@ -36,7 +36,7 @@ osem_measurements = function (x, ...) UseMethod('osem_measurements')
 #' @export
 #' @examples
 #' # get measurements from all boxes
-#' osem_measurements('Windrichtung')
+#' m1 = osem_measurements('Windrichtung')
 #'
 osem_measurements.default = function (x, ...) {
   bbox = structure(c(-180, -90, 180, 90), class = 'bbox')
@@ -50,16 +50,16 @@ osem_measurements.default = function (x, ...) {
 #' @examples
 #' # get measurements from sensors within a bounding box
 #' bbox = structure(c(7, 51, 8, 52), class = 'bbox')
-#' osem_measurements(bbox, 'Temperatur')
+#' m2 = osem_measurements(bbox, 'Temperatur')
 #'
 #' points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
 #' bbox2 = sf::st_bbox(points)
-#' osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+#' m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 #'
 osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    from = NA, to = NA, columns = NA,
                                    ...,
-                                   endpoint = 'https://api.opensensemap.org',
+                                   endpoint = osem_endpoint(),
                                    progress = T) {
   bbox = x
   environment() %>%
@@ -79,12 +79,12 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
 #'
 #' # ...or a single box
 #' b = osem_box('57000b8745fd40c8196ad04c')
-#' osem_measurements(b, phenomenon = 'Temperatur')
+#' m4 = osem_measurements(b, phenomenon = 'Temperatur')
 #'
 osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        from = NA, to = NA, columns = NA,
                                        ...,
-                                       endpoint = 'https://api.opensensemap.org',
+                                       endpoint = osem_endpoint(),
                                        progress = T) {
   boxes = x
   environment() %>%
@@ -106,8 +106,10 @@ parse_get_measurements_params = function (params) {
   if (is.null(params$phenomenon) | is.na(params$phenomenon))
     stop('Parameter "phenomenon" is required')
 
-  if (!is.na(params$from) && is.na(params$to))
-    stop('specify "from" only together with "to"')
+  if (
+    (!is.na(params$from) && is.na(params$to)) ||
+    (!is.na(params$to) && is.na(params$from))
+  ) stop('specify "from" only together with "to"')
 
   if (
     (!is.null(params$bbox) && !is.null(params$boxes)) ||
@@ -130,7 +132,7 @@ parse_get_measurements_params = function (params) {
   }
 
   if (!is.na(params$exposure)) query$exposure = params$exposure
-  if (!is.na(params$columns))
+  if (!any(is.na(params$columns)))
     query$columns = paste(params$columns, collapse = ',')
   else
     query$columns = 'value,createdAt,lon,lat,sensorId,unit'
@@ -160,7 +162,7 @@ paged_measurements_req = function (query) {
     query$`to-date` = date_as_isostring(page$to)
     res = do.call(get_measurements_, query)
 
-    if (query$progress && !isNonInteractive())
+    if (query$progress && !is_non_interactive())
       cat(paste(query$`from-date`, query$`to-date`, sep = ' - '), '\n')
 
     res

@@ -4,7 +4,7 @@
 \alias{osem_box}
 \title{Get a single senseBox by its ID}
 \usage{
-osem_box(boxId, endpoint = "https://api.opensensemap.org")
+osem_box(boxId, endpoint = osem_endpoint())
 }
 \arguments{
 \item{boxId}{A string containing a senseBox ID}

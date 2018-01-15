@@ -4,12 +4,19 @@
 #  for CSV responses (get_measurements) the readr package is a hidden dependency
 # ==============================================================================
 
+#' Get the default openSenseMap API endpoint
+#' @export
+#' @return A character string with the HTTP URL of the openSenseMap API
+osem_endpoint = function() {
+  'https://api.opensensemap.org'
+}
+
 get_boxes_ = function (..., endpoint) {
   response = osem_request_(endpoint, path = c('boxes'), ...)
 
   if (length(response) == 0) {
-    warning('no boxes found for this query')
-    return(response)
+    warning('no senseBoxes found for this query')
+    return(osem_as_sensebox(as.data.frame(response)))
   }
 
   # parse each list element as sensebox & combine them to a single data.frame
@@ -17,7 +24,8 @@ get_boxes_ = function (..., endpoint) {
   df = dplyr::bind_rows(boxesList)
   df$exposure = df$exposure %>% as.factor()
   df$model    = df$model %>% as.factor()
-  df$grouptag = df$grouptag %>% as.factor()
+  if(!is.null(df$grouptag))
+    df$grouptag = df$grouptag %>% as.factor()
   df
 }
 
@@ -52,7 +60,7 @@ get_stats_ = function (endpoint) {
 }
 
 osem_request_ = function (host, path, ..., type = 'parsed', progress) {
-  progress = if (progress && !isNonInteractive()) httr::progress() else NULL
+  progress = if (progress && !is_non_interactive()) httr::progress() else NULL
   res = httr::GET(host, progress, path = path, query = list(...))
 
   if (httr::http_error(res)) {
