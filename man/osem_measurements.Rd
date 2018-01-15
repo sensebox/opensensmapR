@@ -63,15 +63,15 @@ a bounding box spanning the whole world.
 
 \examples{
 # get measurements from all boxes
-osem_measurements('Windrichtung')
+m1 = osem_measurements('Windrichtung')
 
 # get measurements from sensors within a bounding box
 bbox = structure(c(7, 51, 8, 52), class = 'bbox')
-osem_measurements(bbox, 'Temperatur')
+m2 = osem_measurements(bbox, 'Temperatur')
 
 points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
 bbox2 = sf::st_bbox(points)
-osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 
 # get measurements from a set of boxes
 b = osem_boxes(grouptag = 'ifgi')
@@ -79,7 +79,7 @@ osem_measurements(b, phenomenon = 'Temperatur')
 
 # ...or a single box
 b = osem_box('57000b8745fd40c8196ad04c')
-osem_measurements(b, phenomenon = 'Temperatur')
+m4 = osem_measurements(b, phenomenon = 'Temperatur')
 
 }
 \seealso{

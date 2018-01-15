@@ -36,7 +36,7 @@ osem_measurements = function (x, ...) UseMethod('osem_measurements')
 #' @export
 #' @examples
 #' # get measurements from all boxes
-#' osem_measurements('Windrichtung')
+#' m1 = osem_measurements('Windrichtung')
 #'
 osem_measurements.default = function (x, ...) {
   bbox = structure(c(-180, -90, 180, 90), class = 'bbox')
@@ -50,11 +50,11 @@ osem_measurements.default = function (x, ...) {
 #' @examples
 #' # get measurements from sensors within a bounding box
 #' bbox = structure(c(7, 51, 8, 52), class = 'bbox')
-#' osem_measurements(bbox, 'Temperatur')
+#' m2 = osem_measurements(bbox, 'Temperatur')
 #'
 #' points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
 #' bbox2 = sf::st_bbox(points)
-#' osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+#' m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 #'
 osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    from = NA, to = NA, columns = NA,
@@ -79,7 +79,7 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
 #'
 #' # ...or a single box
 #' b = osem_box('57000b8745fd40c8196ad04c')
-#' osem_measurements(b, phenomenon = 'Temperatur')
+#' m4 = osem_measurements(b, phenomenon = 'Temperatur')
 #'
 osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        from = NA, to = NA, columns = NA,
