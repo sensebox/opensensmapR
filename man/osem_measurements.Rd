@@ -75,11 +75,11 @@ m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 
 # get measurements from a set of boxes
 b = osem_boxes(grouptag = 'ifgi')
-osem_measurements(b, phenomenon = 'Temperatur')
+m4 = osem_measurements(b, phenomenon = 'Temperatur')
 
 # ...or a single box
 b = osem_box('57000b8745fd40c8196ad04c')
-m4 = osem_measurements(b, phenomenon = 'Temperatur')
+m5 = osem_measurements(b, phenomenon = 'Temperatur')
 
 }
 \seealso{
