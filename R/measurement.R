@@ -106,8 +106,9 @@ parse_get_measurements_params = function (params) {
   if (is.null(params$phenomenon) | is.na(params$phenomenon))
     stop('Parameter "phenomenon" is required')
 
-  if (!is.na(params$from) && is.na(params$to))
-    stop('specify "from" only together with "to"')
+  if ((!is.na(params$from) && is.na(params$to)) ||
+      (!is.na(params$to) && is.na(params$from))
+      ) stop('specify "from" only together with "to"')
 
   if (
     (!is.null(params$bbox) && !is.null(params$boxes)) ||

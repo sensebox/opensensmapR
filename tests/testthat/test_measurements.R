@@ -91,3 +91,7 @@ test_that("measurements can be retrieved for a time period", {
   expect_true(all(measurements$createdAt > from_date))
 })
 
+test_that("both from and to are required when requesting measurements, error otherwise", {
+  expect_error(osem_measurements(x = "Temperature", from = as.POSIXct("2017-01-01")), "only together with")
+  expect_error(osem_measurements(x = "Temperature", to   = as.POSIXct("2017-01-01")), "only together with")
+})

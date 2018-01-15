@@ -17,6 +17,11 @@ test_that("a list of all boxes can be retrieved and returns a sensebox data.fram
   expect_true(any("sensebox" %in% class(boxes)))
 })
 
+test_that("both from and to are required when requesting boxes, error otherwise", {
+  expect_error(osem_boxes(from = as.POSIXct("2017-01-01")), "must be used together")
+  expect_error(osem_boxes(to   = as.POSIXct("2017-01-01")), "must be used together")
+})
+
 test_that("a list of boxes with exposure filter returns only the requested exposure", {
   check_api()
   
