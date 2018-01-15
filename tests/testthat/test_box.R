@@ -10,23 +10,20 @@ try({
   boxes <- osem_boxes()
 })
 
-test_that("a box can be converted to sf object", {
+test_that("a single box can be retrieved by ID", {
   check_api()
-  
+
   box <- osem_box(boxes$X_id[[1]])
-  box_sf <- sf::st_as_sf(box)
-  
-  expect_true(sf::st_is_simple(box_sf))
-  expect_true("sf" %in% class(box_sf))
+
+  expect_true("sensebox" %in% class(box))
+  expect_true("data.frame" %in% class(box))
+  expect_true(nrow(box) == 1)
+  expect_true(box$X_id == boxes$X_id[[1]])
 })
 
-test_that("a box converted to sf object keeps all attributes", {
+
+test_that("[.sensebox maintains attributes", {
   check_api()
-  
-  skip("FIXME")
-  
-  box <- osem_box(boxes$X_id[[1]])
-  box_sf <- sf::st_as_sf(box)
-  
-  expect_true(all(names(box) %in% names(box_sf)))
+
+  expect_true(all(attributes(boxes[1:nrow(boxes), ]) %in% attributes(boxes)))
 })

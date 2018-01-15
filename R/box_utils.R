@@ -107,7 +107,7 @@ mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 #' @export
 `[.sensebox` = function(x, i, ...) {
   s = NextMethod('[')
-  mostattributes(s) = attributes(x)
+  mostattributes(s) = attributes(s)
   s
 }
 

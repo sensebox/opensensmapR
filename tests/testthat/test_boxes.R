@@ -75,3 +75,36 @@ test_that("data.frame can be converted to sensebox data.frame", {
   df <- osem_as_sensebox(data.frame(c(1,2), c("a", "b")))
   expect_equal(class(df), c("sensebox", "data.frame"))
 })
+
+test_that("boxes can be converted to sf object", {
+  check_api()
+
+  boxes <- osem_boxes()
+  boxes_sf <- sf::st_as_sf(boxes)
+
+  expect_true(all(sf::st_is_simple(boxes_sf)))
+  expect_true("sf" %in% class(boxes_sf))
+})
+
+test_that("boxes converted to sf object keep all attributes", {
+  check_api()
+
+  boxes <- osem_boxes()
+  boxes_sf <- sf::st_as_sf(boxes)
+
+  # coord columns get removed!
+  cols <- names(boxes)[!names(boxes) %in% c('lon', 'lat')]
+  expect_true(all(cols %in% names(boxes_sf)))
+
+  expect_true("sensebox" %in% class(boxes_sf))
+})
+
+test_that("box retrieval does not give progress information in non-interactive mode", {
+  check_api()
+
+  if (!opensensmapr:::is_non_interactive()) skip("interactive session")
+
+  out <- capture.output(b <- osem_boxes())
+  expect_length(out, 0)
+})
+
