@@ -20,8 +20,8 @@ Suggests:
     units,
     testthat,
     covr
-Author: Norwin Roosen
-Maintainer: Norwin Roosen <bugs@nroo.de>
+Authors@R: c(person("Norwin", "Roosen", role = c("aut", "cre"), email = "bugs@nroo.de"),
+    person("Daniel", "Nuest", role = c("ctb"), email = "daniel.nuest@uni-muenster.de", comment = c(ORCID = "0000-0003-2392-6140")))
 Description: Download data (environmental measurements, sensorstations) from the
     API of open data sensor web platform 'opensensemap.org' for analysis in R.
     This platform provides realtime data of more than 1000 low-cost sensor
