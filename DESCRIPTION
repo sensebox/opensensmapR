@@ -18,6 +18,7 @@ Suggests:
     rmarkdown,
     lubridate,
     units,
+    lintr,
     testthat,
     covr
 Authors@R: c(person("Norwin", "Roosen", role = c("aut", "cre"), email = "bugs@nroo.de"),

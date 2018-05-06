@@ -10,6 +10,7 @@ r:
 
 r_github_packages:
   - r-lib/covr
+  - jimhester/lintr
   
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
@@ -21,4 +22,4 @@ before_install:
  
 after_success:
   - Rscript -e 'covr::codecov()'
-  #- Rscript -e 'lintr::lint_package()'
+  - Rscript -e 'lintr::lint_package()'

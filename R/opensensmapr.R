@@ -77,6 +77,8 @@
 '_PACKAGE'
 
 #' @importFrom graphics plot legend par
-
 #' @importFrom magrittr %>%
 `%>%` = magrittr::`%>%`
+
+# just to make R CMD check happy, due to NSE (dplyr) functions
+globalVariables(c('lastMeasurement'))

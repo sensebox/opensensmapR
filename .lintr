@@ -1,0 +1,14 @@
+exclusions: list('inst/doc/osem-intro.R')
+linters: with_defaults(
+    # we use snake case
+    camel_case_linter = NULL,
+    # '=' for assignment is fine :^)
+    assignment_linter = NULL,
+    # single quotes are fine
+    single_quotes_linter = NULL,
+    # nobody reads code on a vt100 anymore
+    line_length_linter(120), 
+    # this one throws lots of false positives, dial down the noise
+    object_usage_linter = NULL,
+    NULL
+  )

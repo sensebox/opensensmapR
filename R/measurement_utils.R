@@ -1,5 +1,5 @@
 #' @export
-plot.osem_measurements = function (x, ..., mar = c(2,4,1,1)) {
+plot.osem_measurements = function (x, ..., mar = c(2, 4, 1, 1)) {
   oldpar = par()
   par(mar = mar)
   plot(value~createdAt, x, col = factor(x$sensorId), xlab = NA, ylab = x$unit[1], ...)

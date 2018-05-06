@@ -30,6 +30,6 @@ dplyr_class_wrapper = function(callback) {
 #'
 #' @noRd
 is_non_interactive = function () {
-  ff <- sapply(sys.calls(), function(f) as.character(f[1]))
-  any(ff %in% c("knit2html", "render")) || !interactive()
+  ff = sapply(sys.calls(), function(f) as.character(f[1]))
+  any(ff %in% c('knit2html', 'render')) || !interactive()
 }

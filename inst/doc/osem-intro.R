@@ -70,4 +70,3 @@ st_as_sf(pm25) %>% st_geometry() %>% plot(col = factor(pm25$invalid), axes = T)
 
 ## ------------------------------------------------------------------------
 pm25 %>% filter(invalid == FALSE) %>% plot()
-

@@ -1,12 +1,13 @@
 #' @export
-plot.sensebox = function (x, ..., mar = c(2,2,1,1)) {
+plot.sensebox = function (x, ..., mar = c(2, 2, 1, 1)) {
   if (
-    !requireNamespace("sf", quietly = TRUE) ||
-    !requireNamespace("maps", quietly = TRUE) ||
-    !requireNamespace("maptools", quietly = TRUE) ||
-    !requireNamespace("rgeos", quietly = TRUE)
+    !requireNamespace('sf', quietly = TRUE) ||
+    !requireNamespace('maps', quietly = TRUE) ||
+    !requireNamespace('maptools', quietly = TRUE) ||
+    !requireNamespace('rgeos', quietly = TRUE)
   ) {
-    stop('this functions requires additional packages. install them with\n    install.packages(c("sf", "maps", "maptools", "rgeos"))')
+    stop('this functions requires additional packages. install them with
+    install.packages(c("sf", "maps", "maptools", "rgeos"))')
   }
 
   geom = x %>%
@@ -21,7 +22,7 @@ plot.sensebox = function (x, ..., mar = c(2,2,1,1)) {
 
   oldpar = par()
   par(mar = mar)
-  plot(world, col = 'gray', xlim = bbox[c(1,3)], ylim = bbox[c(2,4)], axes = T)
+  plot(world, col = 'gray', xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], axes = T)
   plot(geom, add = T, col = x$exposure)
   legend('left', legend = levels(x$exposure), col = 1:length(x$exposure), pch = 1)
   par(mar = oldpar$mar)
@@ -48,7 +49,7 @@ summary.sensebox = function(object, ...) {
   table(object$model) %>% print()
   cat('\n')
 
-  diffNow = (utc_date(Sys.time()) - object$lastMeasurement) %>% as.numeric(unit='hours')
+  diffNow = (utc_date(Sys.time()) - object$lastMeasurement) %>% as.numeric(unit = 'hours')
   list(
     'last_measurement_within' = c(
       '1h'    = nrow(dplyr::filter(object, diffNow <= 1)),
@@ -122,4 +123,3 @@ mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 st_as_sf.sensebox = function (x, ...) {
   NextMethod(x, ..., coords = c('lon', 'lat'), crs = 4326)
 }
-

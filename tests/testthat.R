@@ -1,5 +1,5 @@
-library("testthat")
-library("opensensmapr")
-library("sf")
+library('testthat')
+library('opensensmapr')
+library('sf')
 
-test_check("opensensmapr")
+test_check('opensensmapr')

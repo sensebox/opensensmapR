@@ -170,6 +170,6 @@ paged_measurements_req = function (query) {
     dplyr::bind_rows()
 
   # coerce all character columns (sensorId, unit, ...) to factors AFTER binding
-  df[sapply(df, is.character)] <- lapply(df[sapply(df, is.character)], as.factor)
+  df[sapply(df, is.character)] = lapply(df[sapply(df, is.character)], as.factor)
   df
 }

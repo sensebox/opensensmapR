@@ -105,23 +105,25 @@ parse_senseboxdata = function (boxdata) {
   # to allow a simple data.frame structure
   sensors = boxdata$sensors
   location = boxdata$currentLocation
-  boxdata[c('loc', 'locations', 'currentLocation', 'sensors', 'image', 'boxType')] <- NULL
+  boxdata[c('loc', 'locations', 'currentLocation', 'sensors', 'image', 'boxType')] = NULL
   thebox = as.data.frame(boxdata, stringsAsFactors = F)
 
   # parse timestamps (updatedAt might be not defined)
-  thebox$createdAt = as.POSIXct(strptime(thebox$createdAt, format='%FT%T', tz = 'GMT'))
+  thebox$createdAt = as.POSIXct(strptime(thebox$createdAt, format = '%FT%T', tz = 'GMT'))
   if (!is.null(thebox$updatedAt))
-    thebox$updatedAt = as.POSIXct(strptime(thebox$updatedAt, format='%FT%T', tz = 'GMT'))
+    thebox$updatedAt = as.POSIXct(strptime(thebox$updatedAt, format = '%FT%T', tz = 'GMT'))
 
   # extract metadata from sensors
-  thebox$phenomena = list(unlist(lapply(sensors, function(s) { s$title })))
+  thebox$phenomena = lapply(sensors, function(s) s$title) %>% unlist %>% list
+
   # FIXME: if one sensor has NA, max() returns bullshit
-  thebox$lastMeasurement = max(lapply(sensors, function(s) {
+  get_last_measurement = function(s) {
     if (!is.null(s$lastMeasurement))
       as.POSIXct(strptime(s$lastMeasurement$createdAt, format = '%FT%T', tz = 'GMT'))
     else
       NA
-  })[[1]])
+  }
+  thebox$lastMeasurement = max(lapply(sensors, get_last_measurement)[[1]])
 
   # extract coordinates & transform to simple feature object
   thebox$lon = location$coordinates[[1]]
