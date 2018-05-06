@@ -1,6 +1,6 @@
 Package: opensensmapr
 Type: Package
-Title: Work with Sensor Data from opensensemap.org in R
+Title: Work with Sensor Data from Opensensemap.org in R
 Version: 0.3.3
 URL: http://github.com/noerw/opensensmapR
 BugReports: http://github.com/noerw/opensensmapR/issues
