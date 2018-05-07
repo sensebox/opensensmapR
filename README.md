@@ -7,18 +7,26 @@ The package aims to be compatible with sf and the tidyverse.
 
 ## Installation
 
-Right now, the package is not on CRAN. To install it from GitHub, run:
+The package is available on CRAN, install it via
+
+```r
+install.packages('opensensmapr')
+```
+
+To install the veryy latest from GitHub, run:
 
 ```r
 install.packages('devtools')
-devtools::install_github('noerw/opensensmapr')
+devtools::install_github('noerw/opensensmapr@master')      # latest stable version
+devtools::install_github('noerw/opensensmapr@development') # bleeding edge version
 ```
 
 ## Usage
 
-A verbose usage example is shown in the vignette [`osem-intro`](https://noerw.github.com/opensensmapR/inst/doc/osem-intro.html).
-Each functions documentation can be viewed with `?<function-name>`.
+Each function's documentation can be viewed with `?<function-name>`.
 An overview is given in `?opensensmapr`.
+A verbose usage example is shown in the vignette [`osem-intro`](https://noerw.github.com/opensensmapR/inst/doc/osem-intro.html).
+
 In short, the following pseudocode shows the main functions for data retrieval:
 
 ```r
@@ -46,16 +54,11 @@ Additionally there are some helpers: `summary.sensebox(), plot.sensebox(), st_as
 
 This project adheres to semantic versioning, for changes in recent versions please consult [CHANGES.md](CHANGES.md).
 
-## FAQ
+## Contributing & Development
 
-- *Whats up with that package name?* idk, the R people seem to [enjoy][1] [dropping][2] [vovels][3] so..
-Unfortunately I couldn't fit the naming convention to drop an `y` in there.
-
-[1]: https://github.com/tidyverse/readr
-[2]: https://github.com/tidyverse/dplyr
-[3]: https://github.com/tidyverse/tidyr
-
-## Development
+Contributions are very welcome!
+When submitting a patch, please follow the existing [code style](.lintr),
+and run `R CMD check --no-vignettes .` on the package.
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md).
 By participating in this project you agree to abide by its terms.

@@ -62,25 +62,28 @@ a bounding box spanning the whole world.
 }}
 
 \examples{
-# get measurements from all boxes
-m1 = osem_measurements('Windrichtung')
+\donttest{
+  # get measurements from all boxes
+  m1 = osem_measurements('Windrichtung')
+}
+\donttest{
+  # get measurements from sensors within a bounding box
+  bbox = structure(c(7, 51, 8, 52), class = 'bbox')
+  m2 = osem_measurements(bbox, 'Temperatur')
 
-# get measurements from sensors within a bounding box
-bbox = structure(c(7, 51, 8, 52), class = 'bbox')
-m2 = osem_measurements(bbox, 'Temperatur')
+  points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
+  bbox2 = sf::st_bbox(points)
+  m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+}
+\donttest{
+  # get measurements from a set of boxes
+  b = osem_boxes(grouptag = 'ifgi')
+  m4 = osem_measurements(b, phenomenon = 'Temperatur')
 
-points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
-bbox2 = sf::st_bbox(points)
-m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
-
-# get measurements from a set of boxes
-b = osem_boxes(grouptag = 'ifgi')
-m4 = osem_measurements(b, phenomenon = 'Temperatur')
-
-# ...or a single box
-b = osem_box('57000b8745fd40c8196ad04c')
-m5 = osem_measurements(b, phenomenon = 'Temperatur')
-
+  # ...or a single box
+  b = osem_box('57000b8745fd40c8196ad04c')
+  m5 = osem_measurements(b, phenomenon = 'Temperatur')
+}
 }
 \seealso{
 \href{https://docs.opensensemap.org/#api-Measurements-getDataMulti}{openSenseMap API documentation (web)}

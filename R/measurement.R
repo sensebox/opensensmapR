@@ -35,9 +35,10 @@ osem_measurements = function (x, ...) UseMethod('osem_measurements')
 #' @describeIn osem_measurements Get measurements from \strong{all} senseBoxes.
 #' @export
 #' @examples
-#' # get measurements from all boxes
-#' m1 = osem_measurements('Windrichtung')
-#'
+#' \donttest{
+#'   # get measurements from all boxes
+#'   m1 = osem_measurements('Windrichtung')
+#' }
 osem_measurements.default = function (x, ...) {
   bbox = structure(c(-180, -90, 180, 90), class = 'bbox')
   osem_measurements(bbox, x, ...)
@@ -48,14 +49,15 @@ osem_measurements.default = function (x, ...) {
 #' @describeIn osem_measurements Get measurements by a spatial filter.
 #' @export
 #' @examples
-#' # get measurements from sensors within a bounding box
-#' bbox = structure(c(7, 51, 8, 52), class = 'bbox')
-#' m2 = osem_measurements(bbox, 'Temperatur')
+#' \donttest{
+#'   # get measurements from sensors within a bounding box
+#'   bbox = structure(c(7, 51, 8, 52), class = 'bbox')
+#'   m2 = osem_measurements(bbox, 'Temperatur')
 #'
-#' points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
-#' bbox2 = sf::st_bbox(points)
-#' m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
-#'
+#'   points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
+#'   bbox2 = sf::st_bbox(points)
+#'   m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+#' }
 osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    from = NA, to = NA, columns = NA,
                                    ...,
@@ -73,14 +75,15 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
 #' @describeIn osem_measurements Get measurements from a set of senseBoxes.
 #' @export
 #' @examples
-#' # get measurements from a set of boxes
-#' b = osem_boxes(grouptag = 'ifgi')
-#' m4 = osem_measurements(b, phenomenon = 'Temperatur')
+#' \donttest{
+#'   # get measurements from a set of boxes
+#'   b = osem_boxes(grouptag = 'ifgi')
+#'   m4 = osem_measurements(b, phenomenon = 'Temperatur')
 #'
-#' # ...or a single box
-#' b = osem_box('57000b8745fd40c8196ad04c')
-#' m5 = osem_measurements(b, phenomenon = 'Temperatur')
-#'
+#'   # ...or a single box
+#'   b = osem_box('57000b8745fd40c8196ad04c')
+#'   m5 = osem_measurements(b, phenomenon = 'Temperatur')
+#' }
 osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        from = NA, to = NA, columns = NA,
                                        ...,

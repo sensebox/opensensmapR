@@ -35,9 +35,10 @@ osem_phenomena(
 )
 
 # get phenomena with at least 30 sensors on opensensemap
-phenoms = osem_phenomena(osem_boxes())
-names(phenoms[phenoms > 29])
-
+\donttest{
+  phenoms = osem_phenomena(osem_boxes())
+  names(phenoms[phenoms > 29])
+}
 }
 \seealso{
 \code{\link{osem_boxes}}

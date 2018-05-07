@@ -1,6 +1,6 @@
 Package: opensensmapr
 Type: Package
-Title: Work with Sensor Data from Opensensemap.org in R
+Title: Client for the data API of openSenseMap.org
 Version: 0.3.3
 URL: http://github.com/noerw/opensensmapR
 BugReports: http://github.com/noerw/opensensmapR/issues
@@ -23,12 +23,13 @@ Suggests:
     covr
 Authors@R: c(person("Norwin", "Roosen", role = c("aut", "cre"), email = "hello@nroo.de"),
     person("Daniel", "Nuest", role = c("ctb"), email = "daniel.nuest@uni-muenster.de", comment = c(ORCID = "0000-0003-2392-6140")))
-Description: Download data (environmental measurements, sensorstations) from the
-    API of open data sensor web platform 'opensensemap.org' for analysis in R.
-    This platform provides realtime data of more than 1500 low-cost sensor
+Description: Download environmental measurements and sensor station metadata
+    from the API of open data sensor web platform <https://opensensemap.org> for
+    analysis in R.
+    This platform provides real time data of more than 1500 low-cost sensor
     stations for PM10, PM2.5, temperature, humidity, UV-A intensity and more
     phenomena.
-    The package aims to be compatible with sf and the tidyverse, and provides
+    The package aims to be compatible with 'sf' and the 'Tidyverse', and provides
     several helper functions for data exploration and transformation.
 License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8

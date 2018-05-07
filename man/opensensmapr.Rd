@@ -92,7 +92,7 @@ openSenseMap API: \url{https://api.opensensemap.org/}
 official openSenseMap API documentation: \url{https://docs.opensensemap.org/}
 }
 \author{
-\strong{Maintainer}: Norwin Roosen \email{bugs@nroo.de}
+\strong{Maintainer}: Norwin Roosen \email{hello@nroo.de}
 
 Other contributors:
 \itemize{

@@ -41,15 +41,16 @@ Note that some filters do not work together:
 }
 }
 \examples{
-# get *all* boxes available on the API
-b = osem_boxes()
+\donttest{
+  # get *all* boxes available on the API
+  b = osem_boxes()
 
-# get all boxes with grouptag 'ifgi' that are placed outdoors
-b = osem_boxes(grouptag = 'ifgi', exposure = 'outdoor')
+  # get all boxes with grouptag 'ifgi' that are placed outdoors
+  b = osem_boxes(grouptag = 'ifgi', exposure = 'outdoor')
 
-# get all boxes that have measured PM2.5 in the last 4 hours
-b = osem_boxes(date = Sys.time(), phenomenon = 'PM2.5')
-
+  # get all boxes that have measured PM2.5 in the last 4 hours
+  b = osem_boxes(date = Sys.time(), phenomenon = 'PM2.5')
+}
 }
 \seealso{
 \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
