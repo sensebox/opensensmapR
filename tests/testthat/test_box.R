@@ -3,7 +3,7 @@ context('box')
 
 try({
   boxes = osem_boxes()
-  box = osem_box(boxes$X_id[[1]])
+  box = osem_box('57000b8745fd40c8196ad04c')
 })
 
 test_that('a single box can be retrieved by ID', {
@@ -18,6 +18,12 @@ test_that('a single box can be retrieved by ID', {
   expect_silent(osem_box(boxes$X_id[[1]]))
 })
 
+test_that('unknown box throws', {
+  check_api()
+
+  expect_error(osem_box('asdf'))
+  expect_error(osem_box('57000b8745fd40c800000000'), 'not found')
+})
 
 test_that('[.sensebox maintains attributes', {
   check_api()
@@ -25,14 +31,14 @@ test_that('[.sensebox maintains attributes', {
   expect_true(all(attributes(boxes[1:nrow(boxes), ]) %in% attributes(boxes)))
 })
 
-test_that("print.sensebox filters important attributes", {
+test_that("print.sensebox filters important attributes for a single box", {
   msg = capture.output({
     print(box)
   })
   expect_false(any(grepl('description', msg)), 'should filter attribute "description"')
 })
 
-test_that("summary.sensebox outputs all metrics", {
+test_that("summary.sensebox outputs all metrics for a single box", {
   msg = capture.output({
     summary(box)
   })

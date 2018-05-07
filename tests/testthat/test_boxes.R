@@ -17,6 +17,13 @@ test_that('both from and to are required when requesting boxes, error otherwise'
   expect_error(osem_boxes(to   = as.POSIXct('2017-01-01')), 'must be used together')
 })
 
+test_that('a list of boxes with phenomenon filter returns only the requested phenomenon', {
+  check_api()
+
+  boxes = osem_boxes(phenomenon='Temperatur', date=Sys.time())
+  expect_true(all(grep('Temperatur', boxes$phenomena)))
+})
+
 test_that('a list of boxes with exposure filter returns only the requested exposure', {
   check_api()
 
@@ -105,4 +112,30 @@ test_that('box retrieval does not give progress information in non-interactive m
     b = osem_boxes()
   })
   expect_length(out, 0)
+})
+
+test_that('print.sensebox filters important attributes for a set of boxes', {
+  check_api()
+
+  boxes = osem_boxes()
+  msg = capture.output({
+    print(boxes)
+  })
+  expect_false(any(grepl('description', msg)), 'should filter attribute "description"')
+})
+
+test_that('summary.sensebox outputs all metrics for a set of boxes', {
+  check_api()
+
+  boxes = osem_boxes()
+  msg = capture.output({
+    summary(boxes)
+  })
+  expect_true(any(grepl('sensors per box:', msg)))
+  expect_true(any(grepl('oldest box:', msg)))
+  expect_true(any(grepl('newest box:', msg)))
+  expect_true(any(grepl('\\$last_measurement_within', msg)))
+  expect_true(any(grepl('boxes by model:', msg)))
+  expect_true(any(grepl('boxes by exposure:', msg)))
+  expect_true(any(grepl('boxes total:', msg)))
 })

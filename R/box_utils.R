@@ -31,12 +31,9 @@ plot.sensebox = function (x, ..., mar = c(2, 2, 1, 1)) {
 }
 
 #' @export
-print.sensebox = function(x, ...) {
-  important_columns = c('name', 'exposure', 'lastMeasurement', 'phenomena')
+print.sensebox = function(x, columns = c('name', 'exposure', 'lastMeasurement', 'phenomena'), ...) {
   data = as.data.frame(x)
-  available_columns = important_columns %in% names(data)
-  print(data[available_columns], ...)
-
+  print(dplyr::select(data, dplyr::one_of(columns)), ...)
   invisible(x)
 }
 
