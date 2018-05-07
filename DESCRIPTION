@@ -21,11 +21,11 @@ Suggests:
     lintr,
     testthat,
     covr
-Authors@R: c(person("Norwin", "Roosen", role = c("aut", "cre"), email = "bugs@nroo.de"),
+Authors@R: c(person("Norwin", "Roosen", role = c("aut", "cre"), email = "hello@nroo.de"),
     person("Daniel", "Nuest", role = c("ctb"), email = "daniel.nuest@uni-muenster.de", comment = c(ORCID = "0000-0003-2392-6140")))
 Description: Download data (environmental measurements, sensorstations) from the
     API of open data sensor web platform 'opensensemap.org' for analysis in R.
-    This platform provides realtime data of more than 1000 low-cost sensor
+    This platform provides realtime data of more than 1500 low-cost sensor
     stations for PM10, PM2.5, temperature, humidity, UV-A intensity and more
     phenomena.
     The package aims to be compatible with sf and the tidyverse, and provides
