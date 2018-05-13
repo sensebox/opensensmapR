@@ -1,0 +1,240 @@
+---
+title: "Visualising the History of openSenseMap.org"
+author: "Norwin Roosen"
+date: '`r Sys.Date()`'
+output:
+  rmarkdown::html_vignette:
+    df_print: kable
+    fig_height: 5
+    fig_width: 7
+    toc: yes
+  html_document:
+    code_folding: hide
+    df_print: kable
+    theme: lumen
+    toc: yes
+    toc_float: yes
+vignette: |
+  %\VignetteIndexEntry{Visualising the History of openSenseMap.org} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, results='hide', message=FALSE, warning=FALSE}
+# required packages:
+library(opensensmapr) # data download
+library(dplyr)        # data wrangling
+library(ggplot2)      # plotting
+library(lubridate)    # date arithmetic
+library(zoo)          # rollmean()
+```
+
+openSenseMap.org has grown quite a bit in the last years; it would be interesting
+to see how we got to the current amount of sensor stations, especially split up
+by various attributes of the boxes.
+
+```{r counts}
+# current number of sensor stations registered on the platform
+osem_counts()$boxes
+```
+
+While `opensensmapr` provides extensive methods of filtering boxes by attributes
+on the server, we do the filtering within R to save time and gain flexibility.
+So the first step is to retrieve *all the boxes*:
+
+```{r download}
+# if you want to see results for a specific subset of boxes,
+# just specify a filter such as grouptag='ifgi' here
+boxes = osem_boxes()
+```
+
+
+
+# Plot count of boxes by time {.tabset}
+By looking at the `createdAt` attribute of each box we know the exact time a box
+was registered.
+With this approach we have no information about boxes that were deleted in the
+meantime, but that's okay for now.
+
+## ...and exposure
+```{r exposure_counts, message=FALSE}
+exposure_counts = boxes %>%
+  group_by(exposure) %>%
+  mutate(count = row_number(createdAt))
+
+exposure_colors = c(indoor = 'red', outdoor = 'lightgreen', mobile = 'blue', unknown = 'darkgrey')
+ggplot(exposure_counts, aes(x = createdAt, y = count, colour = exposure)) +
+  geom_line() +
+  scale_colour_manual(values = exposure_colors) +
+  xlab('Registration Date') + ylab('senseBox count')
+```
+
+Outdoor boxes are growing *fast*!
+We can also see the introduction of `mobile` sensor "stations" in 2017. While
+mobile boxes are still few, we can expect a quick rise in 2018 once the new
+[senseBox MCU with GPS support is released](https://sensebox.de/blog/2018-03-06-senseBox_MCU).
+
+Let's have a quick summary:
+```{r exposure_summary}
+exposure_counts %>%
+  summarise(
+    oldest = min(createdAt),
+    newest = max(createdAt),
+    count = max(count)
+  ) %>%
+  arrange(desc(count))
+```
+
+## ...and grouptag
+We can try to find out where the increases in growth came from, by analysing the 
+box count by grouptag.
+
+Caveats: Only a small subset of boxes has a grouptag, and we should assume
+that these groups are actually bigger. Also, we can see that grouptag naming is
+inconsistent (`Luftdaten`, `luftdaten.info`, ...)
+
+```{r grouptag_counts, message=FALSE}
+grouptag_counts = boxes %>%
+  group_by(grouptag) %>%
+  # only include grouptags with 8 or more members
+  filter(length(grouptag) >= 8 && !is.na(grouptag)) %>%
+  mutate(count = row_number(createdAt))
+
+# helper for sorting the grouptags by boxcount
+sortLvls = function(oldFactor, ascending = TRUE) {
+  lvls = table(oldFactor) %>% sort(., decreasing = !ascending) %>% names()
+  factor(oldFactor, levels = lvls)
+}
+grouptag_counts$grouptag = sortLvls(grouptag_counts$grouptag, ascending = FALSE)
+
+ggplot(grouptag_counts, aes(x = createdAt, y = count, colour = grouptag)) +
+  geom_line(aes(group = grouptag)) +
+  xlab('Registration Date') + ylab('senseBox count')
+```
+
+```{r grouptag_summary}
+grouptag_counts %>%
+  summarise(
+    oldest = min(createdAt),
+    newest = max(createdAt),
+    count = max(count)
+  ) %>%
+  arrange(desc(count))
+```
+
+# Plot rate of growth and inactivity per week
+First we group the boxes by `createdAt` into bins of one week:
+```{r growthrate_registered, warning=FALSE, message=FALSE, results='hide'}
+bins = 'week'
+mvavg_bins = 6
+
+# get number of sensebox registrations by date
+growth = boxes %>%
+  mutate(week = cut(as.Date(createdAt), breaks = bins)) %>%
+  group_by(week) %>%
+  summarize(count = length(week)) %>%
+  mutate(event = 'registered')
+```
+
+We can do the same for `updatedAt`, which informs us about the last change to
+a box, including uploaded measurements.
+This method of determining inactive boxes is fairly inaccurate and should be
+considered an approximation, because we have no information about intermediate
+inactive phases.
+Also deleted boxes would probably have a big impact here.
+```{r growthrate_inactive, warning=FALSE, message=FALSE, results='hide'}
+# get number of boxes boxes becoming inactive by date
+inactive = boxes %>%
+  # updatedAt gets updated with each measurement, so we can use it as indicator for activity
+  # remove boxes that were not updated in the last two days,
+  # b/c any box becomes inactive at some point by definition of updatedAt
+  filter(updatedAt < now() - days(2)) %>%
+  mutate(week = cut(as.Date(updatedAt), breaks = bins)) %>%
+  group_by(week) %>%
+  summarize(count = length(week)) %>%
+  mutate(event = 'inactive')
+```
+
+Now we can combine both datasets for plotting:
+```{r growthrate, warning=FALSE, message=FALSE, results='hide'}
+boxes_by_date = bind_rows(growth, inactive) %>% group_by(event)
+
+ggplot(boxes_by_date, aes(x = as.Date(week), colour = event)) +
+  xlab('Time') + ylab(paste('rate per ', bins)) +
+  scale_x_date(date_breaks="years", date_labels="%Y") +
+  scale_colour_manual(values = c(registered = 'lightgreen', inactive = 'grey')) +
+  geom_point(aes(y = count), size = 0.5) +
+  # moving average, make first and last value NA (to ensure identical length of vectors)
+  geom_line(aes(y = rollmean(count, mvavg_bins, fill = list(NA, NULL, NA))))
+```
+
+We see a sudden rise in early 2017, which lines up with the fast growing grouptag `Luftdaten`.
+This was enabled by an integration of openSenseMap.org into the firmware of the
+air quality monitoring project <https://luftdaten.info>.
+The dips in mid 2017 and early 2018 could possibly be explained by production/delivery issues,
+but I have no data on the exact time frames to verify.
+
+# Plot duration of boxes being active {.tabset}
+While we are looking at `createdAt` and `updatedAt`, we can also extract the duration of activity
+of each box, and look at metrics by exposure and grouptag again:
+
+## ...by exposure
+```{r exposure_duration, message=FALSE}
+duration = boxes %>%
+  group_by(exposure) %>%
+  filter(!is.na(updatedAt)) %>%
+  mutate(duration = difftime(updatedAt, createdAt, units='days'))
+
+ggplot(duration, aes(x = exposure, y = duration)) +
+  geom_boxplot() +
+  coord_flip() + ylab('Duration active in Days')
+```
+
+## ...by grouptag
+```{r grouptag_duration, message=FALSE}
+duration = boxes %>%
+  group_by(grouptag) %>%
+  # only include grouptags with 8 or more members
+  filter(length(grouptag) >= 8 && !is.na(grouptag) && !is.na(updatedAt)) %>%
+  mutate(duration = difftime(updatedAt, createdAt, units='days'))
+  
+ggplot(duration, aes(x = grouptag, y = duration)) +
+  geom_boxplot() +
+  coord_flip() + ylab('Duration active in Days')
+
+duration %>%
+  summarize(
+    duration_avg = round(mean(duration)),
+    duration_min = round(min(duration)),
+    duration_max = round(max(duration)),
+    oldest_box = round(max(difftime(now(), createdAt, units='days')))
+  ) %>%
+  arrange(desc(duration_avg))
+```
+
+## ...by year of registration
+This is less useful, as older boxes are active for a longer time by definition.
+If you have an idea how to compensate for that, please send a [Pull Request][PR]!
+
+```{r year_duration, message=FALSE}
+# NOTE: boxes older than 2016 missing due to missing updatedAt in database
+duration = boxes %>%
+  mutate(year = cut(as.Date(createdAt), breaks = 'year')) %>%
+  group_by(year) %>%
+  filter(!is.na(updatedAt)) %>%
+  mutate(duration = difftime(updatedAt, createdAt, units='days'))
+
+ggplot(duration, aes(x = substr(as.character(year), 0, 4), y = duration)) +
+  geom_boxplot() +
+  coord_flip() + ylab('Duration active in Days') + xlab('Year of Registration')
+```
+
+# More Visualisations
+Other visualisations come to mind, and are left as an exercise to the reader.
+If you implemented some, feel free to add them to this vignette via a [Pull Request][PR].
+
+* growth by phenomenon
+* growth by location -> (interactive) map?
+* set inactive rate in relation to total box count
+* filter timespans with big dips in growth rate, and extrapolate the amount of
+  senseBoxes that could be on the platform today, assuming there were no production issues ;)
+
+[PR]: https://github.com/noerw/opensensmapr/pulls
