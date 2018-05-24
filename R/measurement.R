@@ -40,8 +40,27 @@ osem_measurements = function (x, ...) UseMethod('osem_measurements')
 #' @export
 #' @examples
 #' \donttest{
-#'   # get measurements from all boxes
-#'   m1 = osem_measurements('Windrichtung')
+#'   # get measurements from all boxes on the phenomenon 'PM10' from the last 48h
+#'   m = osem_measurements('PM10')
+#'
+#'   # get measurements from all mobile boxes on the phenomenon 'PM10' from the last 48h
+#'   m = osem_measurements('PM10', exposure = 'mobile')
+#'
+#'   # get measurements and cache them locally in the working directory.
+#'   # subsequent identical requests will load from the cache instead, ensuring
+#'   # reproducibility and saving time and bandwidth!
+#'   m = osem_measurements('PM10', exposure = 'mobile', cache = getwd())
+#'   m = osem_measurements('PM10', exposure = 'mobile', cache = getwd())
+#'
+#'   # get measurements returning a custom selection of columns
+#'   m = osem_measurements('PM10', exposure = 'mobile', columns = c(
+#'     'value',
+#'     'boxId',
+#'     'sensorType',
+#'     'lat',
+#'     'lon',
+#'     'height'
+#'   ))
 #' }
 osem_measurements.default = function (x, ...) {
   bbox = structure(c(-180, -90, 180, 90), class = 'bbox')
@@ -54,13 +73,26 @@ osem_measurements.default = function (x, ...) {
 #' @export
 #' @examples
 #' \donttest{
-#'   # get measurements from sensors within a bounding box
+#'   # get measurements from sensors within a custom WGS84 bounding box
 #'   bbox = structure(c(7, 51, 8, 52), class = 'bbox')
-#'   m2 = osem_measurements(bbox, 'Temperatur')
+#'   m = osem_measurements(bbox, 'Temperatur')
 #'
-#'   points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
-#'   bbox2 = sf::st_bbox(points)
-#'   m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+#'   # construct a bounding box 12km around berlin using the sf package,
+#'   # and get measurements from stations within that box
+#'   library(sf)
+#'   bbox2 = st_point(c(13.4034, 52.5120)) %>%
+#'     st_sfc(crs = 4326) %>%
+#'     st_transform(3857) %>% # allow setting a buffer in meters
+#'     st_buffer(set_units(12, km)) %>%
+#'     st_transform(4326) %>% # the opensensemap expects WGS 84
+#'     st_bbox()
+#'   m = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+#'
+#'   # construct a bounding box from two points,
+#'   # and get measurements from stations within that box
+#'   points = st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
+#'   bbox3 = st_bbox(points)
+#'   m = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 #' }
 osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    from = NA, to = NA, columns = NA,
@@ -88,6 +120,17 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
 #'   # ...or a single box
 #'   b = osem_box('57000b8745fd40c8196ad04c')
 #'   m5 = osem_measurements(b, phenomenon = 'Temperatur')
+#'
+#'   # get measurements from a single box on the from the last 40 days.
+#'   # requests are paged for long time frames, so the APIs limitation
+#'   # does not apply!
+#'   library(lubridate)
+#'   m1 = osem_measurements(
+#'     b,
+#'     'Temperatur',
+#'     to = now(),
+#'     from = now() - days(40)
+#'   )
 #' }
 osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        from = NA, to = NA, columns = NA,
@@ -112,7 +155,7 @@ osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
 #' @return A named \code{list} of parsed parameters.
 #' @noRd
 parse_get_measurements_params = function (params) {
-  if (is.null(params$phenomenon) | is.na(params$phenomenon))
+  if (is.symbol(params$phenomenon) || is.null(params$phenomenon) || is.na(params$phenomenon))
     stop('Parameter "phenomenon" is required')
 
   if (
