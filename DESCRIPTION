@@ -19,6 +19,9 @@ Suggests:
     rmarkdown,
     lubridate,
     units,
+    jsonlite,
+    ggplot2,
+    zoo,
     lintr,
     testthat,
     covr

@@ -18,6 +18,9 @@ vignette: |
   %\VignetteIndexEntry{Visualising the History of openSenseMap.org} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
 ---
 
+> This vignette serves as an example on data wrangling & visualization with
+`opensensmapr`, `dplyr` and `ggplot2`.
+
 ```{r setup, results='hide', message=FALSE, warning=FALSE}
 # required packages:
 library(opensensmapr) # data download
@@ -28,13 +31,8 @@ library(zoo)          # rollmean()
 ```
 
 openSenseMap.org has grown quite a bit in the last years; it would be interesting
-to see how we got to the current amount of sensor stations, especially split up
-by various attributes of the boxes.
-
-```{r counts}
-# current number of sensor stations registered on the platform
-osem_counts()$boxes
-```
+to see how we got to the current `r osem_counts()$boxes` sensor stations,
+split up by various attributes of the boxes.
 
 While `opensensmapr` provides extensive methods of filtering boxes by attributes
 on the server, we do the filtering within R to save time and gain flexibility.
@@ -45,8 +43,6 @@ So the first step is to retrieve *all the boxes*:
 # just specify a filter such as grouptag='ifgi' here
 boxes = osem_boxes()
 ```
-
-
 
 # Plot count of boxes by time {.tabset}
 By looking at the `createdAt` attribute of each box we know the exact time a box
@@ -126,7 +122,6 @@ First we group the boxes by `createdAt` into bins of one week:
 bins = 'week'
 mvavg_bins = 6
 
-# get number of sensebox registrations by date
 growth = boxes %>%
   mutate(week = cut(as.Date(createdAt), breaks = bins)) %>%
   group_by(week) %>%
@@ -141,10 +136,8 @@ considered an approximation, because we have no information about intermediate
 inactive phases.
 Also deleted boxes would probably have a big impact here.
 ```{r growthrate_inactive, warning=FALSE, message=FALSE, results='hide'}
-# get number of boxes boxes becoming inactive by date
 inactive = boxes %>%
-  # updatedAt gets updated with each measurement, so we can use it as indicator for activity
-  # remove boxes that were not updated in the last two days,
+  # remove boxes that were updated in the last two days,
   # b/c any box becomes inactive at some point by definition of updatedAt
   filter(updatedAt < now() - days(2)) %>%
   mutate(week = cut(as.Date(updatedAt), breaks = bins)) %>%
@@ -168,13 +161,13 @@ ggplot(boxes_by_date, aes(x = as.Date(week), colour = event)) +
 
 We see a sudden rise in early 2017, which lines up with the fast growing grouptag `Luftdaten`.
 This was enabled by an integration of openSenseMap.org into the firmware of the
-air quality monitoring project <https://luftdaten.info>.
-The dips in mid 2017 and early 2018 could possibly be explained by production/delivery issues,
-but I have no data on the exact time frames to verify.
+air quality monitoring project [luftdaten.info](https://luftdaten.info).
+The dips in mid 2017 and early 2018 could possibly be explained by production/delivery issues
+of the senseBox hardware, but I have no data on the exact time frames to verify.
 
 # Plot duration of boxes being active {.tabset}
 While we are looking at `createdAt` and `updatedAt`, we can also extract the duration of activity
-of each box, and look at metrics by exposure and grouptag again:
+of each box, and look at metrics by exposure and grouptag once more:
 
 ## ...by exposure
 ```{r exposure_duration, message=FALSE}
@@ -187,6 +180,10 @@ ggplot(duration, aes(x = exposure, y = duration)) +
   geom_boxplot() +
   coord_flip() + ylab('Duration active in Days')
 ```
+
+The time of activity averages at only `r round(mean(duration$duration))` days,
+though there are boxes with `r round(max(duration$duration))` days of activity,
+spanning a large chunk of openSenseMap's existence.
 
 ## ...by grouptag
 ```{r grouptag_duration, message=FALSE}
@@ -210,6 +207,10 @@ duration %>%
   arrange(desc(duration_avg))
 ```
 
+The time of activity averages at only `r round(mean(duration$duration))` days,
+though there are boxes with `r round(max(duration$duration))` days of activity,
+spanning a large chunk of openSenseMap's existence.
+
 ## ...by year of registration
 This is less useful, as older boxes are active for a longer time by definition.
 If you have an idea how to compensate for that, please send a [Pull Request][PR]!
@@ -232,7 +233,7 @@ Other visualisations come to mind, and are left as an exercise to the reader.
 If you implemented some, feel free to add them to this vignette via a [Pull Request][PR].
 
 * growth by phenomenon
-* growth by location -> (interactive) map?
+* growth by location -> (interactive) map
 * set inactive rate in relation to total box count
 * filter timespans with big dips in growth rate, and extrapolate the amount of
   senseBoxes that could be on the platform today, assuming there were no production issues ;)
