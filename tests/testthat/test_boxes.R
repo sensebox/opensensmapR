@@ -20,7 +20,7 @@ test_that('both from and to are required when requesting boxes, error otherwise'
 test_that('a list of boxes with phenomenon filter returns only the requested phenomenon', {
   check_api()
 
-  boxes = osem_boxes(phenomenon='Temperatur', date=Sys.time())
+  boxes = osem_boxes(phenomenon = 'Temperatur', date=Sys.time())
   expect_true(all(grep('Temperatur', boxes$phenomena)))
 })
 
@@ -138,4 +138,30 @@ test_that('summary.sensebox outputs all metrics for a set of boxes', {
   expect_true(any(grepl('boxes by model:', msg)))
   expect_true(any(grepl('boxes by exposure:', msg)))
   expect_true(any(grepl('boxes total:', msg)))
+})
+
+test_that('requests can be cached', {
+  check_api()
+
+  osem_clear_cache()
+  expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 0)
+  b = osem_boxes(cache = tempdir())
+
+  cacheFile = paste(
+    tempdir(),
+    opensensmapr:::osem_cache_filename('/boxes'),
+    sep = '/'
+  )
+  expect_true(file.exists(cacheFile))
+  expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 1)
+
+  # no download output (works only in interactive mode..)
+  out = capture.output({
+    b = osem_boxes(cache = tempdir())
+  })
+  expect_length(out, 0)
+  expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 1)
+
+  osem_clear_cache()
+  expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 0)
 })

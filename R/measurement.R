@@ -21,13 +21,17 @@
 #' @param columns Select specific column in the output (see openSenseMap API documentation)
 #' @param endpoint The URL of the openSenseMap API
 #' @param progress Whether to print download progress information
+#' @param cache Whether to cache the result, defaults to false.
+#'   If a valid path to a directory is given, the response will be cached there. Subsequent identical requests will return the cached data instead.
 #'
 #' @return An \code{osem_measurements data.frame} containing the
 #'   requested measurements
 #'
 #' @export
 #' @seealso \href{https://docs.opensensemap.org/#api-Measurements-getDataMulti}{openSenseMap API documentation (web)}
+#' @seealso \code{\link{osem_box}}
 #' @seealso \code{\link{osem_boxes}}
+#' @seealso \code{\link{osem_clear_cache}}
 osem_measurements = function (x, ...) UseMethod('osem_measurements')
 
 # ==============================================================================
@@ -62,7 +66,8 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    from = NA, to = NA, columns = NA,
                                    ...,
                                    endpoint = osem_endpoint(),
-                                   progress = T) {
+                                   progress = T,
+                                   cache = NA) {
   bbox = x
   environment() %>%
     as.list() %>%
@@ -88,7 +93,8 @@ osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        from = NA, to = NA, columns = NA,
                                        ...,
                                        endpoint = osem_endpoint(),
-                                       progress = T) {
+                                       progress = T,
+                                       cache = NA) {
   boxes = x
   environment() %>%
     as.list() %>%
@@ -122,7 +128,8 @@ parse_get_measurements_params = function (params) {
   query = list(
     endpoint = params$endpoint,
     phenomenon = params$phenomenon,
-    progress = params$progress
+    progress = params$progress,
+    cache = params$cache
   )
 
   if (!is.null(params$boxes))  query$boxId = paste(params$boxes$X_id, collapse = ',')

@@ -7,6 +7,7 @@ BugReports: http://github.com/noerw/opensensmapR/issues
 Imports:
     dplyr,
     httr,
+    digest,
     magrittr
 Suggests:
     maps,

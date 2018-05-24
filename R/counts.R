@@ -11,6 +11,6 @@
 #'
 #' @export
 #' @seealso \href{https://docs.opensensemap.org/#api-Misc-getStatistics}{openSenseMap API documentation (web)}
-osem_counts = function(endpoint = osem_endpoint()) {
-  get_stats_(endpoint)
+osem_counts = function(endpoint = osem_endpoint(), cache = NA) {
+  get_stats_(endpoint, cache)
 }

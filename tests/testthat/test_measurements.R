@@ -105,6 +105,17 @@ test_that('both from and to are required when requesting measurements, error oth
   expect_error(osem_measurements(x = 'Temperature', to   = as.POSIXct('2017-01-01')), 'only together with')
 })
 
+test_that('phenomenon is required when requesting measurements, error otherwise', {
+  check_api()
+
+  expect_error(osem_measurements(), 'missing, with no default')
+  expect_error(osem_measurements(boxes), 'Parameter "phenomenon" is required')
+
+  sfc = sf::st_sfc(sf::st_linestring(x = matrix(data = c(7, 8, 50, 51), ncol = 2)), crs = 4326)
+  bbox = sf::st_bbox(sfc)
+  expect_error(osem_measurements(bbox), 'Parameter "phenomenon" is required')
+})
+
 test_that('[.osem_measurements maintains attributes', {
   check_api()
 
@@ -113,4 +124,24 @@ test_that('[.osem_measurements maintains attributes', {
   m = osem_measurements(x = bbox, phenomenon = 'Windrichtung')
 
   expect_true(all(attributes(m[1:nrow(m), ]) %in% attributes(m)))
+})
+
+test_that('requests can be cached', {
+  check_api()
+
+  osem_clear_cache()
+  expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 0)
+  osem_measurements('Windrichtung', cache = tempdir())
+
+  expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 1)
+
+  # no download output (works only in interactive mode..)
+  out = capture.output({
+    m = osem_measurements('Windrichtung', cache = tempdir())
+  })
+  expect_length(out, 0)
+  expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 1)
+
+  osem_clear_cache()
+  expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 0)
 })

@@ -19,14 +19,20 @@
 #' @param phenomenon Only return boxes that measured the given phenomenon in the
 #'   time interval as specified through \code{date} or \code{from / to}
 #' @param endpoint The URL of the openSenseMap API instance
-#' @param progress Whether to print download progress information defaults to \code{TRUE}
+#' @param progress Whether to print download progress information, defaults to \code{TRUE}
+#' @param cache Whether to cache the result, defaults to false.
+#'   If a valid path to a directory is given, the response will be cached there.
+#'   Subsequent identical requests will return the cached data instead.
 #' @return A \code{sensebox data.frame} containing a box in each row
 #'
 #' @seealso \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
 #' @seealso \code{\link{osem_phenomena}}
 #' @seealso \code{\link{osem_box}}
+#' @seealso \code{\link{osem_clear_cache}}
+#'
 #' @export
 #' @examples
+#'
 #' \donttest{
 #'   # get *all* boxes available on the API
 #'   b = osem_boxes()
@@ -40,7 +46,8 @@
 osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
                       date = NA, from = NA, to = NA, phenomenon = NA,
                       endpoint = osem_endpoint(),
-                      progress = TRUE) {
+                      progress = TRUE,
+                      cache = NA) {
 
   # error, if phenomenon, but no time given
   if (!is.na(phenomenon) && is.na(date) && is.na(to) && is.na(from))
@@ -58,7 +65,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
    stop('Parameter "from"/"to" must be used together')
   }
 
-  query = list(endpoint = endpoint, progress = progress)
+  query = list(endpoint = endpoint, progress = progress, cache = cache)
   if (!is.na(exposure)) query$exposure = exposure
   if (!is.na(model)) query$model = model
   if (!is.na(grouptag)) query$grouptag = grouptag
@@ -78,18 +85,21 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
 #'
 #' @param boxId A string containing a senseBox ID
 #' @param endpoint The URL of the openSenseMap API instance
+#' @param cache Whether to cache the result, defaults to false.
+#'   If a valid path to a directory is given, the response will be cached there. Subsequent identical requests will return the cached data instead.
 #' @return A \code{sensebox data.frame} containing a box in each row
 #'
 #' @seealso \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
 #' @seealso \code{\link{osem_phenomena}}
 #' @seealso \code{\link{osem_boxes}}
+#' @seealso \code{\link{osem_clear_cache}}
 #' @export
 #' @examples
 #' # get a specific box by ID
 #' b = osem_box('57000b8745fd40c8196ad04c')
 #'
-osem_box = function (boxId, endpoint = osem_endpoint()) {
-  get_box_(boxId, endpoint = endpoint)
+osem_box = function (boxId, endpoint = osem_endpoint(), cache = NA) {
+  get_box_(boxId, endpoint = endpoint, cache = cache)
 }
 
 # ==============================================================================

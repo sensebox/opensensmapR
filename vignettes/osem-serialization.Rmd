@@ -20,8 +20,50 @@ This avoids..
 - risk of API changes / API unavailability,
 - stress on the openSenseMap-server.
 
+This vignette shows how to use this built in `opensensmapr` feature, and
+how to do it yourself, if you want to store to other data formats.
+
+## Using openSensMapr Caching Feature
+All data retrieval functions of `opensensmapr` have a built in caching feature,
+which serializes an API response to disk.
+Subsequent identical requests will then return the serialized data instead of making
+another request.
+To do so, each request is given a unique ID based on its parameters.
+
+To use this feature, just add a path to a directory to the `cache` parameter:
+```{r cache}
+b = osem_boxes(cache = tempdir())
+list.files(tempdir(), pattern = 'osemcache\\..*\\.rds')
+
+# the next identical request will hit the cache only!
+b = osem_boxes(cache = tempdir())
+
+# requests without the cache parameter will still be performed normally
+b = osem_boxes()
+```
+
+You can maintain multiple caches simultaneously which allows to store only
+serialized data related to a script in its directory:
+```{r cache_custom}
+cacheDir = getwd() # current working directory
+b = osem_boxes(cache = cacheDir)
+
+# the next identical request will hit the cache only!
+b = osem_boxes(cache = cacheDir)
+```
+
+To get fresh results again, just call `osem_clear_cache()` for the respective cache:
+```{r clearcache}
+osem_clear_cache() # clears default cache
+osem_clear_cache(getwd()) # clears a custom cache
+```
+
+## Custom (De-) Serialization
+If you want to roll your own serialization method to support custom data formats,
+here's how:
+
 ```{r setup, results='hide'}
-# this vignette requires:
+# this section requires:
 library(opensensmapr)
 library(jsonlite)
 library(readr)
@@ -31,16 +73,7 @@ boxes = osem_boxes(grouptag = 'ifgi')
 measurements = osem_measurements(boxes, phenomenon = 'PM10')
 ```
 
-## (De-) Serializing Data
-The standard way of serialization in R is through the custom binary `.rds` (single object)
-or `.RData` (full environment) formats:
-```{r serialize_rds}
-# serializing measurements to RDS, and loading it from the file again:
-saveRDS(measurements, 'measurements.rds')
-measurements_from_file = readRDS('measurements.rds')
-```
-
-Or, if you are paranoid and worry about `.rds` files not being decodable anymore
+If you are paranoid and worry about `.rds` files not being decodable anymore
 in the (distant) future, you could serialize to a plain text format such as JSON.
 This of course comes at the cost of storage space and performance.
 ```{r serialize_json}
