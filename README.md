@@ -1,6 +1,6 @@
 # opensensmapr
 
-[![CRAN status](http://www.r-pkg.org/badges/version/opensensmapr)](https://cran.r-project.org/package=opensensmapr) [![Travis build status](https://travis-ci.org/noerw/opensensmapR.svg?branch=master)](https://travis-ci.org/noerw/opensensmapR) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/noerw/opensensmapR?branch=master&svg=true)](https://ci.appveyor.com/project/noerw/opensensmapR) [![Coverage status](https://codecov.io/gh/noerw/opensensmapR/branch/master/graph/badge.svg)](https://codecov.io/github/noerw/opensensmapR?branch=master)
+[![CRAN status](https://www.r-pkg.org/badges/version/opensensmapr)](https://cran.r-project.org/package=opensensmapr) [![Travis build status](https://travis-ci.org/noerw/opensensmapR.svg?branch=master)](https://travis-ci.org/noerw/opensensmapR) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/noerw/opensensmapR?branch=master&svg=true)](https://ci.appveyor.com/project/noerw/opensensmapR) [![Coverage status](https://codecov.io/gh/noerw/opensensmapR/branch/master/graph/badge.svg)](https://codecov.io/github/noerw/opensensmapR?branch=master)
 
 This R package ingests data (environmental measurements, sensor stations) from the API of opensensemap.org for analysis in R.
 The package aims to be compatible with sf and the tidyverse.

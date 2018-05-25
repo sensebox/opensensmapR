@@ -1,6 +1,6 @@
 Package: opensensmapr
 Type: Package
-Title: Client for the data API of openSenseMap.org
+Title: Client for the Data API of openSenseMap.org
 Version: 0.3.3
 URL: http://github.com/noerw/opensensmapR
 BugReports: http://github.com/noerw/opensensmapR/issues
