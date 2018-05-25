@@ -1,6 +1,14 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
+### 2018-05-25: v0.4.0
+- add caching feature for requests; see vignette osem-serialization
+- add vignette osem-serialization
+- add vignette osem-history
+- fix broken parameter check for osem_measurements(phenomenon = )
+- increased test coverage
+- package ready for CRAN
+
 ### 2018-01-13: v0.3.2
 - hide download progress in non interactive sessions (#11)
 - fix `print.osem_measurements()`
