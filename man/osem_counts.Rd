@@ -4,10 +4,14 @@
 \alias{osem_counts}
 \title{Get count statistics of the openSenseMap Instance}
 \usage{
-osem_counts(endpoint = osem_endpoint())
+osem_counts(endpoint = osem_endpoint(), cache = NA)
 }
 \arguments{
 \item{endpoint}{The URL of the openSenseMap API}
+
+\item{cache}{Whether to cache the result, defaults to false.
+If a valid path to a directory is given, the response will be cached there.
+Subsequent identical requests will return the cached data instead.}
 }
 \value{
 A named \code{list} containing the counts

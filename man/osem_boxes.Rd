@@ -6,7 +6,7 @@
 \usage{
 osem_boxes(exposure = NA, model = NA, grouptag = NA, date = NA,
   from = NA, to = NA, phenomenon = NA, endpoint = osem_endpoint(),
-  progress = TRUE)
+  progress = TRUE, cache = NA)
 }
 \arguments{
 \item{exposure}{Only return boxes with the given exposure ('indoor', 'outdoor', 'mobile')}
@@ -26,7 +26,11 @@ time interval as specified through \code{date} or \code{from / to}}
 
 \item{endpoint}{The URL of the openSenseMap API instance}
 
-\item{progress}{Whether to print download progress information defaults to \code{TRUE}}
+\item{progress}{Whether to print download progress information, defaults to \code{TRUE}}
+
+\item{cache}{Whether to cache the result, defaults to false.
+If a valid path to a directory is given, the response will be cached there.
+Subsequent identical requests will return the cached data instead.}
 }
 \value{
 A \code{sensebox data.frame} containing a box in each row
@@ -41,6 +45,7 @@ Note that some filters do not work together:
 }
 }
 \examples{
+
 \donttest{
   # get *all* boxes available on the API
   b = osem_boxes()
@@ -48,8 +53,31 @@ Note that some filters do not work together:
   # get all boxes with grouptag 'ifgi' that are placed outdoors
   b = osem_boxes(grouptag = 'ifgi', exposure = 'outdoor')
 
+  # get all boxes with model 'luftdaten_sds011_dht22'
+  b = osem_boxes(grouptag = 'ifgi')
+
   # get all boxes that have measured PM2.5 in the last 4 hours
   b = osem_boxes(date = Sys.time(), phenomenon = 'PM2.5')
+
+  # get all boxes that have measured PM2.5 between Jan & Feb 2018
+  library(lubridate)
+  b = osem_boxes(
+    from = date('2018-01-01'),
+    to = date('2018-02-01'),
+    phenomenon = 'PM2.5'
+  )
+
+  # get all boxes from a custom (selfhosted) openSenseMap API
+  b = osem_box(endpoint = 'http://api.my-custom-osem.com')
+
+  # get all boxes and cache the response, in order to provide
+  # reproducible results in the future. Also useful for development
+  # to avoid repeated loading times!
+  b = osem_boxes(cache = getwd())
+  b = osem_boxes(cache = getwd())
+
+  # get *all* boxes available on the API, without showing download progress
+  b = osem_boxes(progress = FALSE)
 }
 }
 \seealso{
@@ -58,4 +86,6 @@ Note that some filters do not work together:
 \code{\link{osem_phenomena}}
 
 \code{\link{osem_box}}
+
+\code{\link{osem_clear_cache}}
 }

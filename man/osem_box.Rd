@@ -4,12 +4,15 @@
 \alias{osem_box}
 \title{Get a single senseBox by its ID}
 \usage{
-osem_box(boxId, endpoint = osem_endpoint())
+osem_box(boxId, endpoint = osem_endpoint(), cache = NA)
 }
 \arguments{
 \item{boxId}{A string containing a senseBox ID}
 
 \item{endpoint}{The URL of the openSenseMap API instance}
+
+\item{cache}{Whether to cache the result, defaults to false.
+If a valid path to a directory is given, the response will be cached there. Subsequent identical requests will return the cached data instead.}
 }
 \value{
 A \code{sensebox data.frame} containing a box in each row
@@ -18,9 +21,17 @@ A \code{sensebox data.frame} containing a box in each row
 Get a single senseBox by its ID
 }
 \examples{
-# get a specific box by ID
-b = osem_box('57000b8745fd40c8196ad04c')
+\donttest{
+  # get a specific box by ID
+  b = osem_box('57000b8745fd40c8196ad04c')
 
+  # get a specific box by ID from a custom (selfhosted) openSenseMap API
+  b = osem_box('51030b8725fd30c2196277da', 'http://api.my-custom-osem.com')
+
+  # get a specific box by ID and cache the response, in order to provide
+  # reproducible results in the future.
+  b = osem_box('51030b8725fd30c2196277da', cache = tempdir())
+}
 }
 \seealso{
 \href{https://docs.opensensemap.org/#api-Measurements-findAllBoxes}{openSenseMap API documentation (web)}
@@ -28,4 +39,6 @@ b = osem_box('57000b8745fd40c8196ad04c')
 \code{\link{osem_phenomena}}
 
 \code{\link{osem_boxes}}
+
+\code{\link{osem_clear_cache}}
 }

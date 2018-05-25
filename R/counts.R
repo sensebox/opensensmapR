@@ -7,6 +7,9 @@
 #' @details Note that the API caches these values for 5 minutes.
 #'
 #' @param endpoint The URL of the openSenseMap API
+#' @param cache Whether to cache the result, defaults to false.
+#'   If a valid path to a directory is given, the response will be cached there.
+#'   Subsequent identical requests will return the cached data instead.
 #' @return A named \code{list} containing the counts
 #'
 #' @export

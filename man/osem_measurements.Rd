@@ -12,11 +12,12 @@ osem_measurements(x, ...)
 \method{osem_measurements}{default}(x, ...)
 
 \method{osem_measurements}{bbox}(x, phenomenon, exposure = NA, from = NA,
-  to = NA, columns = NA, ..., endpoint = osem_endpoint(), progress = T)
+  to = NA, columns = NA, ..., endpoint = osem_endpoint(), progress = T,
+  cache = NA)
 
 \method{osem_measurements}{sensebox}(x, phenomenon, exposure = NA,
   from = NA, to = NA, columns = NA, ..., endpoint = osem_endpoint(),
-  progress = T)
+  progress = T, cache = NA)
 }
 \arguments{
 \item{x}{Depending on the method, either
@@ -42,6 +43,9 @@ osem_measurements(x, ...)
 \item{endpoint}{The URL of the openSenseMap API}
 
 \item{progress}{Whether to print download progress information}
+
+\item{cache}{Whether to cache the result, defaults to false.
+If a valid path to a directory is given, the response will be cached there. Subsequent identical requests will return the cached data instead.}
 }
 \value{
 An \code{osem_measurements data.frame} containing the
@@ -63,17 +67,49 @@ a bounding box spanning the whole world.
 
 \examples{
 \donttest{
-  # get measurements from all boxes
-  m1 = osem_measurements('Windrichtung')
+  # get measurements from all boxes on the phenomenon 'PM10' from the last 48h
+  m = osem_measurements('PM10')
+
+  # get measurements from all mobile boxes on the phenomenon 'PM10' from the last 48h
+  m = osem_measurements('PM10', exposure = 'mobile')
+
+  # get measurements and cache them locally in the working directory.
+  # subsequent identical requests will load from the cache instead, ensuring
+  # reproducibility and saving time and bandwidth!
+  m = osem_measurements('PM10', exposure = 'mobile', cache = getwd())
+  m = osem_measurements('PM10', exposure = 'mobile', cache = getwd())
+
+  # get measurements returning a custom selection of columns
+  m = osem_measurements('PM10', exposure = 'mobile', columns = c(
+    'value',
+    'boxId',
+    'sensorType',
+    'lat',
+    'lon',
+    'height'
+  ))
 }
 \donttest{
-  # get measurements from sensors within a bounding box
+  # get measurements from sensors within a custom WGS84 bounding box
   bbox = structure(c(7, 51, 8, 52), class = 'bbox')
-  m2 = osem_measurements(bbox, 'Temperatur')
+  m = osem_measurements(bbox, 'Temperatur')
 
-  points = sf::st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
-  bbox2 = sf::st_bbox(points)
-  m3 = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+  # construct a bounding box 12km around berlin using the sf package,
+  # and get measurements from stations within that box
+  library(sf)
+  bbox2 = st_point(c(13.4034, 52.5120)) \%>\%
+    st_sfc(crs = 4326) \%>\%
+    st_transform(3857) \%>\% # allow setting a buffer in meters
+    st_buffer(set_units(12, km)) \%>\%
+    st_transform(4326) \%>\% # the opensensemap expects WGS 84
+    st_bbox()
+  m = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
+
+  # construct a bounding box from two points,
+  # and get measurements from stations within that box
+  points = st_multipoint(matrix(c(7.5, 7.8, 51.7, 52), 2, 2))
+  bbox3 = st_bbox(points)
+  m = osem_measurements(bbox2, 'Temperatur', exposure = 'outdoor')
 }
 \donttest{
   # get measurements from a set of boxes
@@ -83,10 +119,25 @@ a bounding box spanning the whole world.
   # ...or a single box
   b = osem_box('57000b8745fd40c8196ad04c')
   m5 = osem_measurements(b, phenomenon = 'Temperatur')
+
+  # get measurements from a single box on the from the last 40 days.
+  # requests are paged for long time frames, so the APIs limitation
+  # does not apply!
+  library(lubridate)
+  m1 = osem_measurements(
+    b,
+    'Temperatur',
+    to = now(),
+    from = now() - days(40)
+  )
 }
 }
 \seealso{
 \href{https://docs.opensensemap.org/#api-Measurements-getDataMulti}{openSenseMap API documentation (web)}
 
+\code{\link{osem_box}}
+
 \code{\link{osem_boxes}}
+
+\code{\link{osem_clear_cache}}
 }
