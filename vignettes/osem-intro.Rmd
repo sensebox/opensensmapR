@@ -1,5 +1,5 @@
 ---
-title: "Analyzing environmental sensor data from openSenseMap.org in R"
+title: "Exploring the openSenseMap Dataset"
 author: "Norwin Roosen"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
     fig_width: 6
     fig_height: 4
 vignette: >
-  %\VignetteIndexEntry{Analyzing environmental sensor data from openSenseMap.org in R}
+  %\VignetteIndexEntry{Exploring the openSenseMap Dataset}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,8 +16,6 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-## Analyzing environmental sensor data from openSenseMap.org in R
 
 This package provides data ingestion functions for almost any data stored on the
 open data platform for environemental sensordata <https://opensensemap.org>.

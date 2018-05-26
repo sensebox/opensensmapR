@@ -1,10 +1,10 @@
 ---
-title: "opensensmapr reproducibility: Loading openSenseMap Data from Files"
+title: "Caching openSenseMap Data for Reproducibility"
 author: "Norwin Roosen"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{opensensmapr reproducibility: Loading openSenseMap Data from Files}
+  %\VignetteIndexEntry{Caching openSenseMap Data for Reproducibility}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
