@@ -1,6 +1,11 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
+### 2018-06-07: v0.4.1
+- fix `osem_as_measurements()` returning wrong classes
+- improve vignettes
+- be on CRAN eventually.. hopefully??
+
 ### 2018-05-25: v0.4.0
 - add caching feature for requests; see vignette osem-serialization
 - add vignette osem-serialization

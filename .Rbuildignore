@@ -7,3 +7,4 @@
 ^CONDUCT\.md$
 ^codecov\.yml$
 ^\.lintr$
+^opensensmapr_.*\.tar\.gz$
