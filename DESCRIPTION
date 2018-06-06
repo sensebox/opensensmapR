@@ -13,6 +13,7 @@ Suggests:
     maps,
     maptools,
     readr,
+    tibble,
     rgeos,
     sf,
     knitr,

@@ -8,8 +8,9 @@ try({
 test_that('measurements can be retrieved for a phenomenon', {
   check_api()
 
+  measurements = osem_measurements('Windgeschwindigkeit')
   measurements = osem_measurements(x = 'Windgeschwindigkeit')
-  expect_true(is.data.frame(measurements))
+  expect_true(tibble::is.tibble(measurements))
   expect_true('osem_measurements' %in% class(measurements))
 })
 
@@ -28,11 +29,6 @@ test_that('a response with no matching senseBoxes gives an error', {
   check_api()
 
   expect_error(osem_measurements(x = 'Windgeschwindigkeit', exposure = 'indoor'), 'No senseBoxes found')
-})
-
-test_that('data.frame can be converted to measurements data.frame', {
-  df = osem_as_measurements(data.frame(c(1, 2), c('a', 'b')))
-  expect_equal(class(df), c('osem_measurements', 'data.frame'))
 })
 
 test_that('columns can be specified for phenomena', {
@@ -124,6 +120,12 @@ test_that('[.osem_measurements maintains attributes', {
   m = osem_measurements(x = bbox, phenomenon = 'Windrichtung')
 
   expect_true(all(attributes(m[1:nrow(m), ]) %in% attributes(m)))
+})
+
+test_that('data.frame can be converted to measurements data.frame', {
+  m = osem_measurements('Windrichtung')
+  df = osem_as_measurements(data.frame(c(1, 2), c('a', 'b')))
+  expect_equal(class(df), class(m))
 })
 
 test_that('requests can be cached', {

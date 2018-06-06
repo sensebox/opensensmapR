@@ -17,8 +17,8 @@ print.osem_measurements = function (x, ...) {
 #' @param x A data.frame to attach the class to
 #' @export
 osem_as_measurements = function(x) {
-  ret = as.data.frame(x)
-  class(ret) = c('osem_measurements', class(x))
+  ret = tibble::as.tibble(x)
+  class(ret) = c('osem_measurements', class(ret))
   ret
 }
 
