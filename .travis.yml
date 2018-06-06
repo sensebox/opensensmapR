@@ -3,6 +3,7 @@
 language: R
 sudo: false
 cache: packages
+warnings_are_errors: true
 
 r:
   - release
@@ -12,8 +13,12 @@ r_github_packages:
   - r-lib/covr
   - jimhester/lintr
 
-r_build_args: "--no-build-vignettes"
-r_check_args: "--as-cran --no-vignettes"
+r_build_args: 
+  - "--no-build-vignettes"
+  - ""
+r_check_args:
+  - "--as-cran --no-vignettes"
+  - ""
   
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
@@ -26,3 +31,16 @@ before_install:
 after_success:
   - Rscript -e 'covr::codecov()'
   - Rscript -e 'lintr::lint_package()'
+
+matrix:
+  include:
+    - r: devel
+      r_build_args: ""
+      r_check_args: ""
+    - r: devel
+      r_build_args: "--no-build-vignettes"
+      r_check_args: "--as-cran --no-vignettes"
+    - r: release
+      r_build_args: "--no-build-vignettes"
+      r_check_args: "--as-cran --no-vignettes"
+
