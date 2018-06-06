@@ -12,7 +12,7 @@
 
 <meta name="author" content="Norwin Roosen" />
 
-<meta name="date" content="2018-05-26" />
+<meta name="date" content="2018-06-07" />
 
 <title>Caching openSenseMap Data for Reproducibility</title>
 
@@ -70,11 +70,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Caching openSenseMap Data for Reproducibility</h1>
 <h4 class="author"><em>Norwin Roosen</em></h4>
-<h4 class="date"><em>2018-05-26</em></h4>
+<h4 class="date"><em>2018-06-07</em></h4>
 
 
 
-<p>It may be useful to download data from openSenseMap only once. For reproducible results, the data could be saved to disk, and reloaded at a later point.</p>
+<p>It may be useful to download data from openSenseMap only once. For reproducible results, the data should be saved to disk, and reloaded at a later point.</p>
 <p>This avoids..</p>
 <ul>
 <li>changed results for queries without date parameters,</li>
@@ -82,136 +82,58 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>risk of API changes / API unavailability,</li>
 <li>stress on the openSenseMap-server.</li>
 </ul>
-<p>This vignette shows how to use this built in <code>opensensmapr</code> feature, and how to do it yourself, if you want to store to other data formats.</p>
-<div id="using-opensensmapr-caching-feature" class="section level2">
-<h2>Using openSensMapr Caching Feature</h2>
-<p>All data retrieval functions of <code>opensensmapr</code> have a built in caching feature, which serializes an API response to disk. Subsequent identical requests will then return the serialized data instead of making another request. To do so, each request is given a unique ID based on its parameters.</p>
+<p>This vignette shows how to use this built in <code>opensensmapr</code> feature, and how to do it yourself in case you want to save to other data formats.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># this vignette requires:</span>
+<span class="kw">library</span>(opensensmapr)
+<span class="kw">library</span>(jsonlite)
+<span class="kw">library</span>(readr)</code></pre></div>
+<div id="using-the-opensensmapr-caching-feature" class="section level2">
+<h2>Using the opensensmapr Caching Feature</h2>
+<p>All data retrieval functions of <code>opensensmapr</code> have a built in caching feature, which serializes an API response to disk. Subsequent identical requests will then return the serialized data instead of making another request.</p>
 <p>To use this feature, just add a path to a directory to the <code>cache</code> parameter:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">cache =</span> <span class="kw">tempdir</span>())
-<span class="kw">list.files</span>(<span class="kw">tempdir</span>(), <span class="dt">pattern =</span> <span class="st">'osemcache</span><span class="ch">\\</span><span class="st">..*</span><span class="ch">\\</span><span class="st">.rds'</span>)</code></pre></div>
-<pre><code>## [1] &quot;osemcache.c54710f66b662e29dd86b089962b0f598e47eddb.rds&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the next identical request will hit the cache only!</span>
-b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">cache =</span> <span class="kw">tempdir</span>())
-
-<span class="co"># requests without the cache parameter will still be performed normally</span>
-b =<span class="st"> </span><span class="kw">osem_boxes</span>()</code></pre></div>
-<p>You can maintain multiple caches simultaneously which allows to store only serialized data related to a script in its directory:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cacheDir =<span class="st"> </span><span class="kw">getwd</span>() <span class="co"># current working directory</span>
-b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">cache =</span> cacheDir)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">grouptag =</span> <span class="st">'ifgi'</span>, <span class="dt">cache =</span> <span class="kw">tempdir</span>())
 
 <span class="co"># the next identical request will hit the cache only!</span>
-b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">cache =</span> cacheDir)</code></pre></div>
+b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">grouptag =</span> <span class="st">'ifgi'</span>, <span class="dt">cache =</span> <span class="kw">tempdir</span>())
+
+<span class="co"># requests without the cache parameter will still be performed normally</span>
+b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">grouptag =</span> <span class="st">'ifgi'</span>)</code></pre></div>
+<p>Looking at the cache directory we can see one file for each request, which is identified through a hash of the request URL:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>(<span class="kw">tempdir</span>(), <span class="dt">pattern =</span> <span class="st">'osemcache</span><span class="ch">\\</span><span class="st">..*</span><span class="ch">\\</span><span class="st">.rds'</span>)</code></pre></div>
+<pre><code>## [1] &quot;osemcache.17db5c57fc6fca4d836fa2cf30345ce8767cd61a.rds&quot;</code></pre>
+<p>You can maintain multiple caches simultaneously which allows to only store data related to a script in the same directory:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cacheDir =<span class="st"> </span><span class="kw">getwd</span>() <span class="co"># current working directory</span>
+b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">grouptag =</span> <span class="st">'ifgi'</span>, <span class="dt">cache =</span> cacheDir)
+
+<span class="co"># the next identical request will hit the cache only!</span>
+b =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">grouptag =</span> <span class="st">'ifgi'</span>, <span class="dt">cache =</span> cacheDir)</code></pre></div>
 <p>To get fresh results again, just call <code>osem_clear_cache()</code> for the respective cache:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">osem_clear_cache</span>() <span class="co"># clears default cache</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">osem_clear_cache</span>(<span class="kw">getwd</span>()) <span class="co"># clears a custom cache</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">osem_clear_cache</span>()        <span class="co"># clears default cache</span>
+<span class="kw">osem_clear_cache</span>(<span class="kw">getwd</span>()) <span class="co"># clears a custom cache</span></code></pre></div>
 </div>
 <div id="custom-de--serialization" class="section level2">
 <h2>Custom (De-) Serialization</h2>
 <p>If you want to roll your own serialization method to support custom data formats, here’s how:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># this section requires:</span>
-<span class="kw">library</span>(opensensmapr)
-<span class="kw">library</span>(jsonlite)
-<span class="kw">library</span>(readr)
-
-<span class="co"># first get our example data:</span>
-boxes =<span class="st"> </span><span class="kw">osem_boxes</span>(<span class="dt">grouptag =</span> <span class="st">'ifgi'</span>)
-measurements =<span class="st"> </span><span class="kw">osem_measurements</span>(boxes, <span class="dt">phenomenon =</span> <span class="st">'PM10'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first get our example data:</span>
+measurements =<span class="st"> </span><span class="kw">osem_measurements</span>(<span class="st">'Windrichtung'</span>)</code></pre></div>
 <p>If you are paranoid and worry about <code>.rds</code> files not being decodable anymore in the (distant) future, you could serialize to a plain text format such as JSON. This of course comes at the cost of storage space and performance.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># serializing senseBoxes to JSON, and loading from file again:</span>
-<span class="kw">write</span>(jsonlite::<span class="kw">serializeJSON</span>(measurements), <span class="st">'boxes.json'</span>)
-boxes_from_file =<span class="st"> </span>jsonlite::<span class="kw">unserializeJSON</span>(readr::<span class="kw">read_file</span>(<span class="st">'boxes.json'</span>))</code></pre></div>
-<p>Both methods also persist the R object metadata (classes, attributes). If you were to use a serialization method that can’t persist object metadata, you could re-apply it with the following functions:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># note the toJSON call</span>
-<span class="kw">write</span>(jsonlite::<span class="kw">toJSON</span>(measurements), <span class="st">'boxes_bad.json'</span>)
-boxes_without_attrs =<span class="st"> </span>jsonlite::<span class="kw">fromJSON</span>(<span class="st">'boxes_bad.json'</span>)
-
-boxes_with_attrs =<span class="st"> </span><span class="kw">osem_as_sensebox</span>(boxes_without_attrs)
-<span class="kw">class</span>(boxes_with_attrs)</code></pre></div>
-<pre><code>## [1] &quot;sensebox&quot;   &quot;data.frame&quot;</code></pre>
-<p>The same goes for measurements via <code>osem_as_measurements()</code>.</p>
-</div>
-<div id="workflow-for-reproducible-code" class="section level2">
-<h2>Workflow for reproducible code</h2>
-<p>For truly reproducible code you want it to work and return the same results – no matter if you run it the first time or a consecutive time, and without making changes to it.</p>
-<p>Therefore we need a wrapper around the save-to-file &amp; load-from-file logic. The following examples show a way to do just that, and where inspired by <a href="https://github.com/nuest/sensebox-binder">this reproducible analysis by Daniel Nuest</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># offline logic</span>
-osem_offline =<span class="st"> </span>function (func, file, <span class="dt">format=</span><span class="st">'rds'</span>, ...) {
-  <span class="co"># deserialize if file exists, otherwise download and serialize</span>
-  if (<span class="kw">file.exists</span>(file)) {
-    if (format ==<span class="st"> 'json'</span>)
-      jsonlite::<span class="kw">unserializeJSON</span>(readr::<span class="kw">read_file</span>(file))
-    else
-      <span class="kw">readRDS</span>(file)
-  } else {
-    data =<span class="st"> </span><span class="kw">func</span>(...)
-    if (format ==<span class="st"> 'json'</span>)
-      <span class="kw">write</span>(jsonlite::<span class="kw">serializeJSON</span>(data), <span class="dt">file =</span> file)
-    else
-      <span class="kw">saveRDS</span>(data, file)
-    data
-  }
-}
-
-<span class="co"># wrappers for each download function</span>
-osem_measurements_offline =<span class="st"> </span>function (file, ...) {
-  <span class="kw">osem_offline</span>(opensensmapr::osem_measurements, file, ...)
-}
-osem_boxes_offline =<span class="st"> </span>function (file, ...) {
-  <span class="kw">osem_offline</span>(opensensmapr::osem_boxes, file, ...)
-}
-osem_box_offline =<span class="st"> </span>function (file, ...) {
-  <span class="kw">osem_offline</span>(opensensmapr::osem_box, file, ...)
-}
-osem_counts_offline =<span class="st"> </span>function (file, ...) {
-  <span class="kw">osem_offline</span>(opensensmapr::osem_counts, file, ...)
-}</code></pre></div>
-<p>Thats it! Now let’s try it out:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first run; will download and save to disk</span>
-b1 =<span class="st"> </span><span class="kw">osem_boxes_offline</span>(<span class="st">'mobileboxes.rds'</span>, <span class="dt">exposure=</span><span class="st">'mobile'</span>)
-
-<span class="co"># consecutive runs; will read from disk</span>
-b2 =<span class="st"> </span><span class="kw">osem_boxes_offline</span>(<span class="st">'mobileboxes.rds'</span>, <span class="dt">exposure=</span><span class="st">'mobile'</span>)
-<span class="kw">class</span>(b1) ==<span class="st"> </span><span class="kw">class</span>(b2)</code></pre></div>
-<pre><code>## [1] TRUE TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># we can even omit the arguments now (though thats not really the point here)</span>
-b3 =<span class="st"> </span><span class="kw">osem_boxes_offline</span>(<span class="st">'mobileboxes.rds'</span>)
-<span class="kw">nrow</span>(b1) ==<span class="st"> </span><span class="kw">nrow</span>(b3)</code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># verify that the custom sensebox methods are still working</span>
-<span class="kw">summary</span>(b2)</code></pre></div>
-<pre><code>## boxes total: 55
-## 
-## boxes by exposure:
-## mobile 
-##     55 
-## 
-## boxes by model:
-##                   custom             homeEthernet                 homeWifi 
-##                        7                        2                        8 
-##        homeWifiFeinstaub luftdaten_pms5003_bme280  luftdaten_sds011_bme280 
-##                        6                        2                        9 
-##   luftdaten_sds011_dht11   luftdaten_sds011_dht22 
-##                        1                       20 
-## 
-## $last_measurement_within
-##    1h    1d   30d  365d never 
-##    16    16    24    43    12 
-## 
-## oldest box: 2017-05-24 08:16:36 (Feinstaub Hauptstrasse Steampunk-Design)
-## newest box: 2018-05-24 07:08:32 (Josi Test)
-## 
-## sensors per box:
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.000   4.000   4.000   4.618   5.000  22.000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(b3)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
-<p>To re-download the data, just clear the files that were created in the process:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">file.remove</span>(<span class="st">'mobileboxes.rds'</span>, <span class="st">'boxes_bad.json'</span>, <span class="st">'boxes.json'</span>, <span class="st">'measurements.rds'</span>)</code></pre></div>
-<pre><code>## Warning in file.remove(&quot;mobileboxes.rds&quot;, &quot;boxes_bad.json&quot;, &quot;boxes.json&quot;, :
-## cannot remove file 'measurements.rds', reason 'No such file or directory'</code></pre>
-<p>A possible extension to this scheme comes to mind: Omit the specification of a filename, and assign a unique ID to the request instead. For example, one could calculate the SHA-1 hash of the parameters, and use it as filename.</p>
+<span class="kw">write</span>(jsonlite::<span class="kw">serializeJSON</span>(measurements), <span class="st">'measurements.json'</span>)
+measurements_from_file =<span class="st"> </span>jsonlite::<span class="kw">unserializeJSON</span>(readr::<span class="kw">read_file</span>(<span class="st">'measurements.json'</span>))
+<span class="kw">class</span>(measurements_from_file)</code></pre></div>
+<pre><code>## [1] &quot;osem_measurements&quot; &quot;tbl_df&quot;            &quot;tbl&quot;              
+## [4] &quot;data.frame&quot;</code></pre>
+<p>This method also persists the R object metadata (classes, attributes). If you were to use a serialization method that can’t persist object metadata, you could re-apply it with the following functions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># note the toJSON call instead of serializeJSON</span>
+<span class="kw">write</span>(jsonlite::<span class="kw">toJSON</span>(measurements), <span class="st">'measurements_bad.json'</span>)
+measurements_without_attrs =<span class="st"> </span>jsonlite::<span class="kw">fromJSON</span>(<span class="st">'measurements_bad.json'</span>)
+<span class="kw">class</span>(measurements_without_attrs)</code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">measurements_with_attrs =<span class="st"> </span><span class="kw">osem_as_measurements</span>(measurements_without_attrs)
+<span class="kw">class</span>(measurements_with_attrs)</code></pre></div>
+<pre><code>## [1] &quot;osem_measurements&quot; &quot;tbl_df&quot;            &quot;tbl&quot;              
+## [4] &quot;data.frame&quot;</code></pre>
+<p>The same goes for boxes via <code>osem_as_sensebox()</code>.</p>
 </div>
 
 

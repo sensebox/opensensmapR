@@ -10,7 +10,7 @@ vignette: >
 ---
 
 It may be useful to download data from openSenseMap only once.
-For reproducible results, the data could be saved to disk, and reloaded at a
+For reproducible results, the data should be saved to disk, and reloaded at a
 later point.
 
 This avoids..
@@ -21,40 +21,49 @@ This avoids..
 - stress on the openSenseMap-server.
 
 This vignette shows how to use this built in `opensensmapr` feature, and
-how to do it yourself, if you want to store to other data formats.
+how to do it yourself in case you want to save to other data formats.
 
-## Using openSensMapr Caching Feature
+```{r setup, results='hide'}
+# this vignette requires:
+library(opensensmapr)
+library(jsonlite)
+library(readr)
+```
+
+## Using the opensensmapr Caching Feature
 All data retrieval functions of `opensensmapr` have a built in caching feature,
 which serializes an API response to disk.
 Subsequent identical requests will then return the serialized data instead of making
 another request.
-To do so, each request is given a unique ID based on its parameters.
 
 To use this feature, just add a path to a directory to the `cache` parameter:
 ```{r cache}
-b = osem_boxes(cache = tempdir())
-list.files(tempdir(), pattern = 'osemcache\\..*\\.rds')
+b = osem_boxes(grouptag = 'ifgi', cache = tempdir())
 
 # the next identical request will hit the cache only!
-b = osem_boxes(cache = tempdir())
+b = osem_boxes(grouptag = 'ifgi', cache = tempdir())
 
 # requests without the cache parameter will still be performed normally
-b = osem_boxes()
+b = osem_boxes(grouptag = 'ifgi')
 ```
 
-You can maintain multiple caches simultaneously which allows to store only
-serialized data related to a script in its directory:
+Looking at the cache directory we can see one file for each request, which is identified through a hash of the request URL:
+```{r cachelisting}
+list.files(tempdir(), pattern = 'osemcache\\..*\\.rds')
+```
+
+You can maintain multiple caches simultaneously which allows to only store data related to a script in the same directory:
 ```{r cache_custom}
 cacheDir = getwd() # current working directory
-b = osem_boxes(cache = cacheDir)
+b = osem_boxes(grouptag = 'ifgi', cache = cacheDir)
 
 # the next identical request will hit the cache only!
-b = osem_boxes(cache = cacheDir)
+b = osem_boxes(grouptag = 'ifgi', cache = cacheDir)
 ```
 
 To get fresh results again, just call `osem_clear_cache()` for the respective cache:
-```{r clearcache}
-osem_clear_cache() # clears default cache
+```{r clearcache, results='hide'}
+osem_clear_cache()        # clears default cache
 osem_clear_cache(getwd()) # clears a custom cache
 ```
 
@@ -62,15 +71,9 @@ osem_clear_cache(getwd()) # clears a custom cache
 If you want to roll your own serialization method to support custom data formats,
 here's how:
 
-```{r setup, results='hide'}
-# this section requires:
-library(opensensmapr)
-library(jsonlite)
-library(readr)
-
+```{r data, results='hide'}
 # first get our example data:
-boxes = osem_boxes(grouptag = 'ifgi')
-measurements = osem_measurements(boxes, phenomenon = 'PM10')
+measurements = osem_measurements('Windrichtung')
 ```
 
 If you are paranoid and worry about `.rds` files not being decodable anymore
@@ -78,92 +81,26 @@ in the (distant) future, you could serialize to a plain text format such as JSON
 This of course comes at the cost of storage space and performance.
 ```{r serialize_json}
 # serializing senseBoxes to JSON, and loading from file again:
-write(jsonlite::serializeJSON(measurements), 'boxes.json')
-boxes_from_file = jsonlite::unserializeJSON(readr::read_file('boxes.json'))
+write(jsonlite::serializeJSON(measurements), 'measurements.json')
+measurements_from_file = jsonlite::unserializeJSON(readr::read_file('measurements.json'))
+class(measurements_from_file)
 ```
 
-Both methods also persist the R object metadata (classes, attributes).
+This method also persists the R object metadata (classes, attributes).
 If you were to use a serialization method that can't persist object metadata, you
 could re-apply it with the following functions:
 
 ```{r serialize_attrs}
-# note the toJSON call
-write(jsonlite::toJSON(measurements), 'boxes_bad.json')
-boxes_without_attrs = jsonlite::fromJSON('boxes_bad.json')
+# note the toJSON call instead of serializeJSON
+write(jsonlite::toJSON(measurements), 'measurements_bad.json')
+measurements_without_attrs = jsonlite::fromJSON('measurements_bad.json')
+class(measurements_without_attrs)
 
-boxes_with_attrs = osem_as_sensebox(boxes_without_attrs)
-class(boxes_with_attrs)
+measurements_with_attrs = osem_as_measurements(measurements_without_attrs)
+class(measurements_with_attrs)
 ```
-The same goes for measurements via `osem_as_measurements()`.
+The same goes for boxes via `osem_as_sensebox()`.
 
-## Workflow for reproducible code
-For truly reproducible code you want it to work and return the same results --
-no matter if you run it the first time or a consecutive time, and without making
-changes to it.
-
-Therefore we need a wrapper around the save-to-file & load-from-file logic.
-The following examples show a way to do just that, and where inspired by
-[this reproducible analysis by Daniel Nuest](https://github.com/nuest/sensebox-binder).
-
-```{r osem_offline}
-# offline logic
-osem_offline = function (func, file, format='rds', ...) {
-  # deserialize if file exists, otherwise download and serialize
-  if (file.exists(file)) {
-    if (format == 'json')
-      jsonlite::unserializeJSON(readr::read_file(file))
-    else
-      readRDS(file)
-  } else {
-    data = func(...)
-    if (format == 'json')
-      write(jsonlite::serializeJSON(data), file = file)
-    else
-      saveRDS(data, file)
-    data
-  }
-}
-
-# wrappers for each download function
-osem_measurements_offline = function (file, ...) {
-  osem_offline(opensensmapr::osem_measurements, file, ...)
-}
-osem_boxes_offline = function (file, ...) {
-  osem_offline(opensensmapr::osem_boxes, file, ...)
-}
-osem_box_offline = function (file, ...) {
-  osem_offline(opensensmapr::osem_box, file, ...)
-}
-osem_counts_offline = function (file, ...) {
-  osem_offline(opensensmapr::osem_counts, file, ...)
-}
+```{r cleanup, include=FALSE}
+file.remove('measurements.json', 'measurements_bad.json')
 ```
-
-Thats it! Now let's try it out:
-
-```{r test}
-# first run; will download and save to disk
-b1 = osem_boxes_offline('mobileboxes.rds', exposure='mobile')
-
-# consecutive runs; will read from disk
-b2 = osem_boxes_offline('mobileboxes.rds', exposure='mobile')
-class(b1) == class(b2)
-
-# we can even omit the arguments now (though thats not really the point here)
-b3 = osem_boxes_offline('mobileboxes.rds')
-nrow(b1) == nrow(b3)
-
-# verify that the custom sensebox methods are still working
-summary(b2)
-plot(b3)
-```
-
-To re-download the data, just clear the files that were created in the process:
-```{r cleanup, results='hide'}
-file.remove('mobileboxes.rds', 'boxes_bad.json', 'boxes.json', 'measurements.rds')
-```
-
-A possible extension to this scheme comes to mind: Omit the specification of a
-filename, and assign a unique ID to the request instead.
-For example, one could calculate the SHA-1 hash of the parameters, and use it
-as filename.
