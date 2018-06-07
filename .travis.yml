@@ -13,13 +13,6 @@ r_github_packages:
   - r-lib/covr
   - jimhester/lintr
 
-r_build_args: 
-  - "--no-build-vignettes"
-  - ""
-r_check_args:
-  - "--as-cran --no-vignettes"
-  - ""
-  
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
   - sudo apt-get --yes --force-yes update -qq
