@@ -5,10 +5,6 @@ sudo: false
 cache: packages
 warnings_are_errors: true
 
-r:
-  - release
-  - devel
-
 r_github_packages:
   - r-lib/covr
   - jimhester/lintr
@@ -27,13 +23,17 @@ after_success:
 
 matrix:
   include:
-    - r: devel
-      r_build_args: ""
-      r_check_args: ""
+    # fast build
     - r: devel
       r_build_args: "--no-build-vignettes"
-      r_check_args: "--as-cran --no-vignettes"
+      r_check_args: "--no-vignettes --no-manual"
+      env: NOT_CRAN=true
+
+    # strict builds
+    - r: devel
+      r_check_args: "--as-cran"
+      env: NOT_CRAN=false
     - r: release
-      r_build_args: "--no-build-vignettes"
-      r_check_args: "--as-cran --no-vignettes"
+      r_check_args: "--as-cran"
+      env: NOT_CRAN=false
 
