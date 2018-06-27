@@ -73,7 +73,7 @@ here's how:
 
 ```{r data, results='hide'}
 # first get our example data:
-measurements = osem_measurements('Windrichtung')
+measurements = osem_measurements('Windgeschwindigkeit')
 ```
 
 If you are paranoid and worry about `.rds` files not being decodable anymore
