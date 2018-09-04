@@ -22,8 +22,8 @@ plot.sensebox = function (x, ..., mar = c(2, 2, 1, 1)) {
 
   oldpar = par()
   par(mar = mar)
-  plot(world, col = 'gray', xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], axes = T)
-  plot(geom, add = T, col = x$exposure)
+  plot(world, col = 'gray', xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], axes = T, ...)
+  plot(geom, add = T, col = x$exposure, ...)
   legend('left', legend = levels(x$exposure), col = 1:length(x$exposure), pch = 1)
   par(mar = oldpar$mar)
 
