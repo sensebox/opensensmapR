@@ -21,7 +21,7 @@ docker run -v $(pwd)/data:/script/data osem-monitr
 ```bash
 # install dependencies once
 Rscript -e 'install.packages(c("dplyr", "magrittr", "devtools"))'
-Rscript -e 'devtools::install_github("noerw/opensensmapR")'
+Rscript -e 'devtools::install_github("sensebox/opensensmapR")'
 
 Rscript --save --restore get-counts.R
 Rscript --save --restore get-boxes.R

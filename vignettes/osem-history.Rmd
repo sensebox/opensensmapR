@@ -240,4 +240,4 @@ If you implemented some, feel free to add them to this vignette via a [Pull Requ
 * filter timespans with big dips in growth rate, and extrapolate the amount of
   senseBoxes that could be on the platform today, assuming there were no production issues ;)
 
-[PR]: https://github.com/noerw/opensensmapr/pulls
+[PR]: https://github.com/sensebox/opensensmapr/pulls

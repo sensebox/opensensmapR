@@ -460,7 +460,7 @@ growth =<span class="st"> </span>boxes %&gt;%
 </div>
 <div id="by-year-of-registration" class="section level2">
 <h2>…by year of registration</h2>
-<p>This is less useful, as older boxes are active for a longer time by definition. If you have an idea how to compensate for that, please send a <a href="https://github.com/noerw/opensensmapr/pulls">Pull Request</a>!</p>
+<p>This is less useful, as older boxes are active for a longer time by definition. If you have an idea how to compensate for that, please send a <a href="https://github.com/sensebox/opensensmapr/pulls">Pull Request</a>!</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># NOTE: boxes older than 2016 missing due to missing updatedAt in database</span>
 duration =<span class="st"> </span>boxes %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">cut</span>(<span class="kw">as.Date</span>(createdAt), <span class="dt">breaks =</span> <span class="st">'year'</span>)) %&gt;%
@@ -476,7 +476,7 @@ duration =<span class="st"> </span>boxes %&gt;%
 </div>
 <div id="more-visualisations" class="section level1">
 <h1>More Visualisations</h1>
-<p>Other visualisations come to mind, and are left as an exercise to the reader. If you implemented some, feel free to add them to this vignette via a <a href="https://github.com/noerw/opensensmapr/pulls">Pull Request</a>.</p>
+<p>Other visualisations come to mind, and are left as an exercise to the reader. If you implemented some, feel free to add them to this vignette via a <a href="https://github.com/sensebox/opensensmapr/pulls">Pull Request</a>.</p>
 <ul>
 <li>growth by phenomenon</li>
 <li>growth by location -&gt; (interactive) map</li>

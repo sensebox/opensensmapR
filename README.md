@@ -1,6 +1,6 @@
 # opensensmapr
 
-[![CRAN status](https://www.r-pkg.org/badges/version/opensensmapr)](https://cran.r-project.org/package=opensensmapr) [![Travis build status](https://travis-ci.org/noerw/opensensmapR.svg?branch=master)](https://travis-ci.org/noerw/opensensmapR) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/noerw/opensensmapR?branch=master&svg=true)](https://ci.appveyor.com/project/noerw/opensensmapR) [![Coverage status](https://codecov.io/gh/noerw/opensensmapR/branch/master/graph/badge.svg)](https://codecov.io/github/noerw/opensensmapR?branch=master)
+[![CRAN status](https://www.r-pkg.org/badges/version/opensensmapr)](https://cran.r-project.org/package=opensensmapr) [![Travis build status](https://travis-ci.org/sensebox/opensensmapR.svg?branch=master)](https://travis-ci.org/sensebox/opensensmapR) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/sensebox/opensensmapR?branch=master&svg=true)](https://ci.appveyor.com/project/sensebox/opensensmapR) [![Coverage status](https://codecov.io/gh/sensebox/opensensmapR/branch/master/graph/badge.svg)](https://codecov.io/github/sensebox/opensensmapR?branch=master)
 
 This R package ingests data from the API of [opensensemap.org][osem] for analysis in R.
 
@@ -31,9 +31,9 @@ There are also vignettes showcasing applications of this package:
 - [Exploring the openSenseMap dataset][osem-intro]: Showcase of included helper functions
 - [Caching openSenseMap Data for reproducibility][osem-serialization]
 
-[osem-intro]: https://noerw.github.com/opensensmapR/inst/doc/osem-intro.html
-[osem-history]: https://noerw.github.com/opensensmapR/inst/doc/osem-history.html
-[osem-serialization]: https://noerw.github.com/opensensmapR/inst/doc/osem-serialization.html
+[osem-intro]: https://sensebox.github.com/opensensmapR/inst/doc/osem-intro.html
+[osem-history]: https://sensebox.github.com/opensensmapR/inst/doc/osem-history.html
+[osem-serialization]: https://sensebox.github.com/opensensmapR/inst/doc/osem-serialization.html
 
 If you used this package for an analysis and think it could serve as a good
 example or showcase, feel free to add a vignette to the package via a [PR](#contribute)!
@@ -50,8 +50,8 @@ To install the very latest versions from GitHub, run:
 
 ```r
 install.packages('devtools')
-devtools::install_github('noerw/opensensmapr@master')      # latest stable version
-devtools::install_github('noerw/opensensmapr@development') # bleeding edge version
+devtools::install_github('sensebox/opensensmapr@master')      # latest stable version
+devtools::install_github('sensebox/opensensmapr@development') # bleeding edge version
 ```
 
 ## Changelog

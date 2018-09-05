@@ -69,7 +69,7 @@
 #'     \code{\link{dplyr}}.
 #' }
 #'
-#' @seealso Report bugs at \url{https://github.com/noerw/opensensmapR/issues}
+#' @seealso Report bugs at \url{https://github.com/sensebox/opensensmapR/issues}
 #' @seealso openSenseMap API: \url{https://api.opensensemap.org/}
 #' @seealso official openSenseMap API documentation: \url{https://docs.opensensemap.org/}
 #' @docType package

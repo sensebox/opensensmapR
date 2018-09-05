@@ -7,7 +7,7 @@ RUN apt-get update && \
 RUN Rscript -e 'install.packages("sf")'
 RUN Rscript -e 'install.packages("magrittr")'
 RUN Rscript -e 'install.packages("devtools")'
-RUN Rscript -e 'devtools::install_github("noerw/opensensmapR")'
+RUN Rscript -e 'devtools::install_github("sensebox/opensensmapR")'
 
 # install crontab
 COPY crontab /crontab

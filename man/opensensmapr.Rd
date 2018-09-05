@@ -85,7 +85,7 @@ Helpers are implemented to ease the further usage of the retrieved data:
 }
 
 \seealso{
-Report bugs at \url{https://github.com/noerw/opensensmapR/issues}
+Report bugs at \url{https://github.com/sensebox/opensensmapR/issues}
 
 openSenseMap API: \url{https://api.opensensemap.org/}
 
