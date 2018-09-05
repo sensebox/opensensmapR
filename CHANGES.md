@@ -1,6 +1,10 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
+### 2018-09-05: v0.4.2
+- move to sensebox GitHub organization
+- pass ... to plot.sensebox()
+
 ### 2018-06-07: v0.4.1
 - fix `osem_as_measurements()` returning wrong classes
 - improve vignettes
