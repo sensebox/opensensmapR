@@ -68,6 +68,19 @@ Where feasible, also add tests for the added / changed functionality in `tests/t
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md).
 By participating in this project you agree to abide by its terms.
 
+### build
+
+To build the package, either use `devtools::build()` or run
+```sh
+R CMD build .
+```
+
+next run the tests and checks:
+```sh
+R CMD check --as-cran ../opensensmapr_*.tar.gz
+# alternatively, if you're in a hurry:
+R CMD check --no-vignettes ../opensensmapr_*.tar.gz
+```
 ## License
 
 GPL-2.0 - Norwin Roosen

@@ -1,6 +1,11 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
+### 2018-09-21: v0.4.3
+- dynamically export S3 methods of forgeign generics
+  for compatibility with upcoming R 3.6.0
+- add `readr` as default dependency
+
 ### 2018-09-05: v0.4.2
 - move to sensebox GitHub organization
 - pass ... to plot.sensebox()
