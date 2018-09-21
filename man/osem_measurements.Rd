@@ -11,13 +11,13 @@ osem_measurements(x, ...)
 
 \method{osem_measurements}{default}(x, ...)
 
-\method{osem_measurements}{bbox}(x, phenomenon, exposure = NA, from = NA,
-  to = NA, columns = NA, ..., endpoint = osem_endpoint(), progress = T,
-  cache = NA)
+\method{osem_measurements}{bbox}(x, phenomenon, exposure = NA,
+  from = NA, to = NA, columns = NA, ...,
+  endpoint = osem_endpoint(), progress = T, cache = NA)
 
 \method{osem_measurements}{sensebox}(x, phenomenon, exposure = NA,
-  from = NA, to = NA, columns = NA, ..., endpoint = osem_endpoint(),
-  progress = T, cache = NA)
+  from = NA, to = NA, columns = NA, ...,
+  endpoint = osem_endpoint(), progress = T, cache = NA)
 }
 \arguments{
 \item{x}{Depending on the method, either

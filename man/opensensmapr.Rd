@@ -4,7 +4,6 @@
 \name{opensensmapr}
 \alias{opensensmapr}
 \alias{opensensmapr-package}
-\alias{opensensmapr-package}
 \title{opensensmapr: Get sensor data from opensensemap.org}
 \description{
 The opensensmapr package provides functions for

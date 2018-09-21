@@ -87,7 +87,6 @@ osem_as_sensebox = function(x) {
 #' @param .dots see corresponding function in package \code{\link{dplyr}}
 #' @param ... other arguments
 #' @seealso \code{\link[dplyr]{filter}}
-#' @export
 filter.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 
 #' Add new variables to the data, while maintaining class & attributes
@@ -95,7 +94,6 @@ filter.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 #' @param .dots see corresponding function in package \code{\link{dplyr}}
 #' @param ... other arguments
 #' @seealso \code{\link[dplyr]{mutate}}
-#' @export
 mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 
 # ==============================================================================
@@ -116,7 +114,6 @@ mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
 #' @param x The object to convert
 #' @param ... maybe more objects to convert
 #' @return The object with an st_geometry column attached.
-#' @export
 st_as_sf.sensebox = function (x, ...) {
   NextMethod(x, ..., coords = c('lon', 'lat'), crs = 4326)
 }

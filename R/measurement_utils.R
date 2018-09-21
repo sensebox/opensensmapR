@@ -27,7 +27,6 @@ osem_as_measurements = function(x) {
 #' @param .dots see corresponding function in package \code{\link{dplyr}}
 #' @param ... other arguments
 #' @seealso \code{\link[dplyr]{filter}}
-#' @export
 filter.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
 
 #' Add new variables to the data, while maintaining class & attributes
@@ -35,7 +34,6 @@ filter.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
 #' @param .dots see corresponding function in package \code{\link{dplyr}}
 #' @param ... other arguments
 #' @seealso \code{\link[dplyr]{mutate}}
-#' @export
 mutate.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
 
 #' maintains class / attributes after subsetting
@@ -54,7 +52,6 @@ mutate.osem_measurements = dplyr_class_wrapper(osem_as_measurements)
 #' @param x The object to convert
 #' @param ... maybe more objects to convert
 #' @return The object with an st_geometry column attached.
-#' @export
 st_as_sf.osem_measurements = function (x, ...) {
   NextMethod(x, ..., coords = c('lon', 'lat'), crs = 4326)
 }

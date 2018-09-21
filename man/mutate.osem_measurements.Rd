@@ -4,7 +4,7 @@
 \alias{mutate.osem_measurements}
 \title{Add new variables to the data, while maintaining class & attributes}
 \usage{
-mutate.osem_measurements(.data, ..., .dots)
+\method{mutate}{osem_measurements}(.data, ..., .dots)
 }
 \arguments{
 \item{.data}{A osem_measurements data.frame to mutate}
