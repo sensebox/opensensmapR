@@ -8,11 +8,11 @@ Imports:
     dplyr,
     httr,
     digest,
+    readr,
     magrittr
 Suggests:
     maps,
     maptools,
-    readr,
     tibble,
     rgeos,
     sf,
