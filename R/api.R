@@ -34,12 +34,10 @@ get_box_ = function (boxId, endpoint, ...) {
     parse_senseboxdata()
 }
 
-get_measurements_ = function (..., endpoint) {
-  result = osem_get_resource(endpoint, c('boxes', 'data'), ..., type = 'text')
-
+parse_measurement_csv = function (resText) {
   # parse the CSV response manually & mute readr
   suppressWarnings({
-    result = readr::read_csv(result, col_types = readr::cols(
+    result = readr::read_csv(resText, col_types = readr::cols(
       # factor as default would raise issues with concatenation of multiple requests
       .default  = readr::col_character(),
       createdAt = readr::col_datetime(),
@@ -51,6 +49,11 @@ get_measurements_ = function (..., endpoint) {
   })
 
   osem_as_measurements(result)
+}
+
+get_measurements_ = function (..., endpoint) {
+  osem_get_resource(endpoint, c('boxes', 'data'), ..., type = 'text') %>%
+    parse_measurement_csv
 }
 
 get_stats_ = function (endpoint, cache) {

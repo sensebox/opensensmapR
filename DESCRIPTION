@@ -9,6 +9,7 @@ Imports:
     httr,
     digest,
     readr,
+    purrr,
     magrittr
 Suggests:
     maps,
