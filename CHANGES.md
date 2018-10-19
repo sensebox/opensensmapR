@@ -1,6 +1,12 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
+### 2018-10-20: v0.5.0
+- fix dynamic method export
+- add `osem_measurements_archive()` to fetch measurements from the archive (#23)
+- add `box$sensors` containing a data.frame with sensor metadata
+- add sensor-IDs to `box$phenomena`
+
 ### 2018-09-21: v0.4.3
 - dynamically export S3 methods of forgeign generics
   for compatibility with upcoming R 3.6.0
