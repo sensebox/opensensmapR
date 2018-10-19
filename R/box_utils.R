@@ -71,8 +71,6 @@ summary.sensebox = function(object, ...) {
   invisible(object)
 }
 
-# ==============================================================================
-#
 #' Converts a foreign object to a sensebox data.frame.
 #' @param x A data.frame to attach the class to
 #' @export
@@ -80,40 +78,4 @@ osem_as_sensebox = function(x) {
   ret = as.data.frame(x)
   class(ret) = c('sensebox', class(x))
   ret
-}
-
-#' Return rows with matching conditions, while maintaining class & attributes
-#' @param .data A sensebox data.frame to filter
-#' @param .dots see corresponding function in package \code{\link{dplyr}}
-#' @param ... other arguments
-#' @seealso \code{\link[dplyr]{filter}}
-filter.sensebox = dplyr_class_wrapper(osem_as_sensebox)
-
-#' Add new variables to the data, while maintaining class & attributes
-#' @param .data A sensebox data.frame to mutate
-#' @param .dots see corresponding function in package \code{\link{dplyr}}
-#' @param ... other arguments
-#' @seealso \code{\link[dplyr]{mutate}}
-mutate.sensebox = dplyr_class_wrapper(osem_as_sensebox)
-
-# ==============================================================================
-#
-#' maintains class / attributes after subsetting
-#' @noRd
-#' @export
-`[.sensebox` = function(x, i, ...) {
-  s = NextMethod('[')
-  mostattributes(s) = attributes(s)
-  s
-}
-
-# ==============================================================================
-#
-#' Convert a \code{sensebox} dataframe to an \code{\link[sf]{st_sf}} object.
-#'
-#' @param x The object to convert
-#' @param ... maybe more objects to convert
-#' @return The object with an st_geometry column attached.
-st_as_sf.sensebox = function (x, ...) {
-  NextMethod(x, ..., coords = c('lon', 'lat'), crs = 4326)
 }
