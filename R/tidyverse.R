@@ -31,9 +31,11 @@ register_s3_method <- function(pkg, generic, class, fun = NULL) {
   )
 }
 
-register_s3_method('dplyr', 'filter', 'sensebox')
-register_s3_method('dplyr', 'mutate', 'sensebox')
-register_s3_method('dplyr', 'filter', 'osem_measurements')
-register_s3_method('dplyr', 'mutate', 'osem_measurements')
-register_s3_method('sf', 'st_as_sf', 'sensebox')
-register_s3_method('sf', 'st_as_sf', 'osem_measurements')
+.onLoad = function(libname, pkgname) {
+  register_s3_method('dplyr', 'filter', 'sensebox')
+  register_s3_method('dplyr', 'mutate', 'sensebox')
+  register_s3_method('dplyr', 'filter', 'osem_measurements')
+  register_s3_method('dplyr', 'mutate', 'osem_measurements')
+  register_s3_method('sf', 'st_as_sf', 'sensebox')
+  register_s3_method('sf', 'st_as_sf', 'osem_measurements')
+}
