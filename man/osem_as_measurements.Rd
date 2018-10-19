@@ -7,7 +7,8 @@
 osem_as_measurements(x)
 }
 \arguments{
-\item{x}{A data.frame to attach the class to}
+\item{x}{A data.frame to attach the class to.
+Should have at least a `value` and `createdAt` column.}
 }
 \description{
 Converts a foreign object to an osem_measurements data.frame.

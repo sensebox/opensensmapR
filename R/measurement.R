@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-#' Get the Measurements of a Phenomenon on opensensemap.org
+#' Fetch the Measurements of a Phenomenon on opensensemap.org
 #'
 #' Measurements can be retrieved either for a set of boxes, or through a spatial
 #' bounding box filter. To get all measurements, the \code{default} function applies

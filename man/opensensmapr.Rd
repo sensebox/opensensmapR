@@ -46,16 +46,27 @@ implemented:
 
 \section{Retrieving measurements}{
 
-Measurements can be retrieved through \code{\link{osem_measurements}} for a
-given phenomenon only. A subset of measurements may be selected by
-
+There are two ways to retrieve measurements:
 \itemize{
-  \item a list of senseBoxes, previously retrieved through
-    \code{\link{osem_box}} or \code{\link{osem_boxes}}.
-  \item a geographic bounding box, which can be generated with the
-    \code{\link[sf]{sf}} package.
-  \item a time frame
-  \item a exposure type of the given box
+  \item \code{\link{osem_measurements_archive}}:
+    Downloads measurements for a \emph{single box} from the openSenseMap archive.
+    This function does not provide realtime data, but is suitable for long time frames.
+    
+  \item \code{\link{osem_measurements}}:
+    This function retrieves (realtime) measurements from the API. It works for a
+    \emph{single phenomenon} only, but provides various filters to select sensors by
+    
+    \itemize{
+      \item a list of senseBoxes, previously retrieved through
+        \code{\link{osem_box}} or \code{\link{osem_boxes}}.
+      \item a geographic bounding box, which can be generated with the
+        \code{\link[sf]{sf}} package.
+      \item a time frame
+      \item a exposure type of the given box
+    }
+    
+    Use this function with caution for long time frames, as the API becomes
+    quite slow is limited to 10.000 measurements per 30 day interval.
 }
 
 Data is returned as \code{tibble} with the class \code{osem_measurements}.
@@ -64,6 +75,16 @@ Data is returned as \code{tibble} with the class \code{osem_measurements}.
 \section{Retrieving statistics}{
 
 Count statistics about the database are provided with \code{\link{osem_counts}}.
+}
+
+\section{Using a different API instance / endpoint}{
+
+You can override the functions \code{osem_endpoint} and \code{osem_endpoint_archive}
+inside the package namespace:
+
+\code{
+  assignInNamespace("osem_endpoint", function() "http://mynewosem.org", "opensensmapr")
+}
 }
 
 \section{Integration with other packages}{

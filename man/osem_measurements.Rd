@@ -5,7 +5,7 @@
 \alias{osem_measurements.default}
 \alias{osem_measurements.bbox}
 \alias{osem_measurements.sensebox}
-\title{Get the Measurements of a Phenomenon on opensensemap.org}
+\title{Fetch the Measurements of a Phenomenon on opensensemap.org}
 \usage{
 osem_measurements(x, ...)
 

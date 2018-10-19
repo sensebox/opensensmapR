@@ -29,13 +29,13 @@ from a set of senseBoxes.
 # get the phenomena for a single senseBox
 osem_phenomena(osem_box('593bcd656ccf3b0011791f5a'))
 
-# get the phenomena for a group of senseBoxes
-osem_phenomena(
-  osem_boxes(grouptag = 'ifgi', exposure = 'outdoor', date = Sys.time())
-)
-
-# get phenomena with at least 30 sensors on opensensemap
 \donttest{
+  # get the phenomena for a group of senseBoxes
+  osem_phenomena(
+    osem_boxes(grouptag = 'ifgi', exposure = 'outdoor', date = Sys.time())
+  )
+
+  # get phenomena with at least 30 sensors on opensensemap
   phenoms = osem_phenomena(osem_boxes())
   names(phenoms[phenoms > 29])
 }

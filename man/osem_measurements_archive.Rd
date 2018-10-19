@@ -3,20 +3,40 @@
 \name{osem_measurements_archive}
 \alias{osem_measurements_archive}
 \alias{osem_measurements_archive.sensebox}
-\title{Get day-wise measurements for a single box from the openSenseMap archive.}
+\title{Fetch day-wise measurements for a single box from the openSenseMap archive.}
 \usage{
 osem_measurements_archive(x, ...)
 
 \method{osem_measurements_archive}{sensebox}(x, fromDate,
   toDate = fromDate, sensorFilter = ~T, progress = T)
 }
+\arguments{
+\item{x}{A `sensebox data.frame` of a single box, as retrieved via \code{\link{osem_box}},
+to download measurements for.}
+
+\item{fromDate}{Start date for measurement download.}
+
+\item{toDate}{End date for measurement download (inclusive).}
+
+\item{sensorFilter}{A NSE formula matching to \code{x$sensors}, selecting a subset of sensors.}
+
+\item{progress}{Whether to print download progress information, defaults to \code{TRUE}.}
+}
+\value{
+A \code{tbl_df} Containing observations of all selected sensors for each time stamp.
+}
 \description{
-This function is significantly faster than `osem_measurements()` for large
-time-frames, as dayly CSV dumps for each sensor from
-<archive.opensensemap.org> are used.
+This function is significantly faster than \code{\link{osem_measurements}} for large
+time-frames, as daily CSV dumps for each sensor from
+\href{http://archive.opensensemap.org}{archive.opensensemap.org} are used.
 Note that the latest data available is from the previous day.
+}
+\details{
 By default, data for all sensors of a box is fetched, but you can select a
-subset with a `dplyr`-style NSE filter expression.
+subset with a \code{\link[dplyr]{dplyr}}-style NSE filter expression.
+
+The function will warn when no data is available in the selected period,
+but continue the remaining download.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -25,14 +45,20 @@ more sensors of a single box
 }}
 
 \examples{
-
-\donttest{
-  # fetch measurements for a single day
-  box = osem_box('593bcd656ccf3b0011791f5a')
-  m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
+# fetch measurements for a single day
+box = osem_box('593bcd656ccf3b0011791f5a')
+m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
   
+\donttest{
   # fetch measurements for a date range and selected sensors
   sensors = ~ phenomenon \%in\% c('Temperatur', 'Beleuchtungsstärke')
   m = osem_measurements_archive(box, as.POSIXlt('2018-09-01'), as.POSIXlt('2018-09-30'), sensorFilter = sensors)
 }
+}
+\seealso{
+\href{https://archive.opensensemap.org}{openSenseMap archive}
+
+\code{\link{osem_measurements}}
+
+\code{\link{osem_box}}
 }

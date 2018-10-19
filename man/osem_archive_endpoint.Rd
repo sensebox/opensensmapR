@@ -2,14 +2,14 @@
 % Please edit documentation in R/archive.R
 \name{osem_archive_endpoint}
 \alias{osem_archive_endpoint}
-\title{Default endpoint for the archive download
-front end domain is archive.opensensemap.org, but file download
-is provided via sciebo}
+\title{Returns the default endpoint for the archive *download*
+While the front end domain is archive.opensensemap.org, file downloads
+are provided via sciebo.}
 \usage{
 osem_archive_endpoint()
 }
 \description{
-Default endpoint for the archive download
-front end domain is archive.opensensemap.org, but file download
-is provided via sciebo
+Returns the default endpoint for the archive *download*
+While the front end domain is archive.opensensemap.org, file downloads
+are provided via sciebo.
 }

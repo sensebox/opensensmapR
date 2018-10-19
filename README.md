@@ -68,6 +68,20 @@ Where feasible, also add tests for the added / changed functionality in `tests/t
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md).
 By participating in this project you agree to abide by its terms.
 
+### development environment
+
+To set up the development environment for testing and checking, all suggested packages should be installed.
+On linux, these require some system dependencies:
+```sh
+# install dependencies for sf (see https://github.com/r-spatial/sf#installing)
+sudo dnf install gdal-devel proj-devel proj-epsg proj-nad geos-devel udunits2-devel
+
+# install suggested packages
+R -e "install.packages(c('maps', 'maptools', 'tibble', 'rgeos', 'sf',
+    'knitr', 'rmarkdown', 'lubridate', 'units', 'jsonlite', 'ggplot2',
+    'zoo', 'lintr', 'testthat', 'covr')"
+```
+
 ### build
 
 To build the package, either use `devtools::build()` or run
@@ -75,12 +89,30 @@ To build the package, either use `devtools::build()` or run
 R CMD build .
 ```
 
-next run the tests and checks:
+Next, run the **tests and checks**:
 ```sh
 R CMD check --as-cran ../opensensmapr_*.tar.gz
 # alternatively, if you're in a hurry:
 R CMD check --no-vignettes ../opensensmapr_*.tar.gz
 ```
+
+### release
+
+To create a release:
+
+0. make shure you are on master branch
+1. run the tests and checks as described above
+2. bump the version in `DESCRIPTION`
+3. update `CHANGES.md`
+3. rebuild the documentation: `R -e 'devtools::document()'`
+4. build the package again with the new version: `R CMD build . --no-build-vignettes`
+5. tag the commit with the new version: `git tag v0.5.0`
+6. push changes: `git push && git push --tags`
+7. wait for *all* CI tests to complete successfully (helps in the next step)
+8. [upload the new release to CRAN](https://cran.r-project.org/submit.html)
+9. get back to the enjoyable parts of your life & hope you won't get bad mail next week.
+
+
 ## License
 
 GPL-2.0 - Norwin Roosen

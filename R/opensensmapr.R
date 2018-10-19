@@ -65,6 +65,14 @@
 #' @section Retrieving statistics:
 #' Count statistics about the database are provided with \code{\link{osem_counts}}.
 #'
+#' @section Using a different API instance / endpoint:
+#' You can override the functions \code{osem_endpoint} and \code{osem_endpoint_archive}
+#' inside the package namespace:
+#' 
+#' \code{
+#'   assignInNamespace("osem_endpoint", function() "http://mynewosem.org", "opensensmapr")
+#' }
+#' 
 #' @section Integration with other packages:
 #' The package aims to be compatible with the tidyverse.
 #' Helpers are implemented to ease the further usage of the retrieved data:
