@@ -1,22 +1,37 @@
 # client for archive.opensensemap.org
-# in this archive, a zip bundle for measurements of each box per day is provided.
+# in this archive, CSV files for measurements of each sensor per day is provided.
 
-#' Default endpoint for the archive download
-#' front end domain is archive.opensensemap.org, but file download
-#' is provided via sciebo
-#' @export
+#' Returns the default endpoint for the archive *download*
+#' While the front end domain is archive.opensensemap.org, file downloads
+#' are provided via sciebo.
 osem_archive_endpoint = function () {
   'https://uni-muenster.sciebo.de/index.php/s/HyTbguBP4EkqBcp/download?path=/data'
 }
 
-#' Get day-wise measurements for a single box from the openSenseMap archive.
+#' Fetch day-wise measurements for a single box from the openSenseMap archive.
 #' 
-#' This function is significantly faster than `osem_measurements()` for large
-#' time-frames, as dayly CSV dumps for each sensor from
-#' <archive.opensensemap.org> are used.
+#' This function is significantly faster than \code{\link{osem_measurements}} for large
+#' time-frames, as daily CSV dumps for each sensor from
+#' \href{http://archive.opensensemap.org}{archive.opensensemap.org} are used.
 #' Note that the latest data available is from the previous day.
+#' 
 #' By default, data for all sensors of a box is fetched, but you can select a
-#' subset with a `dplyr`-style NSE filter expression.
+#' subset with a \code{\link[dplyr]{dplyr}}-style NSE filter expression.
+#' 
+#' The function will warn when no data is available in the selected period,
+#' but continue the remaining download.
+#' 
+#' @param x A `sensebox data.frame` of a single box, as retrieved via \code{\link{osem_box}},
+#'   to download measurements for.
+#' @param fromDate Start date for measurement download.
+#' @param toDate End date for measurement download (inclusive).
+#' @param sensorFilter A NSE formula matching to \code{x$sensors}, selecting a subset of sensors.
+#' @param progress Whether to print download progress information, defaults to \code{TRUE}.
+#' @return A \code{tbl_df} Containing observations of all selected sensors for each time stamp.
+#' 
+#' @seealso \href{https://archive.opensensemap.org}{openSenseMap archive}
+#' @seealso \code{\link{osem_measurements}}
+#' @seealso \code{\link{osem_box}}
 #' 
 #' @export
 osem_measurements_archive = function (x, ...) UseMethod('osem_measurements_archive')
@@ -33,12 +48,11 @@ osem_measurements_archive.default = function (x, ...) {
 #' more sensors of a single box
 #' @export
 #' @examples 
-#' 
-#' \donttest{
-#'   # fetch measurements for a single day
-#'   box = osem_box('593bcd656ccf3b0011791f5a')
-#'   m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
+#' # fetch measurements for a single day
+#' box = osem_box('593bcd656ccf3b0011791f5a')
+#' m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
 #'   
+#' \donttest{
 #'   # fetch measurements for a date range and selected sensors
 #'   sensors = ~ phenomenon %in% c('Temperatur', 'Beleuchtungsstärke')
 #'   m = osem_measurements_archive(box, as.POSIXlt('2018-09-01'), as.POSIXlt('2018-09-30'), sensorFilter = sensors)
@@ -64,16 +78,6 @@ osem_measurements_archive.sensebox = function (x, fromDate, toDate = fromDate, s
 }
 
 #' fetch measurements from archive from a single box, and a single sensor
-#'
-#' @param box 
-#' @param sensor 
-#' @param fromDate 
-#' @param toDate 
-#' @param progress 
-#'
-#' @return
-#'
-#' @examples
 archive_fetch_measurements = function (box, sensor, fromDate, toDate, progress) {
   dates = list()
   from = fromDate
