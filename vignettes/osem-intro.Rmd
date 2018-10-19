@@ -97,7 +97,7 @@ Thats still more than 200 measuring stations, we can work with that.
 
 ### Analyzing sensor data
 Having analyzed the available data sources, let's finally get some measurements.
-We could call `osem_measurements(pm25_sensors)` now, however we are focussing on
+We could call `osem_measurements(pm25_sensors)` now, however we are focusing on
 a restricted area of interest, the city of Berlin.
 Luckily we can get the measurements filtered by a bounding box:
 
@@ -119,7 +119,7 @@ berlin = st_point(c(13.4034, 52.5120)) %>%
 pm25 = osem_measurements(
   berlin,
   phenomenon = 'PM2.5',
-  from = now() - days(20), # defaults to 2 days
+  from = now() - days(3), # defaults to 2 days
   to = now()
 )
 
