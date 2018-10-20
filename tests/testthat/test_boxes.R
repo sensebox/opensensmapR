@@ -20,7 +20,7 @@ test_that('both from and to are required when requesting boxes, error otherwise'
 test_that('a list of boxes with phenomenon filter returns only the requested phenomenon', {
   check_api()
 
-  boxes = osem_boxes(phenomenon = 'Temperatur', date=Sys.time())
+  boxes = osem_boxes(phenomenon = 'Temperatur', date = Sys.time())
   expect_true(all(grep('Temperatur', boxes$phenomena)))
 })
 

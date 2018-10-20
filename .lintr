@@ -1,4 +1,4 @@
-exclusions: list('inst/doc/osem-intro.R')
+exclusions: list.files(path = 'inst/doc', full.names = T)
 linters: with_defaults(
     # we use snake case
     camel_case_linter = NULL,
