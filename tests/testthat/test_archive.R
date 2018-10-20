@@ -4,7 +4,7 @@ context('osem_box_to_archivename()')
 
 try({
   boxes = osem_boxes(grouptag = 'ifgi')
-  box = filter(boxes, row_number() == 1) 
+  box = osem_box('593bcd656ccf3b0011791f5a')
 })
 
 test_that('osem_box_to_archive_name does the correct character replacements', {
@@ -12,7 +12,7 @@ test_that('osem_box_to_archive_name does the correct character replacements', {
     name = 'aA1._- äß!"?$%&/',
     X_id = 'UUID'
   )
-  
+
   archivename = opensensmapr:::osem_box_to_archivename(b)
   expect_equal(archivename, 'UUID-aA1._-__________')
 })
@@ -40,7 +40,7 @@ test_that('osem_measurements_archive works for one box', {
 
   m = osem_measurements_archive(box, as.POSIXlt('2018-08-08'))
   expect_length(m, nrow(box$sensors[[1]]) + 1) # one column for each sensor + createdAt
-  expect_s3_class(m, c('osem_measurements', 'tbl_df'))
+  expect_s3_class(m, c('data.frame'))
 })
 
 test_that('osem_measurements_archive fails for multiple boxes', {

@@ -8,7 +8,7 @@ test_that('a list of all boxes can be retrieved and returns a sensebox data.fram
   expect_true(is.data.frame(boxes))
   expect_true(is.factor(boxes$model))
   expect_true(is.character(boxes$name))
-  expect_length(names(boxes), 14)
+  expect_length(names(boxes), 15)
   expect_true(any('sensebox' %in% class(boxes)))
 })
 
