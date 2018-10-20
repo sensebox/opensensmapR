@@ -7,6 +7,12 @@ https://github.com/sensebox/osem-archiver/blob/612e14b/helpers.sh#L66}
 \usage{
 osem_box_to_archivename(box)
 }
+\arguments{
+\item{box}{A sensebox data.frame}
+}
+\value{
+character with archive identifier for each box
+}
 \description{
 replace chars in box name according to archive script:
 https://github.com/sensebox/osem-archiver/blob/612e14b/helpers.sh#L66

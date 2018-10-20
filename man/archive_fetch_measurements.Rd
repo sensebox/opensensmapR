@@ -4,7 +4,21 @@
 \alias{archive_fetch_measurements}
 \title{fetch measurements from archive from a single box, and a single sensor}
 \usage{
-archive_fetch_measurements(box, sensor, fromDate, toDate, progress)
+archive_fetch_measurements(box, sensorId, fromDate, toDate, progress)
+}
+\arguments{
+\item{box}{A sensebox data.frame with a single box}
+
+\item{sensorId}{Character specifying the sensor}
+
+\item{fromDate}{Start date for measurement download, must be convertable via `as.Date`.}
+
+\item{toDate}{End date for measurement download (inclusive).}
+
+\item{progress}{whether to print progress}
+}
+\value{
+A \code{tbl_df} containing observations of all selected sensors for each time stamp.
 }
 \description{
 fetch measurements from archive from a single box, and a single sensor

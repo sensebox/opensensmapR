@@ -23,11 +23,12 @@ osem_archive_endpoint = function () {
 #'
 #' @param x A `sensebox data.frame` of a single box, as retrieved via \code{\link{osem_box}},
 #'   to download measurements for.
-#' @param fromDate Start date for measurement download.
+#' @param ... see parameters below
+#' @param fromDate Start date for measurement download, must be convertable via `as.Date`.
 #' @param toDate End date for measurement download (inclusive).
 #' @param sensorFilter A NSE formula matching to \code{x$sensors}, selecting a subset of sensors.
 #' @param progress Whether to print download progress information, defaults to \code{TRUE}.
-#' @return A \code{tbl_df} Containing observations of all selected sensors for each time stamp.
+#' @return A \code{tbl_df} containing observations of all selected sensors for each time stamp.
 #'
 #' @seealso \href{https://archive.opensensemap.org}{openSenseMap archive}
 #' @seealso \code{\link{osem_measurements}}
@@ -44,20 +45,26 @@ osem_measurements_archive.default = function (x, ...) {
   stop(paste('not implemented for class', toString(class(x))))
 }
 
-#' @describeIn osem_measurements_archive Get daywise measurements for one or
-#' more sensors of a single box
+
+# ==============================================================================
+#
+#' @describeIn osem_measurements_archive Get daywise measurements for one or more sensors of a single box.
 #' @export
 #' @examples
-#' # fetch measurements for a single day
-#' box = osem_box('593bcd656ccf3b0011791f5a')
-#' m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
-#'
 #' \donttest{
+#'   # fetch measurements for a single day
+#'   box = osem_box('593bcd656ccf3b0011791f5a')
+#'   m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
+#'
 #'   # fetch measurements for a date range and selected sensors
 #'   sensors = ~ phenomenon %in% c('Temperatur', 'Beleuchtungsstärke')
-#'   m = osem_measurements_archive(box, as.POSIXlt('2018-09-01'), as.POSIXlt('2018-09-30'), sensorFilter = sensors)
+#'   m = osem_measurements_archive(
+#'     box,
+#'     as.POSIXlt('2018-09-01'), as.POSIXlt('2018-09-30'),
+#'     sensorFilter = sensors
+#'   )
 #' }
-osem_measurements_archive.sensebox = function (x, fromDate, toDate = fromDate, sensorFilter = ~ T, progress = T) {
+osem_measurements_archive.sensebox = function (x, fromDate, toDate = fromDate, sensorFilter = ~ T, ..., progress = T) {
   if (nrow(x) != 1)
     stop('this function only works for exactly one senseBox!')
 
@@ -78,7 +85,14 @@ osem_measurements_archive.sensebox = function (x, fromDate, toDate = fromDate, s
 }
 
 #' fetch measurements from archive from a single box, and a single sensor
-archive_fetch_measurements = function (box, sensor, fromDate, toDate, progress) {
+#'
+#' @param box A sensebox data.frame with a single box
+#' @param sensorId Character specifying the sensor
+#' @param fromDate Start date for measurement download, must be convertable via `as.Date`.
+#' @param toDate End date for measurement download (inclusive).
+#' @param progress whether to print progress
+#' @return A \code{tbl_df} containing observations of all selected sensors for each time stamp.
+archive_fetch_measurements = function (box, sensorId, fromDate, toDate, progress) {
   dates = list()
   from = fromDate
   while (from <= toDate) {
@@ -90,14 +104,14 @@ archive_fetch_measurements = function (box, sensor, fromDate, toDate, progress) 
   progress = if (progress && !is_non_interactive()) httr::progress() else NULL
 
   measurements = lapply(dates, function(date) {
-    url =  build_archive_url(date, box, sensor)
+    url =  build_archive_url(date, box, sensorId)
     res = httr::GET(url, progress, handle = http_handle)
 
     if (httr::http_error(res)) {
       warning(paste(
         httr::status_code(res),
         'on day', format.Date(date, '%F'),
-        'for sensor', sensor
+        'for sensor', sensorId
       ))
 
       if (httr::status_code(res) == 404)
@@ -113,8 +127,8 @@ archive_fetch_measurements = function (box, sensor, fromDate, toDate, progress) 
 
 #' returns URL to fetch measurements from a sensor for a specific date,
 #' based on `osem_archive_endpoint()`
-build_archive_url = function (date, box, sensor) {
-  sensorId = sensor
+#' @noRd
+build_archive_url = function (date, box, sensorId) {
   d =  format.Date(date, '%F')
   format = 'csv'
 
@@ -129,6 +143,9 @@ build_archive_url = function (date, box, sensor) {
 
 #' replace chars in box name according to archive script:
 #' https://github.com/sensebox/osem-archiver/blob/612e14b/helpers.sh#L66
+#'
+#' @param box A sensebox data.frame
+#' @return character with archive identifier for each box
 osem_box_to_archivename = function (box) {
   name = gsub('[^A-Za-z0-9._-]', '_', box$name)
   paste(box$X_id, name, sep = '-')

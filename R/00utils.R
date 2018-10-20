@@ -27,6 +27,7 @@ is_non_interactive = function () {
 
 #' custom recursive lapply with better handling of NULL values
 #' from https://stackoverflow.com/a/38950304
+#' @noRd
 recursive_lapply = function(x, fn) {
   if (is.list(x))
     lapply(x, recursive_lapply, fn)

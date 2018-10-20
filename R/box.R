@@ -165,7 +165,7 @@ parse_senseboxdata = function (boxdata) {
 
   # extract metadata from sensors
   thebox$phenomena = sensors %>%
-    setNames(lapply(., function (s) s$`_id`)) %>%
+    stats::setNames(lapply(., function (s) s$`_id`)) %>%
     lapply(function(s) s$title) %>%
     unlist %>% list # convert to vector
 

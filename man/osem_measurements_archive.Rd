@@ -8,13 +8,15 @@
 osem_measurements_archive(x, ...)
 
 \method{osem_measurements_archive}{sensebox}(x, fromDate,
-  toDate = fromDate, sensorFilter = ~T, progress = T)
+  toDate = fromDate, sensorFilter = ~T, ..., progress = T)
 }
 \arguments{
 \item{x}{A `sensebox data.frame` of a single box, as retrieved via \code{\link{osem_box}},
 to download measurements for.}
 
-\item{fromDate}{Start date for measurement download.}
+\item{...}{see parameters below}
+
+\item{fromDate}{Start date for measurement download, must be convertable via `as.Date`.}
 
 \item{toDate}{End date for measurement download (inclusive).}
 
@@ -23,7 +25,7 @@ to download measurements for.}
 \item{progress}{Whether to print download progress information, defaults to \code{TRUE}.}
 }
 \value{
-A \code{tbl_df} Containing observations of all selected sensors for each time stamp.
+A \code{tbl_df} containing observations of all selected sensors for each time stamp.
 }
 \description{
 This function is significantly faster than \code{\link{osem_measurements}} for large
@@ -40,19 +42,22 @@ but continue the remaining download.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{sensebox}: Get daywise measurements for one or
-more sensors of a single box
+\item \code{sensebox}: Get daywise measurements for one or more sensors of a single box.
 }}
 
 \examples{
 # fetch measurements for a single day
 box = osem_box('593bcd656ccf3b0011791f5a')
 m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
-  
+
 \donttest{
   # fetch measurements for a date range and selected sensors
   sensors = ~ phenomenon \%in\% c('Temperatur', 'Beleuchtungsstärke')
-  m = osem_measurements_archive(box, as.POSIXlt('2018-09-01'), as.POSIXlt('2018-09-30'), sensorFilter = sensors)
+  m = osem_measurements_archive(
+    box,
+    as.POSIXlt('2018-09-01'), as.POSIXlt('2018-09-30'),
+    sensorFilter = sensors
+  )
 }
 }
 \seealso{

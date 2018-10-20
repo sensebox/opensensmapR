@@ -100,4 +100,13 @@
 `%>%` = magrittr::`%>%`
 
 # just to make R CMD check happy, due to NSE (dplyr) functions
-globalVariables(c('lastMeasurement', '.'))
+globalVariables(c(
+  'createdAt',
+  'lastMeasurement',
+  'sensorType',
+  'title',
+  'unit',
+  'value',
+  'X_id',
+  '.'
+))
