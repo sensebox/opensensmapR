@@ -157,6 +157,7 @@ parse_senseboxdata = function (boxdata) {
 
   # create a dataframe of sensors
   thebox$sensors = sensors %>%
+    recursive_lapply(function (x) if (is.null(x)) NA else x) %>% # replace NULLs with NA
     lapply(as.data.frame, stringsAsFactors = F) %>%
     dplyr::bind_rows(.) %>%
     dplyr::select(phenomenon = title, id = X_id, unit, sensor = sensorType) %>%

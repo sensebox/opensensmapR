@@ -24,3 +24,12 @@ is_non_interactive = function () {
   ff = sapply(sys.calls(), function(f) as.character(f[1]))
   any(ff %in% c('knit2html', 'render')) || !interactive()
 }
+
+#' custom recursive lapply with better handling of NULL values
+#' from https://stackoverflow.com/a/38950304
+recursive_lapply = function(x, fn) {
+  if (is.list(x))
+    lapply(x, recursive_lapply, fn)
+  else
+    fn(x)
+}
