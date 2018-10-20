@@ -1,6 +1,9 @@
 # opensensmapr
 
-[![CRAN status](https://www.r-pkg.org/badges/version/opensensmapr)](https://cran.r-project.org/package=opensensmapr) [![Travis build status](https://travis-ci.org/sensebox/opensensmapR.svg?branch=master)](https://travis-ci.org/sensebox/opensensmapR) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/sensebox/opensensmapR?branch=master&svg=true)](https://ci.appveyor.com/project/sensebox/opensensmapR) [![Coverage status](https://codecov.io/gh/sensebox/opensensmapR/branch/master/graph/badge.svg)](https://codecov.io/github/sensebox/opensensmapR?branch=master)
+[![CRAN status](https://www.r-pkg.org/badges/version/opensensmapr)](https://cran.r-project.org/package=opensensmapr)
+[![Travis build status](https://travis-ci.org/sensebox/opensensmapR.svg?branch=master)](https://travis-ci.org/sensebox/opensensmapR)
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/dtad4ves48gebss7/branch/master?svg=true)](https://ci.appveyor.com/project/noerw/opensensmapr/branch/master)
+[![Coverage status](https://codecov.io/gh/sensebox/opensensmapR/branch/master/graph/badge.svg)](https://codecov.io/github/sensebox/opensensmapR?branch=master)
 
 This R package ingests data from the API of [opensensemap.org][osem] for analysis in R.
 
