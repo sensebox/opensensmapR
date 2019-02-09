@@ -1,6 +1,11 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
+### 2019-02-09: v0.5.1
+- fix package to work with API v6
+  - box$lastMeasurement may be missing now for long inactive boxes
+- add tests
+
 ### 2018-10-20: v0.5.0
 - fix dynamic method export
 - add `osem_measurements_archive()` to fetch measurements from the archive (#23)
