@@ -28,7 +28,7 @@ test_that('measurement retrieval does not give progress information in non-inter
 test_that('a response with no matching senseBoxes gives an error', {
   check_api()
 
-  expect_error(osem_measurements(x = 'Windgeschwindigkeit', exposure = 'indoor'), 'No senseBoxes found')
+  expect_error(osem_measurements(x = 'foobar', exposure = 'indoor'), 'No senseBoxes found')
 })
 
 test_that('columns can be specified for phenomena', {

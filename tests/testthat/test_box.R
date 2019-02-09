@@ -18,6 +18,39 @@ test_that('a single box can be retrieved by ID', {
   expect_silent(osem_box(boxes$X_id[[1]]))
 })
 
+test_that('required box attributes are correctly parsed', {
+  expect_is(box$X_id, 'character')
+  expect_is(box$name, 'character')
+  expect_is(box$exposure, 'character')
+  expect_is(box$model, 'character')
+  expect_is(box$lat, 'numeric')
+  expect_is(box$lon, 'numeric')
+  expect_is(box$createdAt, 'POSIXct')
+})
+
+test_that('optional box attributes are correctly parsed', {
+  completebox = osem_box('5a676e49411a790019290f94') # all fields populated
+  expect_is(completebox$description, 'character')
+  expect_is(completebox$grouptag, 'character')
+  expect_is(completebox$weblink, 'character')
+  expect_is(completebox$updatedAt, 'POSIXct')
+  expect_is(completebox$lastMeasurement, 'POSIXct')
+  expect_is(completebox$height, c('numeric', 'integer'))
+  expect_is(completebox$phenomena, 'list')
+  expect_is(completebox$phenomena[[1]], 'character')
+  expect_is(completebox$sensors, 'list')
+  expect_is(completebox$sensors[[1]], 'data.frame')
+  
+  # box with older schema, not recently updated..
+  oldbox = osem_box('539fec94a8341554157931d7')
+  expect_null(oldbox$description)
+  expect_null(oldbox$grouptag)
+  expect_null(oldbox$weblink)
+  expect_null(oldbox$updatedAt)
+  expect_null(oldbox$height)
+  expect_null(oldbox$lastMeasurement)
+})
+
 test_that('unknown box throws', {
   check_api()
 
