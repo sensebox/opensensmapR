@@ -46,7 +46,7 @@ summary.sensebox = function(object, ...) {
   table(object$model) %>% print()
   cat('\n')
 
-  diffNow = (utc_date(Sys.time()) - object$lastMeasurement) %>% as.numeric(unit = 'hours')
+  diffNow = (date_as_utc(Sys.time()) - object$lastMeasurement) %>% as.numeric(unit = 'hours')
   list(
     'last_measurement_within' = c(
       '1h'    = nrow(dplyr::filter(object, diffNow <= 1)),

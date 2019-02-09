@@ -180,8 +180,8 @@ parse_get_measurements_params = function (params) {
 
   if (!is.na(params$from) && !is.na(params$to)) {
     parse_dateparams(params$from, params$to) # only for validation sideeffect
-    query$`from-date` = utc_date(params$from)
-    query$`to-date` = utc_date(params$to)
+    query$`from-date` = date_as_utc(params$from)
+    query$`to-date` = date_as_utc(params$to)
   }
 
   if (!is.na(params$exposure)) query$exposure = params$exposure

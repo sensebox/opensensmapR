@@ -97,7 +97,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
   if (!is.na(to) && !is.na(from))
     query$date = parse_dateparams(from, to) %>% paste(collapse = ',')
   else if (!is.na(date))
-    query$date = utc_date(date) %>% date_as_isostring()
+    query$date = date_as_utc(date) %>% date_as_isostring()
 
   do.call(get_boxes_, query)
 }
@@ -152,11 +152,11 @@ parse_senseboxdata = function (boxdata) {
   thebox = as.data.frame(boxdata, stringsAsFactors = F)
 
   # parse timestamps (updatedAt might be not defined)
-  thebox$createdAt = as.POSIXct(strptime(thebox$createdAt, format = '%FT%T', tz = 'GMT'))
+  thebox$createdAt = isostring_as_date(thebox$createdAt)
   if (!is.null(thebox$updatedAt))
-    thebox$updatedAt = as.POSIXct(strptime(thebox$updatedAt, format = '%FT%T', tz = 'GMT'))
+    thebox$updatedAt = isostring_as_date(thebox$updatedAt)
   if (!is.null(lastMeasurement))
-    thebox$lastMeasurement = as.POSIXct(strptime(lastMeasurement, format = '%FT%T', tz = 'GMT'))
+    thebox$lastMeasurement = isostring_as_date(lastMeasurement)
 
   # create a dataframe of sensors
   thebox$sensors = sensors %>%
