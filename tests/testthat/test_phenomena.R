@@ -25,6 +25,8 @@ test_that('phenomena from boxes has all phenomena', {
 })
 
 test_that('phenomena from a not sensebox data.frame returns error', {
+  check_api()
+  
   expect_error(osem_phenomena(list()), 'no applicable method')
   expect_error(osem_phenomena(data.frame()), 'no applicable method')
   boxes_df = boxes

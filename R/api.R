@@ -4,11 +4,32 @@
 #  for CSV responses (get_measurements) the readr package is a hidden dependency
 # ==============================================================================
 
+default_api = 'https://api.opensensemap.org'
+
 #' Get the default openSenseMap API endpoint
 #' @export
 #' @return A character string with the HTTP URL of the openSenseMap API
-osem_endpoint = function() {
-  'https://api.opensensemap.org'
+osem_endpoint = function() default_api
+
+#' Check if the given openSenseMap API endpoint is available
+#' @param endpoint The API base URL to check, defaulting to \code{\link{osem_endpoint}}
+#' @return \code{TRUE} if the API is available, otherwise \code{stop()} is called.
+osem_ensure_api_available = function(endpoint = osem_endpoint()) {
+  code = FALSE
+  try({
+    code = httr::status_code(httr::GET(endpoint, path='stats'))
+  }, silent = TRUE)
+  
+  if (code == 200)
+    return(TRUE)
+  
+  errtext = paste('The API at', endpoint, 'is currently not available.')
+  if (code != FALSE)
+    errtext = paste0(errtext, ' (HTTP code ', code, ')')
+  if (endpoint == default_api)
+    errtext = c(errtext, 'If the issue persists, please check back at https://status.sensebox.de/778247404 and notify support@sensebox.de')
+  stop(paste(errtext, collapse='\n  '), call. = FALSE)
+  FALSE
 }
 
 get_boxes_ = function (..., endpoint) {
@@ -81,7 +102,7 @@ osem_get_resource = function (host, path, ..., type = 'parsed', progress = T, ca
   }
 
   res = osem_request_(host, path, query, type, progress)
-  if (!is.na(cache)) saveRDS(res, filename)
+  if (!is.na(res) && !is.na(cache)) saveRDS(res, filename)
   res
 }
 
@@ -115,6 +136,9 @@ osem_clear_cache = function (location = tempdir()) {
 }
 
 osem_request_ = function (host, path, query = list(), type = 'parsed', progress = TRUE) {
+  # stop() if API is not available
+  osem_ensure_api_available(host)
+  
   progress = if (progress && !is_non_interactive()) httr::progress() else NULL
   res = httr::GET(host, progress, path = path, query = query)
 

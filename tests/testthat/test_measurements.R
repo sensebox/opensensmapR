@@ -123,6 +123,7 @@ test_that('[.osem_measurements maintains attributes', {
 })
 
 test_that('data.frame can be converted to measurements data.frame', {
+  check_api()
   m = osem_measurements('Windrichtung')
   df = osem_as_measurements(data.frame(c(1, 2), c('a', 'b')))
   expect_equal(class(df), class(m))

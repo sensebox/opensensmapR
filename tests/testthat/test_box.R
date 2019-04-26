@@ -19,6 +19,8 @@ test_that('a single box can be retrieved by ID', {
 })
 
 test_that('required box attributes are correctly parsed', {
+  check_api()
+  
   expect_is(box$X_id, 'character')
   expect_is(box$name, 'character')
   expect_is(box$exposure, 'character')
@@ -29,6 +31,8 @@ test_that('required box attributes are correctly parsed', {
 })
 
 test_that('optional box attributes are correctly parsed', {
+  check_api()
+  
   completebox = osem_box('5a676e49411a790019290f94') # all fields populated
   expect_is(completebox$description, 'character')
   expect_is(completebox$grouptag, 'character')
@@ -65,6 +69,8 @@ test_that('[.sensebox maintains attributes', {
 })
 
 test_that("print.sensebox filters important attributes for a single box", {
+  check_api()
+  
   msg = capture.output({
     print(box)
   })
@@ -72,6 +78,8 @@ test_that("print.sensebox filters important attributes for a single box", {
 })
 
 test_that("summary.sensebox outputs all metrics for a single box", {
+  check_api()
+  
   msg = capture.output({
     summary(box)
   })
