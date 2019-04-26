@@ -102,7 +102,7 @@ osem_get_resource = function (host, path, ..., type = 'parsed', progress = T, ca
   }
 
   res = osem_request_(host, path, query, type, progress)
-  if (!is.na(res) && !is.na(cache)) saveRDS(res, filename)
+  if (!is.na(cache)) saveRDS(res, filename)
   res
 }
 
