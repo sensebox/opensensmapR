@@ -18,6 +18,7 @@ test_that('osem_box_to_archive_name does the correct character replacements', {
 })
 
 test_that('osem_box_to_archive_name works for one box', {
+  check_api()
   if (is.null(box)) skip('no box data could be fetched')
 
   archivename = opensensmapr:::osem_box_to_archivename(box)
@@ -26,6 +27,7 @@ test_that('osem_box_to_archive_name works for one box', {
 })
 
 test_that('osem_box_to_archive_name works for multiple boxes', {
+  check_api()
   if (is.null(boxes)) skip('no box data available')
 
   archivename = opensensmapr:::osem_box_to_archivename(boxes)
@@ -36,6 +38,7 @@ test_that('osem_box_to_archive_name works for multiple boxes', {
 context('osem_measurements_archive()')
 
 test_that('osem_measurements_archive works for one box', {
+  check_api()
   if (is.null(box)) skip('no box data could be fetched')
 
   m = osem_measurements_archive(box, as.POSIXlt('2018-08-08'))
@@ -44,6 +47,7 @@ test_that('osem_measurements_archive works for one box', {
 })
 
 test_that('osem_measurements_archive fails for multiple boxes', {
+  check_api()
   if (is.null(boxes)) skip('no box data available')
 
   expect_error(
