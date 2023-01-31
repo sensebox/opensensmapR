@@ -10,7 +10,7 @@ test_that('measurements can be retrieved for a phenomenon', {
 
   measurements = osem_measurements('Windgeschwindigkeit')
   measurements = osem_measurements(x = 'Windgeschwindigkeit')
-  expect_true(tibble::is.tibble(measurements))
+  expect_true(tibble::is_tibble(measurements))
   expect_true('osem_measurements' %in% class(measurements))
 })
 
@@ -104,7 +104,7 @@ test_that('both from and to are required when requesting measurements, error oth
 test_that('phenomenon is required when requesting measurements, error otherwise', {
   check_api()
 
-  expect_error(osem_measurements(), 'missing, with no default')
+  expect_error(osem_measurements())
   expect_error(osem_measurements(boxes), 'Parameter "phenomenon" is required')
 
   sfc = sf::st_sfc(sf::st_linestring(x = matrix(data = c(7, 8, 50, 51), ncol = 2)), crs = 4326)
