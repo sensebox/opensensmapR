@@ -154,7 +154,10 @@ parse_senseboxdata = function (boxdata) {
   sensors = boxdata$sensors
   location = boxdata$currentLocation
   lastMeasurement = boxdata$lastMeasurementAt # rename for backwards compat < 0.5.1
-  boxdata[c('loc', 'locations', 'currentLocation', 'sensors', 'image', 'boxType', 'lastMeasurementAt')] = NULL
+  grouptags = boxdata$grouptag
+  boxdata[c(
+    'loc', 'locations', 'currentLocation', 'sensors', 'image', 'boxType', 'lastMeasurementAt', 'grouptag'
+  )] = NULL
   thebox = as.data.frame(boxdata, stringsAsFactors = F)
 
   # parse timestamps (updatedAt might be not defined)
@@ -184,6 +187,23 @@ parse_senseboxdata = function (boxdata) {
   thebox$locationtimestamp = isostring_as_date(location$timestamp)
   if (length(location$coordinates) == 3)
     thebox$height = location$coordinates[[3]]
+
+  # extract grouptag(s) from box 
+  if (length(grouptags) == 0)
+    thebox$grouptag = NULL
+  if (length(grouptags) > 0) {
+    # if box does not have grouptag dont set attribute
+    if(grouptags[[1]] == '') {
+      thebox$grouptag = NULL
+    }
+    else {
+      thebox$grouptag = grouptags[[1]]
+    }
+  }
+  if (length(grouptags) > 1)
+    thebox$grouptag2 = grouptags[[2]]
+  if (length(grouptags)  > 2)
+    thebox$grouptag3 = grouptags[[3]]
 
   # attach a custom class for methods
   osem_as_sensebox(thebox)
