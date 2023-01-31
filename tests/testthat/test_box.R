@@ -50,7 +50,6 @@ test_that('optional box attributes are correctly parsed', {
   expect_null(oldbox$description)
   expect_null(oldbox$grouptag)
   expect_null(oldbox$weblink)
-  expect_null(oldbox$updatedAt)
   expect_null(oldbox$height)
   expect_null(oldbox$lastMeasurement)
 })

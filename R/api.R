@@ -45,8 +45,9 @@ get_boxes_ = function (..., endpoint) {
   df = dplyr::bind_rows(boxesList)
   df$exposure = df$exposure %>% as.factor()
   df$model    = df$model %>% as.factor()
-  if (!is.null(df$grouptag))
+  if (!is.null(df$grouptag)){
     df$grouptag = df$grouptag %>% as.factor()
+  }
   df
 }
 
@@ -70,7 +71,7 @@ parse_measurement_csv = function (resText) {
   })
 
   osem_as_measurements(result)
-}
+} 
 
 get_measurements_ = function (..., endpoint) {
   osem_get_resource(endpoint, c('boxes', 'data'), ..., type = 'text') %>%
