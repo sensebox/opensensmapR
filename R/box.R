@@ -18,6 +18,10 @@
 #' @param to Only return boxes that were measuring earlier than this time
 #' @param phenomenon Only return boxes that measured the given phenomenon in the
 #'   time interval as specified through \code{date} or \code{from / to}
+#' @param bbox Only return boxes that are within the given boundingbox, 
+#'   vector of 4 WGS84 coordinates. 
+#'   Order is: longitude southwest, latitude southwest, longitude northeast, latitude northeast. 
+#'   Minimal and maximal values are: -180, 180 for longitude and -90, 90 for latitude.
 #' @param endpoint The URL of the openSenseMap API instance
 #' @param progress Whether to print download progress information, defaults to \code{TRUE}
 #' @param cache Whether to cache the result, defaults to false.
@@ -67,7 +71,8 @@
 #'   b = osem_boxes(progress = FALSE)
 #' }
 osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
-                      date = NA, from = NA, to = NA, phenomenon = NA,
+                      date = NA, from = NA, to = NA, phenomenon = NA, 
+                      bbox = NA,
                       endpoint = osem_endpoint(),
                       progress = TRUE,
                       cache = NA) {
@@ -93,6 +98,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
   if (!is.na(model)) query$model = model
   if (!is.na(grouptag)) query$grouptag = grouptag
   if (!is.na(phenomenon)) query$phenomenon = phenomenon
+  if (all(!is.na(bbox))) query$bbox = paste(bbox, collapse = ', ')
 
   if (!is.na(to) && !is.na(from))
     query$date = parse_dateparams(from, to) %>% paste(collapse = ',')
@@ -175,6 +181,7 @@ parse_senseboxdata = function (boxdata) {
   # extract coordinates & transform to simple feature object
   thebox$lon = location$coordinates[[1]]
   thebox$lat = location$coordinates[[2]]
+  thebox$locationtimestamp = isostring_as_date(location$timestamp)
   if (length(location$coordinates) == 3)
     thebox$height = location$coordinates[[3]]
 
