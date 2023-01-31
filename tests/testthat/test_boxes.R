@@ -8,7 +8,7 @@ test_that('a list of all boxes can be retrieved and returns a sensebox data.fram
   expect_true(is.data.frame(boxes))
   expect_true(is.factor(boxes$model))
   expect_true(is.character(boxes$name))
-  expect_length(names(boxes), 15)
+  expect_length(names(boxes), 18) 
   expect_true(any('sensebox' %in% class(boxes)))
 })
 
@@ -53,10 +53,17 @@ test_that('a list of boxes with grouptype returns only boxes of that group', {
   expect_true(all(boxes$grouptag == 'codeformuenster'))
 })
 
+test_that('a list of boxes within a bbox only returns boxes within that bbox', {
+  check_api()
+
+  boxes = osem_boxes(bbox = c(7.8, 51.8, 8.0, 52.0))
+  expect_true(all(boxes$lon > 7.8 & boxes$lon < 8.0 & boxes$lat > 51.8 & boxes$lat < 52.0))
+})
+
 test_that('endpoint can be (mis)configured', {
   check_api()
 
-  expect_error(osem_boxes(endpoint = 'http://not.the.opensensemap.org'), 'resolve host')
+  expect_error(osem_boxes(endpoint = 'http://not.the.opensensemap.org'), 'The API at http://not.the.opensensemap.org is currently not available.')
 })
 
 test_that('a response with no matches returns empty sensebox data.frame', {
