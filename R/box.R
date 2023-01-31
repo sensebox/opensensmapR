@@ -105,6 +105,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
   else if (!is.na(date))
     query$date = date_as_utc(date) %>% date_as_isostring()
 
+
   do.call(get_boxes_, query)
 }
 
@@ -166,6 +167,11 @@ parse_senseboxdata = function (boxdata) {
     thebox$updatedAt = isostring_as_date(thebox$updatedAt)
   if (!is.null(lastMeasurement))
     thebox$lastMeasurement = isostring_as_date(lastMeasurement)
+
+  # add empty sensortype to sensors without type
+  if(!('sensorType' %in% names(sensors[[1]]))) {
+    sensors[[1]]$sensorType <- NA
+  }
 
   # create a dataframe of sensors
   thebox$sensors = sensors %>%
