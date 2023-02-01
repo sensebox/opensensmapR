@@ -15,7 +15,7 @@ output:
     fig_width: 7
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Visualising the History of openSenseMap.org}
+  %\VignetteIndexEntry{Visualising the Develpment of openSenseMap.org in 2022}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -25,9 +25,7 @@ vignette: >
 
 ```{r setup, results='hide', message=FALSE, warning=FALSE}
 # required packages:
-# library(opensensmapr) # data download
-library(devtools)
-load_all(".")
+library(opensensmapr) # data download
 library(dplyr)        # data wrangling
 library(ggplot2)      # plotting
 library(lubridate)    # date arithmetic
@@ -140,7 +138,7 @@ inconsistent (`Luftdaten`, `luftdaten.info`, ...)
 grouptag_counts = boxes %>%
   group_by(grouptag) %>%
   # only include grouptags with 15 or more members
-  filter(length(grouptag) >= 15 && !is.na(grouptag) && grouptag != '') %>%
+  filter(length(grouptag) >= 15 & !is.na(grouptag) & grouptag != '') %>%
   mutate(count = row_number(locationtimestamp))
 
 # helper for sorting the grouptags by boxcount

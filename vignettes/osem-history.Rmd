@@ -95,7 +95,7 @@ inconsistent (`Luftdaten`, `luftdaten.info`, ...)
 grouptag_counts = boxes %>%
   group_by(grouptag) %>%
   # only include grouptags with 8 or more members
-  filter(length(grouptag) >= 8 && !is.na(grouptag)) %>%
+  filter(length(grouptag) >= 8 & !is.na(grouptag)) %>%
   mutate(count = row_number(createdAt))
 
 # helper for sorting the grouptags by boxcount
@@ -194,7 +194,7 @@ spanning a large chunk of openSenseMap's existence.
 duration = boxes %>%
   group_by(grouptag) %>%
   # only include grouptags with 8 or more members
-  filter(length(grouptag) >= 8 && !is.na(grouptag) && !is.na(updatedAt)) %>%
+  filter(length(grouptag) >= 8 & !is.na(grouptag) & !is.na(updatedAt)) %>%
   mutate(duration = difftime(updatedAt, createdAt, units='days'))
   
 ggplot(duration, aes(x = grouptag, y = duration)) +
