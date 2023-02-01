@@ -21,7 +21,7 @@ A \code{sensebox data.frame} containing a box in each row
 Get a single senseBox by its ID
 }
 \examples{
-\donttest{
+\dontrun{
   # get a specific box by ID
   b = osem_box('57000b8745fd40c8196ad04c')
 

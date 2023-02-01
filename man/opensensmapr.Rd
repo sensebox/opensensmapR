@@ -112,11 +112,16 @@ openSenseMap API: \url{https://api.opensensemap.org/}
 official openSenseMap API documentation: \url{https://docs.opensensemap.org/}
 }
 \author{
-\strong{Maintainer}: Norwin Roosen \email{hello@nroo.de}
+\strong{Maintainer}: Jan Stenkamp \email{jan.stenkamp@uni-muenster.de} [contributor]
+
+Authors:
+\itemize{
+  \item Norwin Roosen \email{hello@nroo.de}
+}
 
 Other contributors:
 \itemize{
-  \item Daniel Nuest \email{daniel.nuest@uni-muenster.de} (0000-0003-2392-6140) [contributor]
+  \item Daniel Nuest \email{daniel.nuest@uni-muenster.de} (\href{https://orcid.org/0000-0003-2392-6140}{ORCID}) [contributor]
 }
 
 }

@@ -7,8 +7,14 @@
 \usage{
 osem_measurements_archive(x, ...)
 
-\method{osem_measurements_archive}{sensebox}(x, fromDate,
-  toDate = fromDate, sensorFilter = ~T, ..., progress = T)
+\method{osem_measurements_archive}{sensebox}(
+  x,
+  fromDate,
+  toDate = fromDate,
+  sensorFilter = ~T,
+  ...,
+  progress = T
+)
 }
 \arguments{
 \item{x}{A `sensebox data.frame` of a single box, as retrieved via \code{\link{osem_box}},
@@ -42,15 +48,15 @@ but continue the remaining download.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{sensebox}: Get daywise measurements for one or more sensors of a single box.
+\item \code{osem_measurements_archive(sensebox)}: Get daywise measurements for one or more sensors of a single box.
+
 }}
-
 \examples{
-# fetch measurements for a single day
-box = osem_box('593bcd656ccf3b0011791f5a')
-m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
-
 \donttest{
+  # fetch measurements for a single day
+  box = osem_box('593bcd656ccf3b0011791f5a')
+  m = osem_measurements_archive(box, as.POSIXlt('2018-09-13'))
+
   # fetch measurements for a date range and selected sensors
   sensors = ~ phenomenon \%in\% c('Temperatur', 'Beleuchtungsstärke')
   m = osem_measurements_archive(

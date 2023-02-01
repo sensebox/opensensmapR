@@ -21,10 +21,10 @@ Get the counts of sensors for each observed phenomenon.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{sensebox}: Get counts of sensors observing each phenomenon
+\item \code{osem_phenomena(sensebox)}: Get counts of sensors observing each phenomenon
 from a set of senseBoxes.
-}}
 
+}}
 \examples{
 # get the phenomena for a single senseBox
 osem_phenomena(osem_box('593bcd656ccf3b0011791f5a'))

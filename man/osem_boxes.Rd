@@ -4,9 +4,19 @@
 \alias{osem_boxes}
 \title{Get a set of senseBoxes from the openSenseMap}
 \usage{
-osem_boxes(exposure = NA, model = NA, grouptag = NA, date = NA,
-  from = NA, to = NA, phenomenon = NA, endpoint = osem_endpoint(),
-  progress = TRUE, cache = NA)
+osem_boxes(
+  exposure = NA,
+  model = NA,
+  grouptag = NA,
+  date = NA,
+  from = NA,
+  to = NA,
+  phenomenon = NA,
+  bbox = NA,
+  endpoint = osem_endpoint(),
+  progress = TRUE,
+  cache = NA
+)
 }
 \arguments{
 \item{exposure}{Only return boxes with the given exposure ('indoor', 'outdoor', 'mobile')}
@@ -23,6 +33,11 @@ osem_boxes(exposure = NA, model = NA, grouptag = NA, date = NA,
 
 \item{phenomenon}{Only return boxes that measured the given phenomenon in the
 time interval as specified through \code{date} or \code{from / to}}
+
+\item{bbox}{Only return boxes that are within the given boundingbox, 
+vector of 4 WGS84 coordinates. 
+Order is: longitude southwest, latitude southwest, longitude northeast, latitude northeast. 
+Minimal and maximal values are: -180, 180 for longitude and -90, 90 for latitude.}
 
 \item{endpoint}{The URL of the openSenseMap API instance}
 
@@ -46,7 +61,7 @@ Note that some filters do not work together:
 }
 \examples{
 
-\donttest{
+\dontrun{
   # get *all* boxes available on the API
   b = osem_boxes()
 

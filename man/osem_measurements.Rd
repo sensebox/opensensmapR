@@ -11,13 +11,31 @@ osem_measurements(x, ...)
 
 \method{osem_measurements}{default}(x, ...)
 
-\method{osem_measurements}{bbox}(x, phenomenon, exposure = NA,
-  from = NA, to = NA, columns = NA, ...,
-  endpoint = osem_endpoint(), progress = T, cache = NA)
+\method{osem_measurements}{bbox}(
+  x,
+  phenomenon,
+  exposure = NA,
+  from = NA,
+  to = NA,
+  columns = NA,
+  ...,
+  endpoint = osem_endpoint(),
+  progress = T,
+  cache = NA
+)
 
-\method{osem_measurements}{sensebox}(x, phenomenon, exposure = NA,
-  from = NA, to = NA, columns = NA, ...,
-  endpoint = osem_endpoint(), progress = T, cache = NA)
+\method{osem_measurements}{sensebox}(
+  x,
+  phenomenon,
+  exposure = NA,
+  from = NA,
+  to = NA,
+  columns = NA,
+  ...,
+  endpoint = osem_endpoint(),
+  progress = T,
+  cache = NA
+)
 }
 \arguments{
 \item{x}{Depending on the method, either
@@ -58,13 +76,13 @@ a bounding box spanning the whole world.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Get measurements from \strong{all} senseBoxes.
+\item \code{osem_measurements(default)}: Get measurements from \strong{all} senseBoxes.
 
-\item \code{bbox}: Get measurements by a spatial filter.
+\item \code{osem_measurements(bbox)}: Get measurements by a spatial filter.
 
-\item \code{sensebox}: Get measurements from a set of senseBoxes.
+\item \code{osem_measurements(sensebox)}: Get measurements from a set of senseBoxes.
+
 }}
-
 \examples{
 \donttest{
   # get measurements from all boxes on the phenomenon 'PM10' from the last 48h
