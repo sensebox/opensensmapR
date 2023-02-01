@@ -1,23 +1,23 @@
 ---
-title: "Visualising the History of openSenseMap.org"
-author: "Norwin Roosen"
+title: "Visualising the Develpment of openSenseMap.org in 2022"
+author: "Jan Stenkamp"
 date: '`r Sys.Date()`'
 output:
-  rmarkdown::html_vignette:
-    df_print: kable
-    fig_height: 5
-    fig_width: 7
-    toc: yes
   html_document:
     code_folding: hide
     df_print: kable
     theme: lumen
     toc: yes
     toc_float: yes
+  rmarkdown::html_vignette:
+    df_print: kable
+    fig_height: 5
+    fig_width: 7
+    toc: yes
 vignette: >
   %\VignetteIndexEntry{Visualising the History of openSenseMap.org}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 > This vignette serves as an example on data wrangling & visualization with
@@ -25,13 +25,13 @@ vignette: >
 
 ```{r setup, results='hide', message=FALSE, warning=FALSE}
 # required packages:
-library(opensensmapr) # data download
+# library(opensensmapr) # data download
+library(devtools)
+load_all(".")
 library(dplyr)        # data wrangling
 library(ggplot2)      # plotting
 library(lubridate)    # date arithmetic
 library(zoo)          # rollmean()
-library(devtools)
-load_all(".")
 ```
 
 openSenseMap.org has grown quite a bit in the last years; it would be interesting
@@ -40,17 +40,64 @@ split up by various attributes of the boxes.
 
 While `opensensmapr` provides extensive methods of filtering boxes by attributes
 on the server, we do the filtering within R to save time and gain flexibility.
-So the first step is to retrieve *all the boxes*:
 
-```{r download}
+
+So the first step is to retrieve *all the boxes*. 
+
+```{r download, results='hide', message=FALSE, warning=FALSE}
 # if you want to see results for a specific subset of boxes,
 # just specify a filter such as grouptag='ifgi' here
-boxes = osem_boxes()
+boxes_all = osem_boxes()
+boxes = boxes_all
 ```
+# Introduction
+In the following we just want to have a look at the boxes created in 2022, so we filter for them. 
+
+```{r}
+boxes = filter(boxes, locationtimestamp >= "2022-01-01" & locationtimestamp <="2022-12-31")
+summary(boxes) -> summary.data.frame
+```
+
+<!-- This gives a good overview already: As of writing this, there are more than 11,000 -->
+<!-- sensor stations, of which ~30% are currently running. Most of them are placed -->
+<!-- outdoors and have around 5 sensors each. -->
+<!-- The oldest station is from August 2016, while the latest station was registered a -->
+<!-- couple of minutes ago. -->
+
+Another feature of interest is the spatial distribution of the boxes: `plot()`
+can help us out here. This function requires a bunch of optional dependencies though.
+
+```{r message=F, warning=F}
+if (!require('maps'))     install.packages('maps')
+if (!require('maptools')) install.packages('maptools')
+if (!require('rgeos'))    install.packages('rgeos')
+
+plot(boxes)
+```
+
+But what do these sensor stations actually measure? Lets find out.
+`osem_phenomena()` gives us a named list of of the counts of each observed
+phenomenon for the given set of sensor stations:
+
+```{r}
+phenoms = osem_phenomena(boxes)
+str(phenoms)
+```
+
+Thats quite some noise there, with many phenomena being measured by a single
+sensor only, or many duplicated phenomena due to slightly different spellings.
+We should clean that up, but for now let's just filter out the noise and find
+those phenomena with high sensor numbers:
+
+```{r}
+phenoms[phenoms > 50]
+```
+
 
 # Plot count of boxes by time {.tabset}
 By looking at the `createdAt` attribute of each box we know the exact time a box
-was registered.
+was registered. Because of some database migration issues the `createdAt` values are mostly wrong (~80% of boxes created 2022-03-30), so we are using the `timestamp` attribute of the `currentlocation` which should in most cases correspond to the creation date.
+
 With this approach we have no information about boxes that were deleted in the
 meantime, but that's okay for now.
 
@@ -58,26 +105,24 @@ meantime, but that's okay for now.
 ```{r exposure_counts, message=FALSE}
 exposure_counts = boxes %>%
   group_by(exposure) %>%
-  mutate(count = row_number(createdAt))
+  mutate(count = row_number(locationtimestamp))
 
 exposure_colors = c(indoor = 'red', outdoor = 'lightgreen', mobile = 'blue', unknown = 'darkgrey')
-ggplot(exposure_counts, aes(x = createdAt, y = count, colour = exposure)) +
+ggplot(exposure_counts, aes(x = locationtimestamp, y = count, colour = exposure)) +
   geom_line() +
   scale_colour_manual(values = exposure_colors) +
   xlab('Registration Date') + ylab('senseBox count')
 ```
 
 Outdoor boxes are growing *fast*!
-We can also see the introduction of `mobile` sensor "stations" in 2017. While
-mobile boxes are still few, we can expect a quick rise in 2018 once the new
-[senseBox MCU with GPS support is released](https://sensebox.de/blog/2018-03-06-senseBox_MCU).
+We can also see the introduction of `mobile` sensor "stations" in 2017. 
 
 Let's have a quick summary:
 ```{r exposure_summary}
 exposure_counts %>%
   summarise(
-    oldest = min(createdAt),
-    newest = max(createdAt),
+    oldest = min(locationtimestamp),
+    newest = max(locationtimestamp),
     count = max(count)
   ) %>%
   arrange(desc(count))
@@ -94,9 +139,9 @@ inconsistent (`Luftdaten`, `luftdaten.info`, ...)
 ```{r grouptag_counts, message=FALSE}
 grouptag_counts = boxes %>%
   group_by(grouptag) %>%
-  # only include grouptags with 8 or more members
-  filter(length(grouptag) >= 8 && !is.na(grouptag)) %>%
-  mutate(count = row_number(createdAt))
+  # only include grouptags with 15 or more members
+  filter(length(grouptag) >= 15 && !is.na(grouptag) && grouptag != '') %>%
+  mutate(count = row_number(locationtimestamp))
 
 # helper for sorting the grouptags by boxcount
 sortLvls = function(oldFactor, ascending = TRUE) {
@@ -105,7 +150,7 @@ sortLvls = function(oldFactor, ascending = TRUE) {
 }
 grouptag_counts$grouptag = sortLvls(grouptag_counts$grouptag, ascending = FALSE)
 
-ggplot(grouptag_counts, aes(x = createdAt, y = count, colour = grouptag)) +
+ggplot(grouptag_counts, aes(x = locationtimestamp, y = count, colour = grouptag)) +
   geom_line(aes(group = grouptag)) +
   xlab('Registration Date') + ylab('senseBox count')
 ```
@@ -113,28 +158,32 @@ ggplot(grouptag_counts, aes(x = createdAt, y = count, colour = grouptag)) +
 ```{r grouptag_summary}
 grouptag_counts %>%
   summarise(
-    oldest = min(createdAt),
-    newest = max(createdAt),
+    oldest = min(locationtimestamp),
+    newest = max(locationtimestamp),
     count = max(count)
   ) %>%
   arrange(desc(count))
 ```
 
 # Plot rate of growth and inactivity per week
-First we group the boxes by `createdAt` into bins of one week:
+First we group the boxes by `locationtimestamp` into bins of one week:
 ```{r growthrate_registered, warning=FALSE, message=FALSE, results='hide'}
 bins = 'week'
 mvavg_bins = 6
 
 growth = boxes %>%
-  mutate(week = cut(as.Date(createdAt), breaks = bins)) %>%
+  mutate(week = cut(as.Date(locationtimestamp), breaks = bins)) %>%
   group_by(week) %>%
   summarize(count = length(week)) %>%
   mutate(event = 'registered')
 ```
 
 We can do the same for `updatedAt`, which informs us about the last change to
-a box, including uploaded measurements.
+a box, including uploaded measurements. As a lot of boxes were "updated" by the database
+migration, many of them are updated at 2022-03-30, so we try to use the `lastMeasurement` 
+attribute instead of `updatedAt`. This leads to fewer boxes but also automatically excludes 
+boxes which were created but never made a measurement.
+
 This method of determining inactive boxes is fairly inaccurate and should be
 considered an approximation, because we have no information about intermediate
 inactive phases.
@@ -143,8 +192,9 @@ Also deleted boxes would probably have a big impact here.
 inactive = boxes %>%
   # remove boxes that were updated in the last two days,
   # b/c any box becomes inactive at some point by definition of updatedAt
-  filter(updatedAt < now() - days(2)) %>%
-  mutate(week = cut(as.Date(updatedAt), breaks = bins)) %>%
+  filter(lastMeasurement < now() - days(2)) %>%
+  mutate(week = cut(as.Date(lastMeasurement), breaks = bins)) %>%
+  filter(as.Date(week) > as.Date("2021-12-31")) %>%
   group_by(week) %>%
   summarize(count = length(week)) %>%
   mutate(event = 'inactive')
@@ -163,56 +213,60 @@ ggplot(boxes_by_date, aes(x = as.Date(week), colour = event)) +
   geom_line(aes(y = rollmean(count, mvavg_bins, fill = list(NA, NULL, NA))))
 ```
 
-We see a sudden rise in early 2017, which lines up with the fast growing grouptag `Luftdaten`.
-This was enabled by an integration of openSenseMap.org into the firmware of the
-air quality monitoring project [luftdaten.info](https://luftdaten.info).
-The dips in mid 2017 and early 2018 could possibly be explained by production/delivery issues
-of the senseBox hardware, but I have no data on the exact time frames to verify.
+And see in which weeks the most boxes become (in)active:
+```{r table_mostregistrations}
+boxes_by_date %>%
+  filter(count > 50) %>%
+  arrange(desc(count))
+```
 
 # Plot duration of boxes being active {.tabset}
-While we are looking at `createdAt` and `updatedAt`, we can also extract the duration of activity
+While we are looking at `locationtimestamp` and `lastMeasurement`, we can also extract the duration of activity
 of each box, and look at metrics by exposure and grouptag once more:
 
 ## ...by exposure
 ```{r exposure_duration, message=FALSE}
-duration = boxes %>%
+durations = boxes %>%
   group_by(exposure) %>%
-  filter(!is.na(updatedAt)) %>%
-  mutate(duration = difftime(updatedAt, createdAt, units='days'))
+  filter(!is.na(lastMeasurement)) %>%
+  mutate(duration = difftime(lastMeasurement, locationtimestamp, units='days')) %>%
+  filter(duration >= 0)
 
-ggplot(duration, aes(x = exposure, y = duration)) +
+ggplot(durations, aes(x = exposure, y = duration)) +
   geom_boxplot() +
   coord_flip() + ylab('Duration active in Days')
 ```
 
-The time of activity averages at only `r round(mean(duration$duration))` days,
-though there are boxes with `r round(max(duration$duration))` days of activity,
+The time of activity averages at only `r round(mean(durations$duration))` days,
+though there are boxes with `r round(max(durations$duration))` days of activity,
 spanning a large chunk of openSenseMap's existence.
 
 ## ...by grouptag
 ```{r grouptag_duration, message=FALSE}
-duration = boxes %>%
+durations = boxes %>%
+  filter(!is.na(lastMeasurement)) %>%
   group_by(grouptag) %>%
-  # only include grouptags with 8 or more members
-  filter(length(grouptag) >= 8 && !is.na(grouptag) && !is.na(updatedAt)) %>%
-  mutate(duration = difftime(updatedAt, createdAt, units='days'))
+  # only include grouptags with 20 or more members
+  filter(length(grouptag) >= 15 & !is.na(grouptag) & !is.na(lastMeasurement)) %>%
+  mutate(duration = difftime(lastMeasurement, locationtimestamp, units='days')) %>%
+  filter(duration >= 0)
   
-ggplot(duration, aes(x = grouptag, y = duration)) +
+ggplot(durations, aes(x = grouptag, y = duration)) +
   geom_boxplot() +
   coord_flip() + ylab('Duration active in Days')
 
-duration %>%
+durations %>%
   summarize(
     duration_avg = round(mean(duration)),
     duration_min = round(min(duration)),
     duration_max = round(max(duration)),
-    oldest_box = round(max(difftime(now(), createdAt, units='days')))
+    oldest_box = round(max(difftime(now(), locationtimestamp, units='days')))
   ) %>%
   arrange(desc(duration_avg))
 ```
 
-The time of activity averages at only `r round(mean(duration$duration))` days,
-though there are boxes with `r round(max(duration$duration))` days of activity,
+The time of activity averages at only `r round(mean(durations$duration))` days,
+though there are boxes with `r round(max(durations$duration))` days of activity,
 spanning a large chunk of openSenseMap's existence.
 
 ## ...by year of registration
@@ -222,10 +276,11 @@ If you have an idea how to compensate for that, please send a [Pull Request][PR]
 ```{r year_duration, message=FALSE}
 # NOTE: boxes older than 2016 missing due to missing updatedAt in database
 duration = boxes %>%
-  mutate(year = cut(as.Date(createdAt), breaks = 'year')) %>%
+  mutate(year = cut(as.Date(locationtimestamp), breaks = 'year')) %>%
   group_by(year) %>%
-  filter(!is.na(updatedAt)) %>%
-  mutate(duration = difftime(updatedAt, createdAt, units='days'))
+  filter(!is.na(lastMeasurement)) %>%
+  mutate(duration = difftime(lastMeasurement, locationtimestamp, units='days')) %>%
+  filter(duration >= 0)
 
 ggplot(duration, aes(x = substr(as.character(year), 0, 4), y = duration)) +
   geom_boxplot() +
@@ -243,3 +298,5 @@ If you implemented some, feel free to add them to this vignette via a [Pull Requ
   senseBoxes that could be on the platform today, assuming there were no production issues ;)
 
 [PR]: https://github.com/sensebox/opensensmapr/pulls
+
+
