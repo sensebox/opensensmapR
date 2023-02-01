@@ -37,7 +37,7 @@
 #' @export
 #' @examples
 #'
-#' \donttest{
+#' \dontrun{
 #'   # get *all* boxes available on the API
 #'   b = osem_boxes()
 #'
@@ -125,7 +125,7 @@ osem_boxes = function (exposure = NA, model = NA, grouptag = NA,
 #' @seealso \code{\link{osem_clear_cache}}
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'   # get a specific box by ID
 #'   b = osem_box('57000b8745fd40c8196ad04c')
 #'
