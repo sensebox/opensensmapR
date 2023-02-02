@@ -121,11 +121,12 @@ osem_cache_filename = function (path, query = list(), host = osem_endpoint()) {
 #'
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'   osem_boxes(cache = tempdir())
 #'   osem_clear_cache()
 #'
 #'   cachedir = paste(getwd(), 'osemcache', sep = '/')
+#'   dir.create(file.path(cachedir), showWarnings = FALSE)
 #'   osem_boxes(cache = cachedir)
 #'   osem_clear_cache(cachedir)
 #' }
