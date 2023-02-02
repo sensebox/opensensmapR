@@ -18,7 +18,7 @@ print.osem_measurements = function (x, ...) {
 #'   Should have at least a `value` and `createdAt` column.
 #' @export
 osem_as_measurements = function(x) {
-  ret = tibble::as.tibble(x)
+  ret = tibble::as_tibble(x)
   class(ret) = c('osem_measurements', class(ret))
   ret
 }
