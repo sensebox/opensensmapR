@@ -80,6 +80,7 @@ osem_measurements.default = function (x, ...) {
 #'   # construct a bounding box 12km around berlin using the sf package,
 #'   # and get measurements from stations within that box
 #'   library(sf)
+#'   library(units)
 #'   bbox2 = st_point(c(13.4034, 52.5120)) %>%
 #'     st_sfc(crs = 4326) %>%
 #'     st_transform(3857) %>% # allow setting a buffer in meters
