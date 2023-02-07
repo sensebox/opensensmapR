@@ -30,8 +30,6 @@ library(dplyr)        # data wrangling
 library(ggplot2)      # plotting
 library(lubridate)    # date arithmetic
 library(zoo)          # rollmean()
-library(devtools)
-load_all(".")
 ```
 
 openSenseMap.org has grown quite a bit in the last years; it would be interesting
