@@ -115,7 +115,7 @@ archive_fetch_measurements = function (box, sensorId, fromDate, toDate, progress
       ))
 
       if (httr::status_code(res) == 404)
-        return(data.frame(createdAt = character(), value = character()))
+        return(data.frame(createdAt = as.POSIXlt(x = integer(0), origin = date), value = double()))
     }
 
     measurements = httr::content(res, type = 'text', encoding = 'UTF-8') %>%
