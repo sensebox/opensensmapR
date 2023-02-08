@@ -34,9 +34,9 @@ There are also vignettes showcasing applications of this package:
 - [Exploring the openSenseMap dataset][osem-intro]: Showcase of included helper functions
 - [Caching openSenseMap Data for reproducibility][osem-serialization]
 
-[osem-intro]: https://sensebox.github.com/opensensmapR/inst/doc/osem-intro.html
-[osem-history]: https://sensebox.github.com/opensensmapR/inst/doc/osem-history.html
-[osem-serialization]: https://sensebox.github.com/opensensmapR/inst/doc/osem-serialization.html
+[osem-intro]: https://sensebox.github.io/opensensmapR/inst/doc/osem-intro.html
+[osem-history]: https://sensebox.github.io/opensensmapR/inst/doc/osem-history.html
+[osem-serialization]: https://sensebox.github.io/opensensmapR/inst/doc/osem-serialization.html
 
 If you used this package for an analysis and think it could serve as a good
 example or showcase, feel free to add a vignette to the package via a [PR](#contribute)!

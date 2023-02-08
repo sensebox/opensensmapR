@@ -68,7 +68,7 @@ ggplot(exposure_counts, aes(x = createdAt, y = count, colour = exposure)) +
 Outdoor boxes are growing *fast*!
 We can also see the introduction of `mobile` sensor "stations" in 2017. While
 mobile boxes are still few, we can expect a quick rise in 2018 once the new
-[senseBox MCU with GPS support is released](https://sensebox.de/blog/2018-03-06-senseBox_MCU).
+senseBox MCU with GPS support is released.
 
 Let's have a quick summary:
 ```{r exposure_summary}
