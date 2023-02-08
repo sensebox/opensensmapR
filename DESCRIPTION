@@ -1,7 +1,7 @@
 Package: opensensmapr
 Type: Package
 Title: Client for the Data API of openSenseMap.org
-Version: 0.5.1
+Version: 0.6.0
 URL: http://github.com/sensebox/opensensmapR
 BugReports: http://github.com/sensebox/opensensmapR/issues
 Imports:
@@ -42,5 +42,5 @@ Description: Download environmental measurements and sensor station metadata
 License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
