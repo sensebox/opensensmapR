@@ -36,7 +36,7 @@ A \code{tbl_df} containing observations of all selected sensors for each time st
 \description{
 This function is significantly faster than \code{\link{osem_measurements}} for large
 time-frames, as daily CSV dumps for each sensor from
-\href{http://archive.opensensemap.org}{archive.opensensemap.org} are used.
+\href{https://archive.opensensemap.org}{archive.opensensemap.org} are used.
 Note that the latest data available is from the previous day.
 }
 \details{
