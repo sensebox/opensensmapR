@@ -163,7 +163,7 @@ ggplot(boxes_by_date, aes(x = as.Date(week), colour = event)) +
 
 We see a sudden rise in early 2017, which lines up with the fast growing grouptag `Luftdaten`.
 This was enabled by an integration of openSenseMap.org into the firmware of the
-air quality monitoring project [luftdaten.info](https://luftdaten.info).
+air quality monitoring project [luftdaten.info](https://sensor.community/de/).
 The dips in mid 2017 and early 2018 could possibly be explained by production/delivery issues
 of the senseBox hardware, but I have no data on the exact time frames to verify.
 
