@@ -1,6 +1,17 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
+### 2023-02-20: v0.6.0
+- fix package bugs to pass CRAN tests after 4 years of maintenance break 
+  - updated hyperlinks
+  - dont throw error for empty sensors
+  - updated tests
+- updated maintainer
+- updated vignettes
+- new features: 
+  - added param bbox for osem_boxes function
+  - support of multiple grouptags
+
 ### 2019-02-09: v0.5.1
 - fix package to work with API v6
   - box$lastMeasurement may be missing now for long inactive boxes
