@@ -39,7 +39,7 @@ osem_measurements = function (x, ...) UseMethod('osem_measurements')
 #' @describeIn osem_measurements Get measurements from \strong{all} senseBoxes.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'   # get measurements from all boxes on the phenomenon 'PM10' from the last 48h
 #'   m = osem_measurements('PM10')
 #'
