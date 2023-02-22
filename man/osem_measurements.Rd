@@ -84,7 +84,7 @@ a bounding box spanning the whole world.
 
 }}
 \examples{
-\donttest{
+\dontrun{
   # get measurements from all boxes on the phenomenon 'PM10' from the last 48h
   m = osem_measurements('PM10')
 
