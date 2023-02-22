@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^CHANGES\.md$
+^NEWS\.md$
 ^tools*$
 ^\.travis\.yml$
 ^appveyor\.yml$
@@ -8,3 +8,4 @@
 ^codecov\.yml$
 ^\.lintr$
 ^opensensmapr_.*\.tar\.gz$
+^cran-comments\.md$
