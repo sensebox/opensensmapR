@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^NEWS\.md$
 ^tools*$
 ^\.travis\.yml$
 ^appveyor\.yml$
