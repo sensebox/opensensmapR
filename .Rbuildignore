@@ -3,8 +3,7 @@
 ^tools*$
 ^\.travis\.yml$
 ^appveyor\.yml$
-^CONDUCT\.md$
 ^codecov\.yml$
-^\.lintr$
 ^opensensmapr_.*\.tar\.gz$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$

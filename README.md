@@ -59,7 +59,7 @@ devtools::install_github('sensebox/opensensmapr@development') # bleeding edge ve
 
 ## Changelog
 
-This project adheres to semantic versioning, for changes in recent versions please consult [CHANGES.md](CHANGES.md).
+This project adheres to semantic versioning, for changes in recent versions please consult [NEWS.md](NEWS.md).
 
 ## Contributing & Development
 
@@ -106,7 +106,7 @@ To create a release:
 0. make sure you are on master branch
 1. run the tests and checks as described above
 2. bump the version in `DESCRIPTION`
-3. update `CHANGES.md`
+3. update `NEWS.md`
 3. rebuild the documentation: `R -e 'devtools::document()'`
 4. build the package again with the new version: `R CMD build . --no-build-vignettes`
 5. tag the commit with the new version: `git tag v0.5.0`
