@@ -1,0 +1,106 @@
+---
+title: "Caching openSenseMap Data for Reproducibility"
+author: "Norwin Roosen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Caching openSenseMap Data for Reproducibility}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+It may be useful to download data from openSenseMap only once.
+For reproducible results, the data should be saved to disk, and reloaded at a
+later point.
+
+This avoids..
+
+- changed results for queries without date parameters,
+- unnecessary wait times,
+- risk of API changes / API unavailability,
+- stress on the openSenseMap-server.
+
+This vignette shows how to use this built in `opensensmapr` feature, and
+how to do it yourself in case you want to save to other data formats.
+
+```{r setup, results='hide'}
+# this vignette requires:
+library(opensensmapr)
+library(jsonlite)
+library(readr)
+```
+
+## Using the opensensmapr Caching Feature
+All data retrieval functions of `opensensmapr` have a built in caching feature,
+which serializes an API response to disk.
+Subsequent identical requests will then return the serialized data instead of making
+another request.
+
+To use this feature, just add a path to a directory to the `cache` parameter:
+```{r cache}
+b = osem_boxes(grouptag = 'ifgi', cache = tempdir())
+
+# the next identical request will hit the cache only!
+b = osem_boxes(grouptag = 'ifgi', cache = tempdir())
+
+# requests without the cache parameter will still be performed normally
+b = osem_boxes(grouptag = 'ifgi')
+```
+
+Looking at the cache directory we can see one file for each request, which is identified through a hash of the request URL:
+```{r cachelisting}
+list.files(tempdir(), pattern = 'osemcache\\..*\\.rds')
+```
+
+You can maintain multiple caches simultaneously which allows to only store data related to a script in the same directory:
+```{r cache_custom}
+cacheDir = getwd() # current working directory
+b = osem_boxes(grouptag = 'ifgi', cache = cacheDir)
+
+# the next identical request will hit the cache only!
+b = osem_boxes(grouptag = 'ifgi', cache = cacheDir)
+```
+
+To get fresh results again, just call `osem_clear_cache()` for the respective cache:
+```{r clearcache, results='hide'}
+osem_clear_cache()        # clears default cache
+osem_clear_cache(getwd()) # clears a custom cache
+```
+
+## Custom (De-) Serialization
+If you want to roll your own serialization method to support custom data formats,
+here's how:
+
+```{r data, results='hide'}
+# first get our example data:
+measurements = osem_measurements('Windgeschwindigkeit')
+```
+
+If you are paranoid and worry about `.rds` files not being decodable anymore
+in the (distant) future, you could serialize to a plain text format such as JSON.
+This of course comes at the cost of storage space and performance.
+```{r serialize_json}
+# serializing senseBoxes to JSON, and loading from file again:
+write(jsonlite::serializeJSON(measurements), 'measurements.json')
+measurements_from_file = jsonlite::unserializeJSON(readr::read_file('measurements.json'))
+class(measurements_from_file)
+```
+
+This method also persists the R object metadata (classes, attributes).
+If you were to use a serialization method that can't persist object metadata, you
+could re-apply it with the following functions:
+
+```{r serialize_attrs}
+# note the toJSON call instead of serializeJSON
+write(jsonlite::toJSON(measurements), 'measurements_bad.json')
+measurements_without_attrs = jsonlite::fromJSON('measurements_bad.json')
+class(measurements_without_attrs)
+
+measurements_with_attrs = osem_as_measurements(measurements_without_attrs)
+class(measurements_with_attrs)
+```
+The same goes for boxes via `osem_as_sensebox()`.
+
+```{r cleanup, include=FALSE}
+file.remove('measurements.json', 'measurements_bad.json')
+```

@@ -1,0 +1,162 @@
+## ----setup, results='hide', message=FALSE, warning=FALSE----------------------
+# required packages:
+library(opensensmapr) # data download
+library(dplyr)        # data wrangling
+library(ggplot2)      # plotting
+library(lubridate)    # date arithmetic
+library(zoo)          # rollmean()
+
+## ----download, results='hide', message=FALSE, warning=FALSE-------------------
+# if you want to see results for a specific subset of boxes,
+# just specify a filter such as grouptag='ifgi' here
+boxes_all = osem_boxes()
+boxes = boxes_all
+
+## -----------------------------------------------------------------------------
+boxes = filter(boxes, locationtimestamp >= "2022-01-01" & locationtimestamp <="2022-12-31")
+summary(boxes) -> summary.data.frame
+
+## ----message=F, warning=F-----------------------------------------------------
+if (!require('maps'))     install.packages('maps')
+if (!require('maptools')) install.packages('maptools')
+if (!require('rgeos'))    install.packages('rgeos')
+
+plot(boxes)
+
+## -----------------------------------------------------------------------------
+phenoms = osem_phenomena(boxes)
+str(phenoms)
+
+## -----------------------------------------------------------------------------
+phenoms[phenoms > 50]
+
+## ----exposure_counts, message=FALSE-------------------------------------------
+exposure_counts = boxes %>%
+  group_by(exposure) %>%
+  mutate(count = row_number(locationtimestamp))
+
+exposure_colors = c(indoor = 'red', outdoor = 'lightgreen', mobile = 'blue', unknown = 'darkgrey')
+ggplot(exposure_counts, aes(x = locationtimestamp, y = count, colour = exposure)) +
+  geom_line() +
+  scale_colour_manual(values = exposure_colors) +
+  xlab('Registration Date') + ylab('senseBox count')
+
+## ----exposure_summary---------------------------------------------------------
+exposure_counts %>%
+  summarise(
+    oldest = min(locationtimestamp),
+    newest = max(locationtimestamp),
+    count = max(count)
+  ) %>%
+  arrange(desc(count))
+
+## ----grouptag_counts, message=FALSE-------------------------------------------
+grouptag_counts = boxes %>%
+  group_by(grouptag) %>%
+  # only include grouptags with 15 or more members
+  filter(length(grouptag) >= 15 & !is.na(grouptag) & grouptag != '') %>%
+  mutate(count = row_number(locationtimestamp))
+
+# helper for sorting the grouptags by boxcount
+sortLvls = function(oldFactor, ascending = TRUE) {
+  lvls = table(oldFactor) %>% sort(., decreasing = !ascending) %>% names()
+  factor(oldFactor, levels = lvls)
+}
+grouptag_counts$grouptag = sortLvls(grouptag_counts$grouptag, ascending = FALSE)
+
+ggplot(grouptag_counts, aes(x = locationtimestamp, y = count, colour = grouptag)) +
+  geom_line(aes(group = grouptag)) +
+  xlab('Registration Date') + ylab('senseBox count')
+
+## ----grouptag_summary---------------------------------------------------------
+grouptag_counts %>%
+  summarise(
+    oldest = min(locationtimestamp),
+    newest = max(locationtimestamp),
+    count = max(count)
+  ) %>%
+  arrange(desc(count))
+
+## ----growthrate_registered, warning=FALSE, message=FALSE, results='hide'------
+bins = 'week'
+mvavg_bins = 6
+
+growth = boxes %>%
+  mutate(week = cut(as.Date(locationtimestamp), breaks = bins)) %>%
+  group_by(week) %>%
+  summarize(count = length(week)) %>%
+  mutate(event = 'registered')
+
+## ----growthrate_inactive, warning=FALSE, message=FALSE, results='hide'--------
+inactive = boxes %>%
+  # remove boxes that were updated in the last two days,
+  # b/c any box becomes inactive at some point by definition of updatedAt
+  filter(lastMeasurement < now() - days(2)) %>%
+  mutate(week = cut(as.Date(lastMeasurement), breaks = bins)) %>%
+  filter(as.Date(week) > as.Date("2021-12-31")) %>%
+  group_by(week) %>%
+  summarize(count = length(week)) %>%
+  mutate(event = 'inactive')
+
+## ----growthrate, warning=FALSE, message=FALSE, results='hide'-----------------
+boxes_by_date = bind_rows(growth, inactive) %>% group_by(event)
+
+ggplot(boxes_by_date, aes(x = as.Date(week), colour = event)) +
+  xlab('Time') + ylab(paste('rate per ', bins)) +
+  scale_x_date(date_breaks="years", date_labels="%Y") +
+  scale_colour_manual(values = c(registered = 'lightgreen', inactive = 'grey')) +
+  geom_point(aes(y = count), size = 0.5) +
+  # moving average, make first and last value NA (to ensure identical length of vectors)
+  geom_line(aes(y = rollmean(count, mvavg_bins, fill = list(NA, NULL, NA))))
+
+## ----table_mostregistrations--------------------------------------------------
+boxes_by_date %>%
+  filter(count > 50) %>%
+  arrange(desc(count))
+
+## ----exposure_duration, message=FALSE-----------------------------------------
+durations = boxes %>%
+  group_by(exposure) %>%
+  filter(!is.na(lastMeasurement)) %>%
+  mutate(duration = difftime(lastMeasurement, locationtimestamp, units='days')) %>%
+  filter(duration >= 0)
+
+ggplot(durations, aes(x = exposure, y = duration)) +
+  geom_boxplot() +
+  coord_flip() + ylab('Duration active in Days')
+
+## ----grouptag_duration, message=FALSE-----------------------------------------
+durations = boxes %>%
+  filter(!is.na(lastMeasurement)) %>%
+  group_by(grouptag) %>%
+  # only include grouptags with 20 or more members
+  filter(length(grouptag) >= 15 & !is.na(grouptag) & !is.na(lastMeasurement)) %>%
+  mutate(duration = difftime(lastMeasurement, locationtimestamp, units='days')) %>%
+  filter(duration >= 0)
+  
+ggplot(durations, aes(x = grouptag, y = duration)) +
+  geom_boxplot() +
+  coord_flip() + ylab('Duration active in Days')
+
+durations %>%
+  summarize(
+    duration_avg = round(mean(duration)),
+    duration_min = round(min(duration)),
+    duration_max = round(max(duration)),
+    oldest_box = round(max(difftime(now(), locationtimestamp, units='days')))
+  ) %>%
+  arrange(desc(duration_avg))
+
+## ----year_duration, message=FALSE---------------------------------------------
+# NOTE: boxes older than 2016 missing due to missing updatedAt in database
+duration = boxes %>%
+  mutate(year = cut(as.Date(locationtimestamp), breaks = 'year')) %>%
+  group_by(year) %>%
+  filter(!is.na(lastMeasurement)) %>%
+  mutate(duration = difftime(lastMeasurement, locationtimestamp, units='days')) %>%
+  filter(duration >= 0)
+
+ggplot(duration, aes(x = substr(as.character(year), 0, 4), y = duration)) +
+  geom_boxplot() +
+  coord_flip() + ylab('Duration active in Days') + xlab('Year of Registration')
+
