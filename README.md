@@ -64,11 +64,11 @@ This project adheres to semantic versioning, for changes in recent versions plea
 ## Contributing & Development
 
 Contributions are very welcome!
-When submitting a patch, please follow the existing [code style](.lintr),
+When submitting a patch, please follow the existing code stlye,
 and run `R CMD check --no-vignettes .` on the package.
 Where feasible, also add tests for the added / changed functionality in `tests/testthat`.
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md).
+Please note that this project is released with a Contributor Code of Conduct.
 By participating in this project you agree to abide by its terms.
 
 ### development environment
