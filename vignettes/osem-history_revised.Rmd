@@ -1,5 +1,5 @@
 ---
-title: "Visualising the Develpment of openSenseMap.org in 2022"
+title: "Visualising the Development of openSenseMap.org in 2022"
 author: "Jan Stenkamp"
 date: '`r Sys.Date()`'
 output:
@@ -15,7 +15,7 @@ output:
     fig_width: 7
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Visualising the Develpment of openSenseMap.org in 2022}
+  %\VignetteIndexEntry{Visualising the Development of openSenseMap.org in 2022}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---

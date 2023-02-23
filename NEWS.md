@@ -4,7 +4,7 @@ This project does its best to adhere to semantic versioning.
 ### 2023-02-20: v0.6.0
 - fix package bugs to pass CRAN tests after 4 years of maintenance break 
   - updated hyperlinks
-  - dont throw error for empty sensors
+  - don't throw error for empty sensors
   - updated tests
 - updated maintainer
 - updated vignettes
@@ -24,7 +24,7 @@ This project does its best to adhere to semantic versioning.
 - add sensor-IDs to `box$phenomena`
 
 ### 2018-09-21: v0.4.3
-- dynamically export S3 methods of forgeign generics
+- dynamically export S3 methods of foreign generics
   for compatibility with upcoming R 3.6.0
 - add `readr` as default dependency
 
@@ -74,7 +74,7 @@ This project does its best to adhere to semantic versioning.
 ### 2017-08-23: v0.2.0
 - add auto paging for `osem_measurements()`, allowing data retrieval for arbitrary time intervals (#2)
 - improve plots for `osem_measurements` & `sensebox` (#1)
-- add `sensorId` & `unit` colummn to `get_measurements()` output by default
+- add `sensorId` & `unit` column to `get_measurements()` output by default
 - show download progress info, hide readr output
 - shorten vignette `osem-intro`
 

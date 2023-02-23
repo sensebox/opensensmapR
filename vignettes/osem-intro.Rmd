@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 This package provides data ingestion functions for almost any data stored on the
-open data platform for environemental sensordata <https://opensensemap.org>.
+open data platform for environmental sensordata <https://opensensemap.org>.
 Its main goals are to provide means for:
 
 - big data analysis of the measurements stored on the platform

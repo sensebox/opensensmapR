@@ -103,7 +103,7 @@ R CMD check --no-vignettes ../opensensmapr_*.tar.gz
 
 To create a release:
 
-0. make shure you are on master branch
+0. make sure you are on master branch
 1. run the tests and checks as described above
 2. bump the version in `DESCRIPTION`
 3. update `CHANGES.md`
