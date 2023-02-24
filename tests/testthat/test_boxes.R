@@ -172,3 +172,44 @@ test_that('requests can be cached', {
   osem_clear_cache()
   expect_length(list.files(tempdir(), pattern = 'osemcache\\..*\\.rds'), 0)
 })
+
+context('single box from boxes')
+test_that('a single box can be retrieved by ID', {
+  check_api()
+  
+  box = osem_box(boxes$X_id[[1]])
+  
+  expect_true('sensebox' %in% class(box))
+  expect_true('data.frame' %in% class(box))
+  expect_true(nrow(box) == 1)
+  expect_true(box$X_id == boxes$X_id[[1]])
+  expect_silent(osem_box(boxes$X_id[[1]]))
+})
+
+test_that('[.sensebox maintains attributes', {
+  check_api()
+  
+  expect_true(all(attributes(boxes[1:nrow(boxes), ]) %in% attributes(boxes)))
+})
+
+context('measurements boxes')
+test_that('measurements of specific boxes can be retrieved for one phenomenon and returns a measurements data.frame', {
+  check_api()
+  
+  # fix for subsetting
+  class(boxes) = c('data.frame')
+  three_boxes = boxes[1:3, ]
+  class(boxes) = c('sensebox', 'data.frame')
+  three_boxes = osem_as_sensebox(three_boxes)
+  phens = names(osem_phenomena(three_boxes))
+  
+  measurements = osem_measurements(x = three_boxes, phenomenon = phens[[1]])
+  expect_true(is.data.frame(measurements))
+  expect_true('osem_measurements' %in% class(measurements))
+})
+
+test_that('phenomenon is required when requesting measurements, error otherwise', {
+  check_api()
+  
+  expect_error(osem_measurements(boxes), 'Parameter "phenomenon" is required')
+})

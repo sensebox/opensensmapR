@@ -115,7 +115,9 @@ berlin = st_point(c(13.4034, 52.5120)) %>%
   st_transform(4326) %>% # the opensensemap expects WGS 84
   st_bbox()
 ```
-```{r results = F}
+
+Since the API takes quite long to response measurements, especially filtered on space and time, we do not run the following chunks for publication of the package on CRAN.
+```{r results = F, eval=FALSE}
 pm25 = osem_measurements(
   berlin,
   phenomenon = 'PM2.5',
@@ -129,7 +131,7 @@ plot(pm25)
 Now we can get started with actual spatiotemporal data analysis.
 First, lets mask the seemingly uncalibrated sensors:
 
-```{r}
+```{r, eval=FALSE}
 outliers = filter(pm25, value > 100)$sensorId
 bad_sensors = outliers[, drop = T] %>% levels()
 
@@ -138,13 +140,13 @@ pm25 = mutate(pm25, invalid = sensorId %in% bad_sensors)
 
 Then plot the measuring locations, flagging the outliers:
 
-```{r}
+```{r, eval=FALSE}
 st_as_sf(pm25) %>% st_geometry() %>% plot(col = factor(pm25$invalid), axes = T)
 ```
 
 Removing these sensors yields a nicer time series plot:
 
-```{r}
+```{r, eval=FALSE}
 pm25 %>% filter(invalid == FALSE) %>% plot()
 ```
 

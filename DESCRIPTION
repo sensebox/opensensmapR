@@ -1,6 +1,6 @@
 Package: opensensmapr
 Type: Package
-Title: Client for the Data API of openSenseMap.org
+Title: Client for the Data API of 'openSenseMap.org'
 Version: 0.6.0
 URL: https://github.com/sensebox/opensensmapR
 BugReports: https://github.com/sensebox/opensensmapR/issues
