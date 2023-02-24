@@ -4,7 +4,7 @@
 \alias{st_as_sf.sensebox}
 \title{Convert a \code{sensebox} dataframe to an \code{\link[sf]{st_sf}} object.}
 \usage{
-st_as_sf.sensebox(x, ...)
+\method{st_as_sf}{sensebox}(x, ...)
 }
 \arguments{
 \item{x}{The object to convert}
