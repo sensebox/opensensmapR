@@ -4,7 +4,7 @@
 \alias{filter.sensebox}
 \title{Return rows with matching conditions, while maintaining class & attributes}
 \usage{
-\method{filter}{sensebox}(.data, ..., .dots)
+filter.sensebox(.data, ..., .dots)
 }
 \arguments{
 \item{.data}{A sensebox data.frame to filter}

@@ -4,7 +4,7 @@
 \alias{st_as_sf.osem_measurements}
 \title{Convert a \code{osem_measurements} dataframe to an \code{\link[sf]{st_sf}} object.}
 \usage{
-\method{st_as_sf}{osem_measurements}(x, ...)
+st_as_sf.osem_measurements(x, ...)
 }
 \arguments{
 \item{x}{The object to convert}

@@ -4,7 +4,7 @@
 \alias{filter.osem_measurements}
 \title{Return rows with matching conditions, while maintaining class & attributes}
 \usage{
-\method{filter}{osem_measurements}(.data, ..., .dots)
+filter.osem_measurements(.data, ..., .dots)
 }
 \arguments{
 \item{.data}{A osem_measurements data.frame to filter}

@@ -4,7 +4,7 @@
 \alias{mutate.sensebox}
 \title{Add new variables to the data, while maintaining class & attributes}
 \usage{
-\method{mutate}{sensebox}(.data, ..., .dots)
+mutate.sensebox(.data, ..., .dots)
 }
 \arguments{
 \item{.data}{A sensebox data.frame to mutate}
