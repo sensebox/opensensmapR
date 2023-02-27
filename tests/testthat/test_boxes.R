@@ -1,10 +1,13 @@
 source('testhelpers.R')
 context('boxes')
 
+try({
+  boxes = osem_boxes()
+})
+
 test_that('a list of all boxes can be retrieved and returns a sensebox data.frame', {
   check_api()
 
-  boxes = osem_boxes()
   expect_true(is.data.frame(boxes))
   expect_true(is.factor(boxes$model))
   expect_true(is.character(boxes$name))
@@ -20,44 +23,44 @@ test_that('both from and to are required when requesting boxes, error otherwise'
 test_that('a list of boxes with phenomenon filter returns only the requested phenomenon', {
   check_api()
 
-  boxes = osem_boxes(phenomenon = 'Temperatur', date = Sys.time())
-  expect_true(all(grep('Temperatur', boxes$phenomena)))
+  boxes_phen = osem_boxes(phenomenon = 'Temperatur', date = Sys.time())
+  expect_true(all(grep('Temperatur', boxes_phen$phenomena)))
 })
 
 test_that('a list of boxes with exposure filter returns only the requested exposure', {
   check_api()
 
-  boxes = osem_boxes(exposure = 'mobile')
-  expect_true(all(boxes$exposure == 'mobile'))
+  boxes_exp = osem_boxes(exposure = 'mobile')
+  expect_true(all(boxes_exp$exposure == 'mobile'))
 })
 
 test_that('a list of boxes with model filter returns only the requested model', {
   check_api()
 
-  boxes = osem_boxes(model = 'homeWifi')
-  expect_true(all(boxes$model == 'homeWifi'))
+  boxes_mod = osem_boxes(model = 'homeWifi')
+  expect_true(all(boxes_mod$model == 'homeWifi'))
 })
 
 test_that('box query can combine exposure and model filter', {
   check_api()
 
-  boxes = osem_boxes(exposure = 'mobile', model = 'homeWifi')
-  expect_true(all(boxes$model == 'homeWifi'))
-  expect_true(all(boxes$exposure == 'mobile'))
+  boxes_com = osem_boxes(exposure = 'mobile', model = 'homeWifi')
+  expect_true(all(boxes_com$model == 'homeWifi'))
+  expect_true(all(boxes_com$exposure == 'mobile'))
 })
 
 test_that('a list of boxes with grouptype returns only boxes of that group', {
   check_api()
 
-  boxes = osem_boxes(grouptag = 'codeformuenster')
-  expect_true(all(boxes$grouptag == 'codeformuenster'))
+  boxes_gro = osem_boxes(grouptag = 'codeformuenster')
+  expect_true(all(boxes_gro$grouptag == 'codeformuenster'))
 })
 
 test_that('a list of boxes within a bbox only returns boxes within that bbox', {
   check_api()
 
-  boxes = osem_boxes(bbox = c(7.8, 51.8, 8.0, 52.0))
-  expect_true(all(boxes$lon > 7.8 & boxes$lon < 8.0 & boxes$lat > 51.8 & boxes$lat < 52.0))
+  boxes_box = osem_boxes(bbox = c(7.8, 51.8, 8.0, 52.0))
+  expect_true(all(boxes_box$lon > 7.8 & boxes_box$lon < 8.0 & boxes_box$lat > 51.8 & boxes_box$lat < 52.0))
 })
 
 test_that('endpoint can be (mis)configured', {
@@ -70,10 +73,10 @@ test_that('a response with no matches returns empty sensebox data.frame', {
   check_api()
 
   suppressWarnings({
-    boxes = osem_boxes(grouptag = 'does_not_exist')
+    boxes_gro = osem_boxes(grouptag = 'does_not_exist')
   })
-  expect_true(is.data.frame(boxes))
-  expect_true(any('sensebox' %in% class(boxes)))
+  expect_true(is.data.frame(boxes_gro))
+  expect_true(any('sensebox' %in% class(boxes_gro)))
 })
 
 test_that('a response with no matches gives a warning', {
@@ -90,7 +93,7 @@ test_that('data.frame can be converted to sensebox data.frame', {
 test_that('boxes can be converted to sf object', {
   check_api()
 
-  boxes = osem_boxes()
+  # boxes = osem_boxes()
   boxes_sf = sf::st_as_sf(boxes)
 
   expect_true(all(sf::st_is_simple(boxes_sf)))
@@ -100,7 +103,7 @@ test_that('boxes can be converted to sf object', {
 test_that('boxes converted to sf object keep all attributes', {
   check_api()
 
-  boxes = osem_boxes()
+  # boxes = osem_boxes()
   boxes_sf = sf::st_as_sf(boxes)
 
   # coord columns get removed!
@@ -124,7 +127,7 @@ test_that('box retrieval does not give progress information in non-interactive m
 test_that('print.sensebox filters important attributes for a set of boxes', {
   check_api()
 
-  boxes = osem_boxes()
+  # boxes = osem_boxes()
   msg = capture.output({
     print(boxes)
   })
@@ -134,7 +137,7 @@ test_that('print.sensebox filters important attributes for a set of boxes', {
 test_that('summary.sensebox outputs all metrics for a set of boxes', {
   check_api()
 
-  boxes = osem_boxes()
+  # boxes = osem_boxes()
   msg = capture.output({
     summary(boxes)
   })
@@ -213,3 +216,4 @@ test_that('phenomenon is required when requesting measurements, error otherwise'
   
   expect_error(osem_measurements(boxes), 'Parameter "phenomenon" is required')
 })
+
