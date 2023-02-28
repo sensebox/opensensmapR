@@ -43,7 +43,7 @@ So the first step is to retrieve *all the boxes*:
 ```{r download}
 # if you want to see results for a specific subset of boxes,
 # just specify a filter such as grouptag='ifgi' here
-boxes = osem_boxes()
+boxes = osem_boxes(cache = '.')
 ```
 
 # Plot count of boxes by time {.tabset}

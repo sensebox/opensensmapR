@@ -32,7 +32,7 @@ datasets' structure.
 library(magrittr)
 library(opensensmapr)
 
-all_sensors = osem_boxes()
+all_sensors = osem_boxes(cache = '.')
 ```
 ```{r}
 summary(all_sensors)
@@ -101,7 +101,7 @@ We could call `osem_measurements(pm25_sensors)` now, however we are focusing on
 a restricted area of interest, the city of Berlin.
 Luckily we can get the measurements filtered by a bounding box:
 
-```{r}
+```{r. eval = FALSE}
 library(sf)
 library(units)
 library(lubridate)

@@ -45,7 +45,7 @@ So the first step is to retrieve *all the boxes*.
 ```{r download, results='hide', message=FALSE, warning=FALSE}
 # if you want to see results for a specific subset of boxes,
 # just specify a filter such as grouptag='ifgi' here
-boxes_all = osem_boxes()
+boxes_all = osem_boxes(cache = '.')
 boxes = boxes_all
 ```
 # Introduction
