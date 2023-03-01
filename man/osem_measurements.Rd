@@ -107,7 +107,7 @@ a bounding box spanning the whole world.
     'height'
   ))
 }
-\donttest{
+\dontrun{
   # get measurements from sensors within a custom WGS84 bounding box
   bbox = structure(c(7, 51, 8, 52), class = 'bbox')
   m = osem_measurements(bbox, 'Temperatur')
