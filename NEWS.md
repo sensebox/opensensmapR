@@ -8,6 +8,7 @@ This project does its best to adhere to semantic versioning.
   - updated tests
 - updated maintainer
 - updated vignettes
+- use precomputed data to create vignettes
 - new features: 
   - added param bbox for osem_boxes function
   - support of multiple grouptags
