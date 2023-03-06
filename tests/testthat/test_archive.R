@@ -46,6 +46,15 @@ test_that('osem_measurements_archive works for one box', {
   expect_s3_class(m, c('data.frame'))
 })
 
+test_that('osem_measurements_archive sensorFilter works for one box', {
+  check_api()
+  if (is.null(box)) skip('no box data could be fetched')
+  
+  m = osem_measurements_archive(box, as.POSIXlt('2018-08-08'), sensorFilter = ~ phenomenon == 'Temperatur')
+  expect_length(m, 2) # one column for Temperatur + createdAt
+  expect_s3_class(m, c('data.frame'))
+})
+
 test_that('osem_measurements_archive fails for multiple boxes', {
   check_api()
   if (is.null(boxes)) skip('no box data available')

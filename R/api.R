@@ -94,7 +94,7 @@ get_stats_ = function (endpoint, cache) {
 #' @param cache Optional path to a directory were responses will be cached. If not NA, no requests will be made when a request for the given is already cached.
 #' @return Result of a Request to openSenseMap API
 #' @noRd
-osem_get_resource = function (host, path, ..., type = 'parsed', progress = T, cache = NA) {
+osem_get_resource = function (host, path, ..., type = 'parsed', progress = TRUE, cache = NA) {
   query = list(...)
   if (!is.na(cache)) {
     filename = osem_cache_filename(path, query, host) %>% paste(cache, ., sep = '/')

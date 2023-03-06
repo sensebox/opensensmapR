@@ -11,9 +11,9 @@ osem_measurements_archive(x, ...)
   x,
   fromDate,
   toDate = fromDate,
-  sensorFilter = ~T,
+  sensorFilter = ~TRUE,
   ...,
-  progress = T
+  progress = TRUE
 )
 }
 \arguments{

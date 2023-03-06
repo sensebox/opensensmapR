@@ -64,7 +64,7 @@ osem_measurements_archive.default = function (x, ...) {
 #'     sensorFilter = sensors
 #'   )
 #' }
-osem_measurements_archive.sensebox = function (x, fromDate, toDate = fromDate, sensorFilter = ~ T, ..., progress = T) {
+osem_measurements_archive.sensebox = function (x, fromDate, toDate = fromDate, sensorFilter = ~ TRUE, ..., progress = TRUE) {
   if (nrow(x) != 1)
     stop('this function only works for exactly one senseBox!')
 

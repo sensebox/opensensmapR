@@ -1,4 +1,4 @@
-exclusions: list.files(path = 'inst/doc', full.names = T)
+exclusions: list.files(path = 'inst/doc', full.names = TRUE)
 linters: with_defaults(
     # we use snake case
     camel_case_linter = NULL,
