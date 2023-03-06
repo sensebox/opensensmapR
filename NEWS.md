@@ -9,6 +9,7 @@ This project does its best to adhere to semantic versioning.
 - updated maintainer
 - updated vignettes
 - use precomputed data to create vignettes
+- change archive url to 'https://archive.opensensemap.org/' and checking its availability before requesting data
 - new features: 
   - added param bbox for osem_boxes function
   - support of multiple grouptags
