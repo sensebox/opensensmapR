@@ -16,6 +16,7 @@ print.osem_measurements = function (x, ...) {
 #' Converts a foreign object to an osem_measurements data.frame.
 #' @param x A data.frame to attach the class to.
 #'   Should have at least a `value` and `createdAt` column.
+#' @return data.frame of class \code{osem_measurements}
 #' @export
 osem_as_measurements = function(x) {
   ret = tibble::as_tibble(x)

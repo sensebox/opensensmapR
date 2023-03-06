@@ -73,6 +73,7 @@ summary.sensebox = function(object, ...) {
 
 #' Converts a foreign object to a sensebox data.frame.
 #' @param x A data.frame to attach the class to
+#' @return data.frame of class \code{sensebox}
 #' @export
 osem_as_sensebox = function(x) {
   ret = as.data.frame(x)

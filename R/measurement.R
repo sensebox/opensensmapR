@@ -99,7 +99,7 @@ osem_measurements.bbox = function (x, phenomenon, exposure = NA,
                                    from = NA, to = NA, columns = NA,
                                    ...,
                                    endpoint = osem_endpoint(),
-                                   progress = T,
+                                   progress = TRUE,
                                    cache = NA) {
   bbox = x
   environment() %>%
@@ -137,7 +137,7 @@ osem_measurements.sensebox = function (x, phenomenon, exposure = NA,
                                        from = NA, to = NA, columns = NA,
                                        ...,
                                        endpoint = osem_endpoint(),
-                                       progress = T,
+                                       progress = TRUE,
                                        cache = NA) {
   boxes = x
   environment() %>%

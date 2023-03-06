@@ -9,6 +9,9 @@ osem_as_sensebox(x)
 \arguments{
 \item{x}{A data.frame to attach the class to}
 }
+\value{
+data.frame of class \code{sensebox}
+}
 \description{
 Converts a foreign object to a sensebox data.frame.
 }

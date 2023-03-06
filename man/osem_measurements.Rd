@@ -20,7 +20,7 @@ osem_measurements(x, ...)
   columns = NA,
   ...,
   endpoint = osem_endpoint(),
-  progress = T,
+  progress = TRUE,
   cache = NA
 )
 
@@ -33,7 +33,7 @@ osem_measurements(x, ...)
   columns = NA,
   ...,
   endpoint = osem_endpoint(),
-  progress = T,
+  progress = TRUE,
   cache = NA
 )
 }

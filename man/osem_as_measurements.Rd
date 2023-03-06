@@ -10,6 +10,9 @@ osem_as_measurements(x)
 \item{x}{A data.frame to attach the class to.
 Should have at least a `value` and `createdAt` column.}
 }
+\value{
+data.frame of class \code{osem_measurements}
+}
 \description{
 Converts a foreign object to an osem_measurements data.frame.
 }
