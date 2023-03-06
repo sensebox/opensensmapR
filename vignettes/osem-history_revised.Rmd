@@ -67,10 +67,6 @@ Another feature of interest is the spatial distribution of the boxes: `plot()`
 can help us out here. This function requires a bunch of optional dependencies though.
 
 ```{r, message=FALSE, warning=FALSE}
-if (!require('maps'))     install.packages('maps')
-if (!require('maptools')) install.packages('maptools')
-if (!require('rgeos'))    install.packages('rgeos')
-
 plot(boxes)
 ```
 

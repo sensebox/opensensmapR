@@ -1,14 +1,5 @@
 #' @export
 plot.sensebox = function (x, ..., mar = c(2, 2, 1, 1)) {
-  if (
-    !requireNamespace('sf', quietly = TRUE) ||
-    !requireNamespace('maps', quietly = TRUE) ||
-    !requireNamespace('maptools', quietly = TRUE) ||
-    !requireNamespace('rgeos', quietly = TRUE)
-  ) {
-    stop('this functions requires additional packages. install them with
-    install.packages(c("sf", "maps", "maptools", "rgeos"))')
-  }
 
   geom = x %>%
     sf::st_as_sf() %>%
