@@ -1,7 +1,7 @@
 # opensensmapr changelog
 This project does its best to adhere to semantic versioning.
 
-### 2023-02-20: v0.6.0
+### 2023-03-06: v0.6.0
 - fix package bugs to pass CRAN tests after 4 years of maintenance break 
   - updated hyperlinks
   - don't throw error for empty sensors
