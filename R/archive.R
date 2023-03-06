@@ -1,12 +1,12 @@
 # client for archive.opensensemap.org
 # in this archive, CSV files for measurements of each sensor per day is provided.
 
+default_archive_url = 'https://archive.opensensemap.org/'
+
 #' Returns the default endpoint for the archive *download*
 #' While the front end domain is archive.opensensemap.org, file downloads
 #' are provided via sciebo.
-osem_archive_endpoint = function () {
-  'https://uni-muenster.sciebo.de/index.php/s/HyTbguBP4EkqBcp/download?path=/data'
-}
+osem_archive_endpoint = function () default_archive_url 
 
 #' Fetch day-wise measurements for a single box from the openSenseMap archive.
 #'
@@ -93,6 +93,8 @@ osem_measurements_archive.sensebox = function (x, fromDate, toDate = fromDate, s
 #' @param progress whether to print progress
 #' @return A \code{tbl_df} containing observations of all selected sensors for each time stamp.
 archive_fetch_measurements = function (box, sensorId, fromDate, toDate, progress) {
+  osem_ensure_archive_available()
+
   dates = list()
   from = fromDate
   while (from <= toDate) {
@@ -149,4 +151,23 @@ build_archive_url = function (date, box, sensorId) {
 osem_box_to_archivename = function (box) {
   name = gsub('[^A-Za-z0-9._-]', '_', box$name)
   paste(box$X_id, name, sep = '-')
+}
+
+#' Check if the given openSenseMap archive endpoint is available
+#' @param endpoint The archive base URL to check, defaulting to \code{\link{osem_archive_endpoint}}
+#' @return \code{TRUE} if the archive is available, otherwise \code{stop()} is called.
+osem_ensure_archive_available = function(endpoint = osem_archive_endpoint()) {
+  code = FALSE
+  try({
+    code = httr::status_code(httr::GET(endpoint))
+  }, silent = TRUE)
+  
+  if (code == 200)
+    return(TRUE)
+  
+  errtext = paste('The archive at', endpoint, 'is currently not available.')
+  if (code != FALSE)
+    errtext = paste0(errtext, ' (HTTP code ', code, ')')
+  stop(paste(errtext, collapse='\n  '), call. = FALSE)
+  FALSE
 }
