@@ -20,12 +20,12 @@ plot.sensebox = function (x, ..., mar = c(2, 2, 1, 1)) {
     sf::st_as_sf() %>%
     sf::st_geometry()
 
-  oldpar = par()
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
   par(mar = mar)
   plot(world, col = 'gray', xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], axes = TRUE, ...)
   plot(geom, add = TRUE, col = x$exposure, ...)
   legend('left', legend = levels(x$exposure), col = 1:length(x$exposure), pch = 1)
-  par(mar = oldpar$mar)
 
   invisible(x)
 }
