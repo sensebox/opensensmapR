@@ -33,5 +33,5 @@ osem_phenomena.sensebox = function (boxes) {
     table() %>%                    # get count for each phenomenon
     as.list()
 
-  p[order(unlist(p), decreasing = T)]
+  p[order(unlist(p), decreasing = TRUE)]
 }
