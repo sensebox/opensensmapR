@@ -9,7 +9,10 @@ library(zoo)          # rollmean()
 ## ----download-----------------------------------------------------------------
 # if you want to see results for a specific subset of boxes,
 # just specify a filter such as grouptag='ifgi' here
-boxes = osem_boxes()
+
+# boxes = osem_boxes(cache = '.')
+boxes = readRDS('boxes_precomputed.rds')  # read precomputed file to save resources 
+
 
 ## ----exposure_counts, message=FALSE-------------------------------------------
 exposure_counts = boxes %>%

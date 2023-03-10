@@ -12,7 +12,7 @@
 
 <meta name="author" content="Norwin Roosen" />
 
-<meta name="date" content="2023-02-23" />
+<meta name="date" content="2023-03-08" />
 
 <title>Caching openSenseMap Data for Reproducibility</title>
 
@@ -341,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">Caching openSenseMap Data for
 Reproducibility</h1>
 <h4 class="author">Norwin Roosen</h4>
-<h4 class="date">2023-02-23</h4>
+<h4 class="date">2023-03-08</h4>
 
 
 
@@ -407,21 +407,17 @@ storage space and performance.</p>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(jsonlite<span class="sc">::</span><span class="fu">serializeJSON</span>(measurements), <span class="st">&#39;measurements.json&#39;</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>measurements_from_file <span class="ot">=</span> jsonlite<span class="sc">::</span><span class="fu">unserializeJSON</span>(readr<span class="sc">::</span><span class="fu">read_file</span>(<span class="st">&#39;measurements.json&#39;</span>))</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(measurements_from_file)</span></code></pre></div>
-<pre><code>## [1] &quot;osem_measurements&quot; &quot;tbl_df&quot;            &quot;tbl&quot;              
-## [4] &quot;data.frame&quot;</code></pre>
 <p>This method also persists the R object metadata (classes,
 attributes). If you were to use a serialization method that can’t
 persist object metadata, you could re-apply it with the following
 functions:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># note the toJSON call instead of serializeJSON</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(jsonlite<span class="sc">::</span><span class="fu">toJSON</span>(measurements), <span class="st">&#39;measurements_bad.json&#39;</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>measurements_without_attrs <span class="ot">=</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">&#39;measurements_bad.json&#39;</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(measurements_without_attrs)</span></code></pre></div>
-<pre><code>## [1] &quot;data.frame&quot;</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>measurements_with_attrs <span class="ot">=</span> <span class="fu">osem_as_measurements</span>(measurements_without_attrs)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(measurements_with_attrs)</span></code></pre></div>
-<pre><code>## [1] &quot;osem_measurements&quot; &quot;tbl_df&quot;            &quot;tbl&quot;              
-## [4] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># note the toJSON call instead of serializeJSON</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(jsonlite<span class="sc">::</span><span class="fu">toJSON</span>(measurements), <span class="st">&#39;measurements_bad.json&#39;</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>measurements_without_attrs <span class="ot">=</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">&#39;measurements_bad.json&#39;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(measurements_without_attrs)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>measurements_with_attrs <span class="ot">=</span> <span class="fu">osem_as_measurements</span>(measurements_without_attrs)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(measurements_with_attrs)</span></code></pre></div>
 <p>The same goes for boxes via <code>osem_as_sensebox()</code>.</p>
 </div>
 

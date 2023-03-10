@@ -71,7 +71,7 @@ osem_clear_cache(getwd()) # clears a custom cache
 If you want to roll your own serialization method to support custom data formats,
 here's how:
 
-```{r data, results='hide'}
+```{r data, results='hide', eval=FALSE}
 # first get our example data:
 measurements = osem_measurements('Windgeschwindigkeit')
 ```
@@ -79,7 +79,7 @@ measurements = osem_measurements('Windgeschwindigkeit')
 If you are paranoid and worry about `.rds` files not being decodable anymore
 in the (distant) future, you could serialize to a plain text format such as JSON.
 This of course comes at the cost of storage space and performance.
-```{r serialize_json}
+```{r serialize_json, eval=FALSE}
 # serializing senseBoxes to JSON, and loading from file again:
 write(jsonlite::serializeJSON(measurements), 'measurements.json')
 measurements_from_file = jsonlite::unserializeJSON(readr::read_file('measurements.json'))
@@ -90,7 +90,7 @@ This method also persists the R object metadata (classes, attributes).
 If you were to use a serialization method that can't persist object metadata, you
 could re-apply it with the following functions:
 
-```{r serialize_attrs}
+```{r serialize_attrs, eval=FALSE}
 # note the toJSON call instead of serializeJSON
 write(jsonlite::toJSON(measurements), 'measurements_bad.json')
 measurements_without_attrs = jsonlite::fromJSON('measurements_bad.json')
@@ -101,6 +101,6 @@ class(measurements_with_attrs)
 ```
 The same goes for boxes via `osem_as_sensebox()`.
 
-```{r cleanup, include=FALSE}
+```{r cleanup, include=FALSE, eval=FALSE}
 file.remove('measurements.json', 'measurements_bad.json')
 ```

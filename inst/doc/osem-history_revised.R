@@ -9,18 +9,15 @@ library(zoo)          # rollmean()
 ## ----download, results='hide', message=FALSE, warning=FALSE-------------------
 # if you want to see results for a specific subset of boxes,
 # just specify a filter such as grouptag='ifgi' here
-boxes_all = osem_boxes()
-boxes = boxes_all
+
+# boxes = osem_boxes(cache = '.')
+boxes = readRDS('boxes_precomputed.rds')  # read precomputed file to save resources 
 
 ## -----------------------------------------------------------------------------
 boxes = filter(boxes, locationtimestamp >= "2022-01-01" & locationtimestamp <="2022-12-31")
 summary(boxes) -> summary.data.frame
 
-## ----message=F, warning=F-----------------------------------------------------
-if (!require('maps'))     install.packages('maps')
-if (!require('maptools')) install.packages('maptools')
-if (!require('rgeos'))    install.packages('rgeos')
-
+## ---- message=FALSE, warning=FALSE--------------------------------------------
 plot(boxes)
 
 ## -----------------------------------------------------------------------------

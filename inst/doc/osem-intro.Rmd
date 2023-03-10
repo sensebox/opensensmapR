@@ -28,11 +28,12 @@ Its main goals are to provide means for:
 Before we look at actual observations, lets get a grasp of the openSenseMap
 datasets' structure.
 
-```{r results = F}
+```{r results = FALSE}
 library(magrittr)
 library(opensensmapr)
 
-all_sensors = osem_boxes()
+# all_sensors = osem_boxes(cache = '.')
+all_sensors = readRDS('boxes_precomputed.rds')  # read precomputed file to save resources 
 ```
 ```{r}
 summary(all_sensors)
@@ -47,11 +48,7 @@ couple of minutes ago.
 Another feature of interest is the spatial distribution of the boxes: `plot()`
 can help us out here. This function requires a bunch of optional dependencies though.
 
-```{r message=F, warning=F}
-if (!require('maps'))     install.packages('maps')
-if (!require('maptools')) install.packages('maptools')
-if (!require('rgeos'))    install.packages('rgeos')
-
+```{r, message=FALSE, warning=FALSE}
 plot(all_sensors)
 ```
 
@@ -81,7 +78,7 @@ We should check how many sensor stations provide useful data: We want only those
 boxes with a PM2.5 sensor, that are placed outdoors and are currently submitting
 measurements:
 
-```{r results = F}
+```{r results = FALSE, eval=FALSE}
 pm25_sensors = osem_boxes(
   exposure = 'outdoor',
   date = Sys.time(), # ±4 hours
@@ -89,6 +86,8 @@ pm25_sensors = osem_boxes(
 )
 ```
 ```{r}
+pm25_sensors = readRDS('pm25_sensors.rds') # read precomputed file to save resources 
+
 summary(pm25_sensors)
 plot(pm25_sensors)
 ```
@@ -101,12 +100,16 @@ We could call `osem_measurements(pm25_sensors)` now, however we are focusing on
 a restricted area of interest, the city of Berlin.
 Luckily we can get the measurements filtered by a bounding box:
 
-```{r}
+```{r, results=FALSE, message=FALSE}
 library(sf)
 library(units)
 library(lubridate)
 library(dplyr)
 
+```
+
+Since the API takes quite long to response measurements, especially filtered on space and time, we do not run the following chunks for publication of the package on CRAN.
+```{r bbox, results = FALSE, eval=FALSE}
 # construct a bounding box: 12 kilometers around Berlin
 berlin = st_point(c(13.4034, 52.5120)) %>%
   st_sfc(crs = 4326) %>%
@@ -114,8 +117,6 @@ berlin = st_point(c(13.4034, 52.5120)) %>%
   st_buffer(set_units(12, km)) %>%
   st_transform(4326) %>% # the opensensemap expects WGS 84
   st_bbox()
-```
-```{r results = F}
 pm25 = osem_measurements(
   berlin,
   phenomenon = 'PM2.5',
@@ -123,15 +124,19 @@ pm25 = osem_measurements(
   to = now()
 )
 
+```
+
+```{r}
+pm25 = readRDS('pm25_berlin.rds') # read precomputed file to save resources 
 plot(pm25)
 ```
 
 Now we can get started with actual spatiotemporal data analysis.
 First, lets mask the seemingly uncalibrated sensors:
 
-```{r}
+```{r, warning=FALSE}
 outliers = filter(pm25, value > 100)$sensorId
-bad_sensors = outliers[, drop = T] %>% levels()
+bad_sensors = outliers[, drop = TRUE] %>% levels()
 
 pm25 = mutate(pm25, invalid = sensorId %in% bad_sensors)
 ```
@@ -139,7 +144,7 @@ pm25 = mutate(pm25, invalid = sensorId %in% bad_sensors)
 Then plot the measuring locations, flagging the outliers:
 
 ```{r}
-st_as_sf(pm25) %>% st_geometry() %>% plot(col = factor(pm25$invalid), axes = T)
+st_as_sf(pm25) %>% st_geometry() %>% plot(col = factor(pm25$invalid), axes = TRUE)
 ```
 
 Removing these sensors yields a nicer time series plot:

@@ -27,25 +27,25 @@ b = osem_boxes(grouptag = 'ifgi', cache = cacheDir)
 osem_clear_cache()        # clears default cache
 osem_clear_cache(getwd()) # clears a custom cache
 
-## ----data, results='hide'-----------------------------------------------------
-# first get our example data:
-measurements = osem_measurements('Windgeschwindigkeit')
+## ----data, results='hide', eval=FALSE-----------------------------------------
+#  # first get our example data:
+#  measurements = osem_measurements('Windgeschwindigkeit')
 
-## ----serialize_json-----------------------------------------------------------
-# serializing senseBoxes to JSON, and loading from file again:
-write(jsonlite::serializeJSON(measurements), 'measurements.json')
-measurements_from_file = jsonlite::unserializeJSON(readr::read_file('measurements.json'))
-class(measurements_from_file)
+## ----serialize_json, eval=FALSE-----------------------------------------------
+#  # serializing senseBoxes to JSON, and loading from file again:
+#  write(jsonlite::serializeJSON(measurements), 'measurements.json')
+#  measurements_from_file = jsonlite::unserializeJSON(readr::read_file('measurements.json'))
+#  class(measurements_from_file)
 
-## ----serialize_attrs----------------------------------------------------------
-# note the toJSON call instead of serializeJSON
-write(jsonlite::toJSON(measurements), 'measurements_bad.json')
-measurements_without_attrs = jsonlite::fromJSON('measurements_bad.json')
-class(measurements_without_attrs)
+## ----serialize_attrs, eval=FALSE----------------------------------------------
+#  # note the toJSON call instead of serializeJSON
+#  write(jsonlite::toJSON(measurements), 'measurements_bad.json')
+#  measurements_without_attrs = jsonlite::fromJSON('measurements_bad.json')
+#  class(measurements_without_attrs)
+#  
+#  measurements_with_attrs = osem_as_measurements(measurements_without_attrs)
+#  class(measurements_with_attrs)
 
-measurements_with_attrs = osem_as_measurements(measurements_without_attrs)
-class(measurements_with_attrs)
-
-## ----cleanup, include=FALSE---------------------------------------------------
-file.remove('measurements.json', 'measurements_bad.json')
+## ----cleanup, include=FALSE, eval=FALSE---------------------------------------
+#  file.remove('measurements.json', 'measurements_bad.json')
 
