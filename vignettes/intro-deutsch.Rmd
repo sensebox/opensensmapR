@@ -1,0 +1,138 @@
+---
+title: "Einführung in opensensmapR"
+author: "Jan Stenkamp"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_margin: 0
+    fig_width: 6
+    fig_height: 4
+vignette: >
+  %\VignetteIndexEntry{Einfuehrung in opensensmapR"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+[This Rmd file was included after the package was released]: # 
+[TODO: if this should be inlcuded in the actual vignettes, improve runtime by using precomputed data!]: # 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Das package opensensmapR kann dazu genutzt werden Daten von der [openSenseMap](https://opensensemap.org) 
+in R abzufragen und zu analysieren. Damit lassen sich sowohl die Daten einzelner senseBoxen, aber vor allem 
+auch mehrere senseBoxen gleichzeitig analysieren.
+
+### Installation
+
+Um das package in R zu nutzen, muss dieses zuerst installiert werden. Das ist möglich mit dem Befehl `install.packages('opensensmapr')`. 
+Danach kann das package geladen werden durch den Befehl `library(opensensmapr)`.
+
+
+### Alle Boxen abfragen
+Um einen Überblick über alle auf der openSenseMap registrierten Boxen zu bekommen, kann man diese mit dem Befehl `osem_boxes()` über die API beziehen. 
+Außerdem werden die Boxen dabei automatisch vorbereitet, um sie für weitere Analysen zu nutzen. Die Daten werden dann in der Variablen `all_sensors` gespeichert, um diese weiter zu verwenden.
+
+
+```{r results = FALSE}
+library(opensensmapr)
+all_sensors = osem_boxes()
+```
+Daraufhin ermöglicht die Funktion `summary(boxes)`, eine Zusammenfassung der Metadaten aller Boxen anzuzeigen:
+```{r}
+summary(all_sensors)
+```
+So werden hier unter anderem die Anzahl aller Boxen in dem Datensatz (`boxes total`), die Anzahl der Boxen die Messungen in verschiedenen Zeitintervallen durchgeführt haben (`$last_measurement_within`) und die zuletzt erstellte Box dargestellt (`newest_box`).
+
+Mit der Funktion `plot(boxes)` können wir dann auch noch alle Stationen auf einer Karte anzeigen. 
+
+```{r, message=FALSE, warning=FALSE}
+plot(all_sensors)
+```
+
+Die Funktion `osem_phenomena(boxes)` gibt uns außerdem Informationen darüber, welche Phänomene von den Stationen gemessen werden.
+
+```{r}
+phenoms = osem_phenomena(all_sensors)
+str(phenoms)
+```
+
+
+### Daten filtern
+
+Mit PM10 als einem der am häufigsten gemessenen Phänomene, wollen wir nun weiterarbeiten. Dazu können wir zum Beispiel mit den folgenden Parametern, nur die Boxen abfragen, die PM10 gemessen haben. Dabei wird die Abfrage durch das setzen der Parameter in der Klammer wie folgt gefiltert:
+
+- `exposure = 'outdoor'` : gib nur Boxen zurück die draußen stehen.
+- `date = Sys.time()` : gib nur Boxen zurück, die zum Datum Sys.time() (+-4 Stunden) eine Messung geschickt haben. Sys.time() steht dabei für die aktuelle Zeit.
+- `phenomenon = 'PM10'` : gib nur Boxen zurück, die einen PM10 Sensor haben. 
+
+Die Abfrage der gefilterten Boxen kann ggfs. ein paar Minuten dauern, da die openSenseMap API zuerst die prall gefüllte Datenbank entsprechend filtern muss.
+
+```{r results = FALSE}
+pm10_sensors = osem_boxes(
+  exposure = 'outdoor',
+  date = Sys.time(), # ±4 hours
+  phenomenon = 'PM10'
+)
+```
+Auch von den gefilterten Daten können wir uns wieder die Zusammenfassung und eine Karte anschauen:
+
+```{r}
+summary(pm10_sensors)
+plot(pm10_sensors)
+```
+
+Wie man sieht, sind jetzt alle Stationen outdoor und es gibt keine Station mehr, die noch nie eine Messung durchgeführt hat. Das liegt an den Parametern, die wir bei der Abfrage der Daten in der Funktion gesetzt haben; alle Stationen sollten draußen sein und vor kurzem eine Messung geschickt haben. 
+
+
+
+### Daten analysieren
+
+Bis jetzt haben wir uns ja nur die Stationen angeschaut. Nun wollen wir auch einen genaueren Blick auf die eigentlichen Messungen werfen. Die Messungen die an die openSenseMap geschickt werden, können wir mit der Funktion `osem_measurements()` abfragen. 
+
+Auch dabei können wir verschiedene Filter setzen. Unter anderem wollen wir nur Messungen von Stationen in der Nähe von Münster erhalten. Dazu erstellen wir zunächst ein Objekt, dass die Koordinaten von Münster enthält:
+
+```{r, results=FALSE, message=FALSE}
+# Zunächst werden ein paar Pakete geladen, die es uns ermöglichen mit den räumlichen Daten zu arbeiten
+library(sf)
+library(units)
+library(lubridate)
+library(dplyr)
+# Dann erstellen wir eine sogenannte Boundingbox, in unserem Fall ein 20 km x 20 km Quadrat um das Zentrum von Münster.
+muenster = st_point(c(7.63, 51.95)) %>% # Koordinate Münster Zentrum
+  st_sfc(crs = 4326) %>% # Koordinatensystem für geographische Koordinaten
+  st_transform(3857) %>% # Koordinatensystem das Meter versteht
+  st_buffer(set_units(10, km)) %>% # 10 km Radius um Münster
+  st_transform(4326) %>% # Wieder Umwandlung in geographische Koordinaten, welche die openSenseMap API erwartet
+  st_bbox() # erstellen eines boundingbox objektes
+```
+
+`osem_measurements()` nimmt ähnliche Parameter wie `osem_boxes()` entgegen. 
+
+- `bbox = muenster` : Gib nur Messungen von Boxen zurück, die innerhalb unserer boundingbox liegen.
+- `phenomenon = 'PM10'` : Gib nur PM10 Messungen zurück.
+- `from = now() - days(3)`: Gib Messungen zurück, die nicht älter als drei Tage sind.
+- `to = now()` : Gib nur Messungen zurück, die bis jetzt gemessen wurden.
+
+Hierbei ersetzen die Parameter `from` und `to`, den Parameter `date`, den wir zuvor in der Funktion `osem_boxes()` benutzt haben. Beide Arten von Datumsfilter, können in beiden Funktionen genutzt werden.
+
+```{r bbox, results = FALSE}
+pm10_muenster = osem_measurements(
+  muenster, 
+  phenomenon = 'PM10',
+  from = now() - days(3), # defaults to 2 days
+  to = now()
+)
+```
+Die PM10-Messungen können wir nun einfach als Zeitreihe darstellen:
+
+```{r}
+plot(pm10_muenster)
+```
+
+Jeder Punkt stellt hier eine Messung dar und jede Box hat eine andere Farbe. Wie man sieht sind die meisten Messungen unter einem Wert von 50, jedoch gibt es auch ein paar Ausreißer und eine Station die dauerhaft Werte um 150 misst. 
+
+Für weitere Beispiele lohnt sich ein Blick in die folgenden Dokumente: 
+- https://github.com/sensebox/opensensmapR/blob/master/inst/doc/osem-history_revised.html
+- https://sensebox.github.io/opensensmapR/inst/doc/osem-intro.html
