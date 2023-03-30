@@ -31,9 +31,11 @@ There are also vignettes showcasing applications of this package:
 
 - [Visualising the History of openSenseMap.org][osem-history]: Showcase of `opensensmapr` with `dplyr` + `ggplot2`
 - [Exploring the openSenseMap dataset][osem-intro]: Showcase of included helper functions
+- [Einführung in opensensmapR][intro-deutsch]: Short introduction to the package in German
 - [Caching openSenseMap Data for reproducibility][osem-serialization]
 
-[osem-intro]: https://sensebox.github.io/opensensmapR/inst/doc/osem-intro.html
+[osem-intro]: https://sensebox.github.io/opensensmapR/inst/doc/intro-deutsch.html
+[intro-deutsch]: https://sensebox.github.io/opensensmapR/inst/doc/osem-intro.html
 [osem-history]: https://sensebox.github.io/opensensmapR/inst/doc/osem-history.html
 [osem-serialization]: https://sensebox.github.io/opensensmapR/inst/doc/osem-serialization.html
 
